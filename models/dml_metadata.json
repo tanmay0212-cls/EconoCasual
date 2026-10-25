@@ -1,0 +1,75 @@
+{
+  "model_class": "LinearDML",
+  "model_type": "linear",
+  "base_estimator": "random_forest",
+  "n_estimators": 100,
+  "max_depth": 5,
+  "cv": 5,
+  "random_state": 42,
+  "treatment_col": "discount_offered",
+  "outcome_col": "purchased",
+  "features": [
+    "prior_purchases",
+    "prior_spend",
+    "engagement_score",
+    "customer_tenure",
+    "campaign_channel"
+  ],
+  "preprocessed_features": [
+    "prior_purchases",
+    "prior_spend",
+    "engagement_score",
+    "customer_tenure",
+    "campaign_channel_push",
+    "campaign_channel_sms",
+    "campaign_channel_social"
+  ],
+  "packages": {
+    "econml": "0.17.0",
+    "scikit-learn": "1.9.1",
+    "joblib": "1.6.0"
+  },
+  "methodological_assumptions": [
+    "Conditional Unconfoundedness: treatment assignment is independent of potential outcomes given pre-treatment confounders W.",
+    "Positivity: propensity score 0 < P(T=1 | W) < 1 for all customer segments.",
+    "No Post-Treatment Confounders: discount_amount and revenue/order_value are strictly quarantined.",
+    "Linear Treatment Effect: CATE tau(X) is parameterized as a linear function of customer features."
+  ],
+  "dataset_path": "sample_data/synthetic_retail_campaign.csv",
+  "train_sample_size": 2000,
+  "eval_sample_size": 500,
+  "split_ratio": "80/20",
+  "stratified_by": "treatment_and_outcome",
+  "metrics": {
+    "evaluation_sample_size": 500,
+    "ate_estimate": 0.1725,
+    "ate_ci_95": [
+      0.1296,
+      0.2153
+    ],
+    "ground_truth_sample_ate": 0.1446,
+    "ground_truth_spec_ate": 0.1369,
+    "error_vs_sample_ground_truth": 0.0279,
+    "error_vs_spec_benchmark": 0.0356,
+    "covers_sample_ground_truth": true,
+    "naive_observational_diff": 0.2521,
+    "confounding_bias_in_naive": 0.1075,
+    "cate_summary": {
+      "mean": 0.1725,
+      "std": 0.0445,
+      "median": 0.1548,
+      "min": 0.0922,
+      "q25": 0.1385,
+      "q75": 0.2298,
+      "max": 0.2624
+    },
+    "cate_distribution_counts": {
+      "negative_count": 0,
+      "negative_pct": 0.0,
+      "near_zero_count": 0,
+      "near_zero_pct": 0.0,
+      "positive_count": 500,
+      "positive_pct": 100.0
+    }
+  }
+}

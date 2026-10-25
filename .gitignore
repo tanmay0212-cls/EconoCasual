@@ -42,3 +42,14 @@ Thumbs.db
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Model Binaries & Heavy Weights (reproducible via scripts/train_dml.py)
+models/*.joblib
+models/*.pkl
+*.joblib
+*.pkl
+
+# Temporary & Local Scratch Artifacts
+scratch/
+tmp/
+*.tmp
