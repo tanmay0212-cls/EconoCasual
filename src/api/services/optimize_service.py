@@ -76,6 +76,8 @@ class OptimizeService:
             df["product_price"] = 85.0
         if "gross_margin_rate" not in df.columns:
             df["gross_margin_rate"] = 0.40
+        if "campaign_channel" not in df.columns:
+            df["campaign_channel"] = "email"
 
         start_time = time.perf_counter()
 
@@ -86,8 +88,8 @@ class OptimizeService:
                 discount_tiers=request.discount_tiers,
                 objective_type=request.objective_type,
             )
-            opt_df = optimizer.fit_and_optimize(df_customers=df, model=model)
-            summary_dict = optimizer.summary()
+            opt_res = optimizer.optimize(df_customers=df, model=model)
+            opt_df = opt_res.allocation_matrix
         except Exception as exc:
             logger.error("SciPy MILP optimization failure: %s", exc, exc_info=True)
             raise HTTPException(
@@ -101,11 +103,17 @@ class OptimizeService:
         # 3. Format allocation records
         allocation_records: List[CustomerAllocationRecord] = []
         for _, row in opt_df.iterrows():
+            disc = int(row["recommended_discount"])
+            prob = float(
+                row["predicted_purchase_probability_20"] if disc == 20
+                else row["predicted_purchase_probability_10"] if disc == 10
+                else row["predicted_purchase_probability_0"]
+            )
             allocation_records.append(
                 CustomerAllocationRecord(
                     customer_id=str(row["customer_id"]),
-                    recommended_discount=int(row["recommended_discount"]),
-                    predicted_purchase_probability=round(float(row["predicted_purchase_probability"]), 6),
+                    recommended_discount=disc,
+                    predicted_purchase_probability=round(prob, 6),
                     expected_revenue=round(float(row["expected_revenue"]), 2),
                     expected_discount_cost=round(float(row["expected_discount_cost"]), 2),
                     expected_net_profit=round(float(row["expected_net_profit"]), 2),
@@ -113,24 +121,23 @@ class OptimizeService:
             )
 
         # 4. Extract KPI summary
-        kpi_dict = summary_dict.get("kpi_summary", {})
-        counts = summary_dict.get("allocation_counts", {})
+        counts = opt_res.tier_counts
         kpis = OptimizationKPIs(
-            total_customers=int(summary_dict.get("total_customers", len(opt_df))),
+            total_customers=len(opt_df),
             count_discount_0=int(counts.get(0, 0)),
             count_discount_10=int(counts.get(10, 0)),
             count_discount_20=int(counts.get(20, 0)),
-            expected_revenue=round(float(kpi_dict.get("expected_revenue", 0.0)), 2),
-            expected_discount_expenditure=round(float(kpi_dict.get("expected_discount_expenditure", 0.0)), 2),
-            expected_net_profit=round(float(kpi_dict.get("expected_net_profit", 0.0)), 2),
-            budget_cap=round(float(summary_dict.get("budget_cap", request.budget)), 2),
-            remaining_budget=round(float(kpi_dict.get("remaining_budget", 0.0)), 2),
-            budget_utilization_pct=round(float(kpi_dict.get("budget_utilization_pct", 0.0)), 2),
+            expected_revenue=round(float(opt_res.expected_gross_revenue), 2),
+            expected_discount_expenditure=round(float(opt_res.total_cost), 2),
+            expected_net_profit=round(float(opt_res.expected_net_profit), 2),
+            budget_cap=round(float(opt_res.budget), 2),
+            remaining_budget=round(float(max(0.0, opt_res.budget - opt_res.total_cost)), 2),
+            budget_utilization_pct=round(float(opt_res.budget_utilization_pct), 2),
         )
 
         response = OptimizationResponse(
             run_id=run_id,
-            solver_status=str(summary_dict.get("solver_status_message", "OPTIMAL (HiGHS)")),
+            solver_status=str(opt_res.status_message),
             objective_type=request.objective_type,
             solve_time_seconds=solve_time,
             kpis=kpis,

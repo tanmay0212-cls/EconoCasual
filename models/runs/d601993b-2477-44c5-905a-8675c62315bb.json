@@ -1,0 +1,4020 @@
+{
+  "run_id": "d601993b-2477-44c5-905a-8675c62315bb",
+  "solver_status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+  "objective_type": "net_profit",
+  "solve_time_seconds": 0.0246,
+  "kpis": {
+    "total_customers": 500,
+    "count_discount_0": 358,
+    "count_discount_10": 141,
+    "count_discount_20": 1,
+    "expected_revenue": 20189.92,
+    "expected_discount_expenditure": 793.7,
+    "expected_net_profit": 8746.5,
+    "budget_cap": 5000.0,
+    "remaining_budget": 4206.3,
+    "budget_utilization_pct": 15.87
+  },
+  "allocation": [
+    {
+      "customer_id": "OPT_000001",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.3693,
+      "expected_revenue": 37.7,
+      "expected_discount_cost": 3.69,
+      "expected_net_profit": 15.74
+    },
+    {
+      "customer_id": "OPT_000002",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.295593,
+      "expected_revenue": 22.22,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.2
+    },
+    {
+      "customer_id": "OPT_000003",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.677055,
+      "expected_revenue": 135.45,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 76.99
+    },
+    {
+      "customer_id": "OPT_000004",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.732232,
+      "expected_revenue": 49.18,
+      "expected_discount_cost": 7.32,
+      "expected_net_profit": 16.07
+    },
+    {
+      "customer_id": "OPT_000005",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.149041,
+      "expected_revenue": 4.36,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.34
+    },
+    {
+      "customer_id": "OPT_000006",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.849053,
+      "expected_revenue": 336.73,
+      "expected_discount_cost": 8.49,
+      "expected_net_profit": 178.83
+    },
+    {
+      "customer_id": "OPT_000007",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.455497,
+      "expected_revenue": 43.51,
+      "expected_discount_cost": 4.55,
+      "expected_net_profit": 14.99
+    },
+    {
+      "customer_id": "OPT_000008",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.556953,
+      "expected_revenue": 55.75,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 21.35
+    },
+    {
+      "customer_id": "OPT_000009",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.149511,
+      "expected_revenue": 6.0,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.0
+    },
+    {
+      "customer_id": "OPT_000010",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.392437,
+      "expected_revenue": 29.52,
+      "expected_discount_cost": 3.92,
+      "expected_net_profit": 7.02
+    },
+    {
+      "customer_id": "OPT_000011",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.494335,
+      "expected_revenue": 28.72,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 10.98
+    },
+    {
+      "customer_id": "OPT_000012",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.679674,
+      "expected_revenue": 90.29,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 49.19
+    },
+    {
+      "customer_id": "OPT_000013",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.550569,
+      "expected_revenue": 26.91,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 13.66
+    },
+    {
+      "customer_id": "OPT_000014",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.315451,
+      "expected_revenue": 12.53,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.16
+    },
+    {
+      "customer_id": "OPT_000015",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.58901,
+      "expected_revenue": 24.22,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.89
+    },
+    {
+      "customer_id": "OPT_000016",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.135425,
+      "expected_revenue": 2.35,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.73
+    },
+    {
+      "customer_id": "OPT_000017",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.572081,
+      "expected_revenue": 31.93,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 15.64
+    },
+    {
+      "customer_id": "OPT_000018",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.164511,
+      "expected_revenue": 5.87,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.7
+    },
+    {
+      "customer_id": "OPT_000019",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.601331,
+      "expected_revenue": 38.37,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 16.83
+    },
+    {
+      "customer_id": "OPT_000020",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.553226,
+      "expected_revenue": 53.41,
+      "expected_discount_cost": 5.53,
+      "expected_net_profit": 19.98
+    },
+    {
+      "customer_id": "OPT_000021",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.277911,
+      "expected_revenue": 17.21,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.03
+    },
+    {
+      "customer_id": "OPT_000022",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.328891,
+      "expected_revenue": 20.8,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.58
+    },
+    {
+      "customer_id": "OPT_000023",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.657409,
+      "expected_revenue": 83.62,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 43.77
+    },
+    {
+      "customer_id": "OPT_000024",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.724021,
+      "expected_revenue": 36.95,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 20.14
+    },
+    {
+      "customer_id": "OPT_000025",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.671342,
+      "expected_revenue": 102.13,
+      "expected_discount_cost": 6.71,
+      "expected_net_profit": 38.85
+    },
+    {
+      "customer_id": "OPT_000026",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.186788,
+      "expected_revenue": 5.74,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.09
+    },
+    {
+      "customer_id": "OPT_000027",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.445982,
+      "expected_revenue": 19.65,
+      "expected_discount_cost": 4.46,
+      "expected_net_profit": 4.26
+    },
+    {
+      "customer_id": "OPT_000028",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.264268,
+      "expected_revenue": 5.36,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.55
+    },
+    {
+      "customer_id": "OPT_000029",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.132985,
+      "expected_revenue": 5.59,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.27
+    },
+    {
+      "customer_id": "OPT_000030",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.482247,
+      "expected_revenue": 54.53,
+      "expected_discount_cost": 4.82,
+      "expected_net_profit": 15.48
+    },
+    {
+      "customer_id": "OPT_000031",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.422774,
+      "expected_revenue": 27.4,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 12.21
+    },
+    {
+      "customer_id": "OPT_000032",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.840056,
+      "expected_revenue": 108.18,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 56.86
+    },
+    {
+      "customer_id": "OPT_000033",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.461349,
+      "expected_revenue": 32.66,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 14.29
+    },
+    {
+      "customer_id": "OPT_000034",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.366604,
+      "expected_revenue": 15.47,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 6.64
+    },
+    {
+      "customer_id": "OPT_000035",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.457281,
+      "expected_revenue": 41.37,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 18.77
+    },
+    {
+      "customer_id": "OPT_000036",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.132117,
+      "expected_revenue": 6.12,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.95
+    },
+    {
+      "customer_id": "OPT_000037",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.313046,
+      "expected_revenue": 11.92,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.43
+    },
+    {
+      "customer_id": "OPT_000038",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.258633,
+      "expected_revenue": 9.72,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.52
+    },
+    {
+      "customer_id": "OPT_000039",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.292378,
+      "expected_revenue": 12.37,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.1
+    },
+    {
+      "customer_id": "OPT_000040",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.358075,
+      "expected_revenue": 17.82,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.59
+    },
+    {
+      "customer_id": "OPT_000041",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.515693,
+      "expected_revenue": 31.27,
+      "expected_discount_cost": 5.16,
+      "expected_net_profit": 5.56
+    },
+    {
+      "customer_id": "OPT_000042",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.290194,
+      "expected_revenue": 12.09,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.66
+    },
+    {
+      "customer_id": "OPT_000043",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.664356,
+      "expected_revenue": 75.75,
+      "expected_discount_cost": 6.64,
+      "expected_net_profit": 26.33
+    },
+    {
+      "customer_id": "OPT_000044",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.409327,
+      "expected_revenue": 37.12,
+      "expected_discount_cost": 4.09,
+      "expected_net_profit": 9.17
+    },
+    {
+      "customer_id": "OPT_000045",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.370175,
+      "expected_revenue": 22.89,
+      "expected_discount_cost": 3.7,
+      "expected_net_profit": 8.54
+    },
+    {
+      "customer_id": "OPT_000046",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.68801,
+      "expected_revenue": 81.84,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 37.39
+    },
+    {
+      "customer_id": "OPT_000047",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.601796,
+      "expected_revenue": 20.56,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.49
+    },
+    {
+      "customer_id": "OPT_000048",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.42132,
+      "expected_revenue": 21.1,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.63
+    },
+    {
+      "customer_id": "OPT_000049",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.675746,
+      "expected_revenue": 62.24,
+      "expected_discount_cost": 6.76,
+      "expected_net_profit": 21.71
+    },
+    {
+      "customer_id": "OPT_000050",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.092309,
+      "expected_revenue": 3.42,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.19
+    },
+    {
+      "customer_id": "OPT_000051",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.107411,
+      "expected_revenue": 3.49,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.34
+    },
+    {
+      "customer_id": "OPT_000052",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.142797,
+      "expected_revenue": 6.12,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.74
+    },
+    {
+      "customer_id": "OPT_000053",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.521885,
+      "expected_revenue": 54.96,
+      "expected_discount_cost": 5.22,
+      "expected_net_profit": 18.16
+    },
+    {
+      "customer_id": "OPT_000054",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.384164,
+      "expected_revenue": 30.72,
+      "expected_discount_cost": 3.84,
+      "expected_net_profit": 11.01
+    },
+    {
+      "customer_id": "OPT_000055",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.430896,
+      "expected_revenue": 31.51,
+      "expected_discount_cost": 4.31,
+      "expected_net_profit": 10.24
+    },
+    {
+      "customer_id": "OPT_000056",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.264845,
+      "expected_revenue": 14.9,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 6.11
+    },
+    {
+      "customer_id": "OPT_000057",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.327178,
+      "expected_revenue": 16.43,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.16
+    },
+    {
+      "customer_id": "OPT_000058",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.351762,
+      "expected_revenue": 23.3,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 9.32
+    },
+    {
+      "customer_id": "OPT_000059",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.067553,
+      "expected_revenue": 3.2,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.9
+    },
+    {
+      "customer_id": "OPT_000060",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.074053,
+      "expected_revenue": 2.61,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.93
+    },
+    {
+      "customer_id": "OPT_000061",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.417707,
+      "expected_revenue": 49.75,
+      "expected_discount_cost": 4.18,
+      "expected_net_profit": 15.21
+    },
+    {
+      "customer_id": "OPT_000062",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.793134,
+      "expected_revenue": 23.68,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 9.22
+    },
+    {
+      "customer_id": "OPT_000063",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.587213,
+      "expected_revenue": 76.56,
+      "expected_discount_cost": 5.87,
+      "expected_net_profit": 29.68
+    },
+    {
+      "customer_id": "OPT_000064",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.374045,
+      "expected_revenue": 24.52,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 12.06
+    },
+    {
+      "customer_id": "OPT_000065",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.618069,
+      "expected_revenue": 67.57,
+      "expected_discount_cost": 6.18,
+      "expected_net_profit": 21.14
+    },
+    {
+      "customer_id": "OPT_000066",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.465482,
+      "expected_revenue": 32.68,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 13.82
+    },
+    {
+      "customer_id": "OPT_000067",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.763926,
+      "expected_revenue": 73.44,
+      "expected_discount_cost": 7.64,
+      "expected_net_profit": 26.79
+    },
+    {
+      "customer_id": "OPT_000068",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.376587,
+      "expected_revenue": 19.99,
+      "expected_discount_cost": 3.77,
+      "expected_net_profit": 4.57
+    },
+    {
+      "customer_id": "OPT_000069",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.126818,
+      "expected_revenue": 5.09,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.54
+    },
+    {
+      "customer_id": "OPT_000070",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.35646,
+      "expected_revenue": 20.22,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.89
+    },
+    {
+      "customer_id": "OPT_000071",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.189288,
+      "expected_revenue": 11.68,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.84
+    },
+    {
+      "customer_id": "OPT_000072",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.506244,
+      "expected_revenue": 25.96,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.05
+    },
+    {
+      "customer_id": "OPT_000073",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.796768,
+      "expected_revenue": 160.37,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 84.73
+    },
+    {
+      "customer_id": "OPT_000074",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.054546,
+      "expected_revenue": 2.13,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.57
+    },
+    {
+      "customer_id": "OPT_000075",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.125432,
+      "expected_revenue": 2.8,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.85
+    },
+    {
+      "customer_id": "OPT_000076",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.316953,
+      "expected_revenue": 21.87,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.14
+    },
+    {
+      "customer_id": "OPT_000077",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.488434,
+      "expected_revenue": 31.69,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 11.36
+    },
+    {
+      "customer_id": "OPT_000078",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.633964,
+      "expected_revenue": 35.17,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 15.42
+    },
+    {
+      "customer_id": "OPT_000079",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.394899,
+      "expected_revenue": 16.82,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.63
+    },
+    {
+      "customer_id": "OPT_000080",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.390718,
+      "expected_revenue": 38.97,
+      "expected_discount_cost": 3.91,
+      "expected_net_profit": 15.09
+    },
+    {
+      "customer_id": "OPT_000081",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.55834,
+      "expected_revenue": 46.37,
+      "expected_discount_cost": 5.58,
+      "expected_net_profit": 19.72
+    },
+    {
+      "customer_id": "OPT_000082",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.293247,
+      "expected_revenue": 13.83,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.35
+    },
+    {
+      "customer_id": "OPT_000083",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.48491,
+      "expected_revenue": 36.9,
+      "expected_discount_cost": 4.85,
+      "expected_net_profit": 10.12
+    },
+    {
+      "customer_id": "OPT_000084",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.123917,
+      "expected_revenue": 5.79,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.82
+    },
+    {
+      "customer_id": "OPT_000085",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.146789,
+      "expected_revenue": 3.79,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.12
+    },
+    {
+      "customer_id": "OPT_000086",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.144903,
+      "expected_revenue": 4.24,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.34
+    },
+    {
+      "customer_id": "OPT_000087",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.743229,
+      "expected_revenue": 63.88,
+      "expected_discount_cost": 7.43,
+      "expected_net_profit": 21.66
+    },
+    {
+      "customer_id": "OPT_000088",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.330362,
+      "expected_revenue": 21.75,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.44
+    },
+    {
+      "customer_id": "OPT_000089",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.276891,
+      "expected_revenue": 11.06,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.56
+    },
+    {
+      "customer_id": "OPT_000090",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.55616,
+      "expected_revenue": 68.76,
+      "expected_discount_cost": 5.56,
+      "expected_net_profit": 23.41
+    },
+    {
+      "customer_id": "OPT_000091",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.097381,
+      "expected_revenue": 4.0,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.25
+    },
+    {
+      "customer_id": "OPT_000092",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.561561,
+      "expected_revenue": 63.88,
+      "expected_discount_cost": 5.62,
+      "expected_net_profit": 25.67
+    },
+    {
+      "customer_id": "OPT_000093",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.232852,
+      "expected_revenue": 5.01,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.93
+    },
+    {
+      "customer_id": "OPT_000094",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.257741,
+      "expected_revenue": 27.93,
+      "expected_discount_cost": 2.58,
+      "expected_net_profit": 6.89
+    },
+    {
+      "customer_id": "OPT_000095",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.49611,
+      "expected_revenue": 41.63,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 16.35
+    },
+    {
+      "customer_id": "OPT_000096",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.435171,
+      "expected_revenue": 19.37,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.71
+    },
+    {
+      "customer_id": "OPT_000097",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.364536,
+      "expected_revenue": 12.61,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.88
+    },
+    {
+      "customer_id": "OPT_000098",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.082548,
+      "expected_revenue": 2.73,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.79
+    },
+    {
+      "customer_id": "OPT_000099",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.098322,
+      "expected_revenue": 3.81,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.11
+    },
+    {
+      "customer_id": "OPT_000100",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.644463,
+      "expected_revenue": 126.26,
+      "expected_discount_cost": 6.44,
+      "expected_net_profit": 65.59
+    },
+    {
+      "customer_id": "OPT_000101",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.878699,
+      "expected_revenue": 160.6,
+      "expected_discount_cost": 8.79,
+      "expected_net_profit": 86.08
+    },
+    {
+      "customer_id": "OPT_000102",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.561746,
+      "expected_revenue": 29.37,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 11.35
+    },
+    {
+      "customer_id": "OPT_000103",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.503717,
+      "expected_revenue": 29.84,
+      "expected_discount_cost": 5.04,
+      "expected_net_profit": 6.83
+    },
+    {
+      "customer_id": "OPT_000104",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.831561,
+      "expected_revenue": 165.32,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 100.91
+    },
+    {
+      "customer_id": "OPT_000105",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.615172,
+      "expected_revenue": 45.52,
+      "expected_discount_cost": 6.15,
+      "expected_net_profit": 15.84
+    },
+    {
+      "customer_id": "OPT_000106",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.392032,
+      "expected_revenue": 29.14,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 13.17
+    },
+    {
+      "customer_id": "OPT_000107",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.332056,
+      "expected_revenue": 25.79,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 9.82
+    },
+    {
+      "customer_id": "OPT_000108",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.143111,
+      "expected_revenue": 6.2,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.34
+    },
+    {
+      "customer_id": "OPT_000109",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.172688,
+      "expected_revenue": 4.73,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.72
+    },
+    {
+      "customer_id": "OPT_000110",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.729406,
+      "expected_revenue": 141.0,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 77.09
+    },
+    {
+      "customer_id": "OPT_000111",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.411239,
+      "expected_revenue": 20.08,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 6.94
+    },
+    {
+      "customer_id": "OPT_000112",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.219176,
+      "expected_revenue": 10.51,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.16
+    },
+    {
+      "customer_id": "OPT_000113",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.277623,
+      "expected_revenue": 10.56,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.64
+    },
+    {
+      "customer_id": "OPT_000114",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.614828,
+      "expected_revenue": 44.47,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 21.25
+    },
+    {
+      "customer_id": "OPT_000115",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.146258,
+      "expected_revenue": 4.47,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.18
+    },
+    {
+      "customer_id": "OPT_000116",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.870646,
+      "expected_revenue": 217.69,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 136.71
+    },
+    {
+      "customer_id": "OPT_000117",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.61885,
+      "expected_revenue": 39.19,
+      "expected_discount_cost": 6.19,
+      "expected_net_profit": 12.88
+    },
+    {
+      "customer_id": "OPT_000118",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.597162,
+      "expected_revenue": 55.36,
+      "expected_discount_cost": 5.97,
+      "expected_net_profit": 16.32
+    },
+    {
+      "customer_id": "OPT_000119",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.626762,
+      "expected_revenue": 34.27,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 13.06
+    },
+    {
+      "customer_id": "OPT_000120",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.453393,
+      "expected_revenue": 31.9,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 12.63
+    },
+    {
+      "customer_id": "OPT_000121",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.434374,
+      "expected_revenue": 52.01,
+      "expected_discount_cost": 4.34,
+      "expected_net_profit": 18.35
+    },
+    {
+      "customer_id": "OPT_000122",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.647571,
+      "expected_revenue": 66.19,
+      "expected_discount_cost": 6.48,
+      "expected_net_profit": 27.18
+    },
+    {
+      "customer_id": "OPT_000123",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.168886,
+      "expected_revenue": 7.55,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.81
+    },
+    {
+      "customer_id": "OPT_000124",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.278955,
+      "expected_revenue": 14.74,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.9
+    },
+    {
+      "customer_id": "OPT_000125",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.106797,
+      "expected_revenue": 3.62,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.04
+    },
+    {
+      "customer_id": "OPT_000126",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.322552,
+      "expected_revenue": 25.68,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 9.76
+    },
+    {
+      "customer_id": "OPT_000127",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.566887,
+      "expected_revenue": 50.84,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 19.06
+    },
+    {
+      "customer_id": "OPT_000128",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.276512,
+      "expected_revenue": 8.81,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.19
+    },
+    {
+      "customer_id": "OPT_000129",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.088199,
+      "expected_revenue": 2.68,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.54
+    },
+    {
+      "customer_id": "OPT_000130",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.472075,
+      "expected_revenue": 23.97,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 11.83
+    },
+    {
+      "customer_id": "OPT_000131",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.169832,
+      "expected_revenue": 4.14,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.28
+    },
+    {
+      "customer_id": "OPT_000132",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.786409,
+      "expected_revenue": 146.92,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 73.04
+    },
+    {
+      "customer_id": "OPT_000133",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.518976,
+      "expected_revenue": 22.76,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 10.0
+    },
+    {
+      "customer_id": "OPT_000134",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.439789,
+      "expected_revenue": 29.99,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 10.87
+    },
+    {
+      "customer_id": "OPT_000135",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.558812,
+      "expected_revenue": 40.37,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 16.02
+    },
+    {
+      "customer_id": "OPT_000136",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.188873,
+      "expected_revenue": 4.81,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.3
+    },
+    {
+      "customer_id": "OPT_000137",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.60518,
+      "expected_revenue": 86.94,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 41.68
+    },
+    {
+      "customer_id": "OPT_000138",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.259733,
+      "expected_revenue": 10.49,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.78
+    },
+    {
+      "customer_id": "OPT_000139",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.550225,
+      "expected_revenue": 27.07,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 11.95
+    },
+    {
+      "customer_id": "OPT_000140",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.116805,
+      "expected_revenue": 3.8,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.81
+    },
+    {
+      "customer_id": "OPT_000141",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.408351,
+      "expected_revenue": 29.66,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 10.68
+    },
+    {
+      "customer_id": "OPT_000142",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.312536,
+      "expected_revenue": 15.4,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.71
+    },
+    {
+      "customer_id": "OPT_000143",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.766964,
+      "expected_revenue": 70.48,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 33.07
+    },
+    {
+      "customer_id": "OPT_000144",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.894462,
+      "expected_revenue": 105.4,
+      "expected_discount_cost": 8.94,
+      "expected_net_profit": 43.98
+    },
+    {
+      "customer_id": "OPT_000145",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.516015,
+      "expected_revenue": 19.8,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.28
+    },
+    {
+      "customer_id": "OPT_000146",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.398281,
+      "expected_revenue": 25.56,
+      "expected_discount_cost": 3.98,
+      "expected_net_profit": 6.82
+    },
+    {
+      "customer_id": "OPT_000147",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.40536,
+      "expected_revenue": 40.38,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 13.38
+    },
+    {
+      "customer_id": "OPT_000148",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.183767,
+      "expected_revenue": 4.92,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.11
+    },
+    {
+      "customer_id": "OPT_000149",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.36932,
+      "expected_revenue": 10.11,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.6
+    },
+    {
+      "customer_id": "OPT_000150",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.209172,
+      "expected_revenue": 10.2,
+      "expected_discount_cost": 2.09,
+      "expected_net_profit": 1.51
+    },
+    {
+      "customer_id": "OPT_000151",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.530367,
+      "expected_revenue": 74.59,
+      "expected_discount_cost": 5.3,
+      "expected_net_profit": 27.69
+    },
+    {
+      "customer_id": "OPT_000152",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.892649,
+      "expected_revenue": 180.06,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 92.93
+    },
+    {
+      "customer_id": "OPT_000153",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.200532,
+      "expected_revenue": 7.8,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.08
+    },
+    {
+      "customer_id": "OPT_000154",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.70004,
+      "expected_revenue": 106.7,
+      "expected_discount_cost": 7.0,
+      "expected_net_profit": 46.38
+    },
+    {
+      "customer_id": "OPT_000155",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.173699,
+      "expected_revenue": 7.63,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.55
+    },
+    {
+      "customer_id": "OPT_000156",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.510285,
+      "expected_revenue": 31.71,
+      "expected_discount_cost": 5.1,
+      "expected_net_profit": 7.53
+    },
+    {
+      "customer_id": "OPT_000157",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.514781,
+      "expected_revenue": 59.69,
+      "expected_discount_cost": 5.15,
+      "expected_net_profit": 16.99
+    },
+    {
+      "customer_id": "OPT_000158",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.610638,
+      "expected_revenue": 56.47,
+      "expected_discount_cost": 6.11,
+      "expected_net_profit": 16.39
+    },
+    {
+      "customer_id": "OPT_000159",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.465479,
+      "expected_revenue": 38.99,
+      "expected_discount_cost": 4.65,
+      "expected_net_profit": 13.51
+    },
+    {
+      "customer_id": "OPT_000160",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.58221,
+      "expected_revenue": 26.9,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 10.99
+    },
+    {
+      "customer_id": "OPT_000161",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.150029,
+      "expected_revenue": 8.05,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.28
+    },
+    {
+      "customer_id": "OPT_000162",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.67225,
+      "expected_revenue": 76.6,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 41.2
+    },
+    {
+      "customer_id": "OPT_000163",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.071269,
+      "expected_revenue": 1.79,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.64
+    },
+    {
+      "customer_id": "OPT_000164",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.126288,
+      "expected_revenue": 2.67,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.64
+    },
+    {
+      "customer_id": "OPT_000165",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.427195,
+      "expected_revenue": 35.0,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 15.07
+    },
+    {
+      "customer_id": "OPT_000166",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.328595,
+      "expected_revenue": 13.9,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.68
+    },
+    {
+      "customer_id": "OPT_000167",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.511956,
+      "expected_revenue": 30.5,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 14.61
+    },
+    {
+      "customer_id": "OPT_000168",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.707334,
+      "expected_revenue": 40.81,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 16.9
+    },
+    {
+      "customer_id": "OPT_000169",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.260359,
+      "expected_revenue": 12.66,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.03
+    },
+    {
+      "customer_id": "OPT_000170",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.664131,
+      "expected_revenue": 62.69,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 37.18
+    },
+    {
+      "customer_id": "OPT_000171",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.298938,
+      "expected_revenue": 19.2,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.82
+    },
+    {
+      "customer_id": "OPT_000172",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.23748,
+      "expected_revenue": 9.85,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.46
+    },
+    {
+      "customer_id": "OPT_000173",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.237613,
+      "expected_revenue": 9.49,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.45
+    },
+    {
+      "customer_id": "OPT_000174",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.827412,
+      "expected_revenue": 71.78,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 35.8
+    },
+    {
+      "customer_id": "OPT_000175",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.2725,
+      "expected_revenue": 17.97,
+      "expected_discount_cost": 2.73,
+      "expected_net_profit": 2.33
+    },
+    {
+      "customer_id": "OPT_000176",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.330828,
+      "expected_revenue": 10.69,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.08
+    },
+    {
+      "customer_id": "OPT_000177",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.525948,
+      "expected_revenue": 24.56,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 9.14
+    },
+    {
+      "customer_id": "OPT_000178",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.754032,
+      "expected_revenue": 81.56,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 45.68
+    },
+    {
+      "customer_id": "OPT_000179",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.517178,
+      "expected_revenue": 124.69,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 68.42
+    },
+    {
+      "customer_id": "OPT_000180",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.404862,
+      "expected_revenue": 36.29,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 15.76
+    },
+    {
+      "customer_id": "OPT_000181",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.823771,
+      "expected_revenue": 166.62,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 79.51
+    },
+    {
+      "customer_id": "OPT_000182",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.875001,
+      "expected_revenue": 159.78,
+      "expected_discount_cost": 8.75,
+      "expected_net_profit": 78.04
+    },
+    {
+      "customer_id": "OPT_000183",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.524792,
+      "expected_revenue": 36.78,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 15.54
+    },
+    {
+      "customer_id": "OPT_000184",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.419341,
+      "expected_revenue": 20.12,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.24
+    },
+    {
+      "customer_id": "OPT_000185",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.245964,
+      "expected_revenue": 24.78,
+      "expected_discount_cost": 2.46,
+      "expected_net_profit": 7.13
+    },
+    {
+      "customer_id": "OPT_000186",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.544415,
+      "expected_revenue": 60.6,
+      "expected_discount_cost": 5.44,
+      "expected_net_profit": 21.04
+    },
+    {
+      "customer_id": "OPT_000187",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.577854,
+      "expected_revenue": 41.78,
+      "expected_discount_cost": 5.78,
+      "expected_net_profit": 9.6
+    },
+    {
+      "customer_id": "OPT_000188",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.208636,
+      "expected_revenue": 9.45,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.93
+    },
+    {
+      "customer_id": "OPT_000189",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.680823,
+      "expected_revenue": 54.3,
+      "expected_discount_cost": 6.81,
+      "expected_net_profit": 16.79
+    },
+    {
+      "customer_id": "OPT_000190",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.323288,
+      "expected_revenue": 16.59,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.44
+    },
+    {
+      "customer_id": "OPT_000191",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.873456,
+      "expected_revenue": 160.05,
+      "expected_discount_cost": 8.73,
+      "expected_net_profit": 78.27
+    },
+    {
+      "customer_id": "OPT_000192",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.162307,
+      "expected_revenue": 6.66,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.48
+    },
+    {
+      "customer_id": "OPT_000193",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.121511,
+      "expected_revenue": 4.41,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.45
+    },
+    {
+      "customer_id": "OPT_000194",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.326905,
+      "expected_revenue": 36.27,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 16.94
+    },
+    {
+      "customer_id": "OPT_000195",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.160765,
+      "expected_revenue": 6.17,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.68
+    },
+    {
+      "customer_id": "OPT_000196",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.088482,
+      "expected_revenue": 2.24,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.66
+    },
+    {
+      "customer_id": "OPT_000197",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.311688,
+      "expected_revenue": 17.62,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.18
+    },
+    {
+      "customer_id": "OPT_000198",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.766827,
+      "expected_revenue": 136.2,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 68.42
+    },
+    {
+      "customer_id": "OPT_000199",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.350113,
+      "expected_revenue": 10.13,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.25
+    },
+    {
+      "customer_id": "OPT_000200",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.54975,
+      "expected_revenue": 55.18,
+      "expected_discount_cost": 5.5,
+      "expected_net_profit": 14.65
+    },
+    {
+      "customer_id": "OPT_000201",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.498003,
+      "expected_revenue": 42.15,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 17.11
+    },
+    {
+      "customer_id": "OPT_000202",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.732851,
+      "expected_revenue": 85.14,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 47.19
+    },
+    {
+      "customer_id": "OPT_000203",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.366981,
+      "expected_revenue": 13.23,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.53
+    },
+    {
+      "customer_id": "OPT_000204",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.256479,
+      "expected_revenue": 14.31,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.08
+    },
+    {
+      "customer_id": "OPT_000205",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.133817,
+      "expected_revenue": 2.69,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.83
+    },
+    {
+      "customer_id": "OPT_000206",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.248857,
+      "expected_revenue": 8.94,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.96
+    },
+    {
+      "customer_id": "OPT_000207",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.143325,
+      "expected_revenue": 6.0,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.12
+    },
+    {
+      "customer_id": "OPT_000208",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.507611,
+      "expected_revenue": 22.3,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 10.02
+    },
+    {
+      "customer_id": "OPT_000209",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.199168,
+      "expected_revenue": 4.64,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.63
+    },
+    {
+      "customer_id": "OPT_000210",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.318094,
+      "expected_revenue": 13.02,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.29
+    },
+    {
+      "customer_id": "OPT_000211",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.537227,
+      "expected_revenue": 89.52,
+      "expected_discount_cost": 5.37,
+      "expected_net_profit": 38.77
+    },
+    {
+      "customer_id": "OPT_000212",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.480488,
+      "expected_revenue": 37.99,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 15.97
+    },
+    {
+      "customer_id": "OPT_000213",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.320757,
+      "expected_revenue": 12.71,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.7
+    },
+    {
+      "customer_id": "OPT_000214",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.447374,
+      "expected_revenue": 64.44,
+      "expected_discount_cost": 4.47,
+      "expected_net_profit": 22.19
+    },
+    {
+      "customer_id": "OPT_000215",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.60134,
+      "expected_revenue": 42.96,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 20.21
+    },
+    {
+      "customer_id": "OPT_000216",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.271044,
+      "expected_revenue": 9.9,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.55
+    },
+    {
+      "customer_id": "OPT_000217",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.097659,
+      "expected_revenue": 1.43,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.46
+    },
+    {
+      "customer_id": "OPT_000218",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.215906,
+      "expected_revenue": 5.28,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.31
+    },
+    {
+      "customer_id": "OPT_000219",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.808082,
+      "expected_revenue": 151.95,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 89.23
+    },
+    {
+      "customer_id": "OPT_000220",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.501312,
+      "expected_revenue": 48.67,
+      "expected_discount_cost": 5.01,
+      "expected_net_profit": 11.38
+    },
+    {
+      "customer_id": "OPT_000221",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.34224,
+      "expected_revenue": 23.02,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 9.33
+    },
+    {
+      "customer_id": "OPT_000222",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.320538,
+      "expected_revenue": 14.08,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.98
+    },
+    {
+      "customer_id": "OPT_000223",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.656197,
+      "expected_revenue": 38.19,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 16.31
+    },
+    {
+      "customer_id": "OPT_000224",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.814307,
+      "expected_revenue": 239.34,
+      "expected_discount_cost": 8.14,
+      "expected_net_profit": 125.0
+    },
+    {
+      "customer_id": "OPT_000225",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.721534,
+      "expected_revenue": 102.12,
+      "expected_discount_cost": 7.22,
+      "expected_net_profit": 30.51
+    },
+    {
+      "customer_id": "OPT_000226",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.714744,
+      "expected_revenue": 110.72,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 49.74
+    },
+    {
+      "customer_id": "OPT_000227",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.175001,
+      "expected_revenue": 7.72,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.57
+    },
+    {
+      "customer_id": "OPT_000228",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.580202,
+      "expected_revenue": 49.24,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 21.33
+    },
+    {
+      "customer_id": "OPT_000229",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.271466,
+      "expected_revenue": 19.77,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.75
+    },
+    {
+      "customer_id": "OPT_000230",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.12106,
+      "expected_revenue": 4.25,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.45
+    },
+    {
+      "customer_id": "OPT_000231",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.118313,
+      "expected_revenue": 2.49,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.73
+    },
+    {
+      "customer_id": "OPT_000232",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.470327,
+      "expected_revenue": 19.29,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.42
+    },
+    {
+      "customer_id": "OPT_000233",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.720828,
+      "expected_revenue": 121.05,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 76.51
+    },
+    {
+      "customer_id": "OPT_000234",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.59885,
+      "expected_revenue": 76.14,
+      "expected_discount_cost": 5.99,
+      "expected_net_profit": 30.58
+    },
+    {
+      "customer_id": "OPT_000235",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.849077,
+      "expected_revenue": 129.48,
+      "expected_discount_cost": 8.49,
+      "expected_net_profit": 65.62
+    },
+    {
+      "customer_id": "OPT_000236",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.682365,
+      "expected_revenue": 142.93,
+      "expected_discount_cost": 6.82,
+      "expected_net_profit": 56.89
+    },
+    {
+      "customer_id": "OPT_000237",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.326417,
+      "expected_revenue": 13.27,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.38
+    },
+    {
+      "customer_id": "OPT_000238",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.562504,
+      "expected_revenue": 49.2,
+      "expected_discount_cost": 5.62,
+      "expected_net_profit": 18.58
+    },
+    {
+      "customer_id": "OPT_000239",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.122967,
+      "expected_revenue": 5.98,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.79
+    },
+    {
+      "customer_id": "OPT_000240",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.094789,
+      "expected_revenue": 2.81,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.71
+    },
+    {
+      "customer_id": "OPT_000241",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.78023,
+      "expected_revenue": 94.67,
+      "expected_discount_cost": 7.8,
+      "expected_net_profit": 36.45
+    },
+    {
+      "customer_id": "OPT_000242",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.700704,
+      "expected_revenue": 121.45,
+      "expected_discount_cost": 7.01,
+      "expected_net_profit": 51.85
+    },
+    {
+      "customer_id": "OPT_000243",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.254889,
+      "expected_revenue": 5.84,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.66
+    },
+    {
+      "customer_id": "OPT_000244",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.364676,
+      "expected_revenue": 17.98,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 6.62
+    },
+    {
+      "customer_id": "OPT_000245",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.423238,
+      "expected_revenue": 20.75,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.68
+    },
+    {
+      "customer_id": "OPT_000246",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.843568,
+      "expected_revenue": 76.76,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 44.84
+    },
+    {
+      "customer_id": "OPT_000247",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.60977,
+      "expected_revenue": 76.3,
+      "expected_discount_cost": 6.1,
+      "expected_net_profit": 27.15
+    },
+    {
+      "customer_id": "OPT_000248",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.364477,
+      "expected_revenue": 26.51,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 9.63
+    },
+    {
+      "customer_id": "OPT_000249",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.254864,
+      "expected_revenue": 10.64,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.9
+    },
+    {
+      "customer_id": "OPT_000250",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.667104,
+      "expected_revenue": 48.39,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 19.68
+    },
+    {
+      "customer_id": "OPT_000251",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.263732,
+      "expected_revenue": 11.81,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.7
+    },
+    {
+      "customer_id": "OPT_000252",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.376732,
+      "expected_revenue": 58.74,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 33.17
+    },
+    {
+      "customer_id": "OPT_000253",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.246935,
+      "expected_revenue": 12.06,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.54
+    },
+    {
+      "customer_id": "OPT_000254",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.127673,
+      "expected_revenue": 4.68,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.3
+    },
+    {
+      "customer_id": "OPT_000255",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.061519,
+      "expected_revenue": 1.87,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.57
+    },
+    {
+      "customer_id": "OPT_000256",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.619967,
+      "expected_revenue": 40.11,
+      "expected_discount_cost": 6.2,
+      "expected_net_profit": 11.7
+    },
+    {
+      "customer_id": "OPT_000257",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.586226,
+      "expected_revenue": 65.95,
+      "expected_discount_cost": 5.86,
+      "expected_net_profit": 26.1
+    },
+    {
+      "customer_id": "OPT_000258",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.265853,
+      "expected_revenue": 9.02,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.98
+    },
+    {
+      "customer_id": "OPT_000259",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.137469,
+      "expected_revenue": 5.6,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.83
+    },
+    {
+      "customer_id": "OPT_000260",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.503519,
+      "expected_revenue": 30.57,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 15.98
+    },
+    {
+      "customer_id": "OPT_000261",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.173406,
+      "expected_revenue": 3.23,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.27
+    },
+    {
+      "customer_id": "OPT_000262",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.412589,
+      "expected_revenue": 29.24,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 13.65
+    },
+    {
+      "customer_id": "OPT_000263",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.429521,
+      "expected_revenue": 14.84,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.87
+    },
+    {
+      "customer_id": "OPT_000264",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.183987,
+      "expected_revenue": 5.89,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.95
+    },
+    {
+      "customer_id": "OPT_000265",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.746465,
+      "expected_revenue": 155.79,
+      "expected_discount_cost": 7.46,
+      "expected_net_profit": 88.88
+    },
+    {
+      "customer_id": "OPT_000266",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.165562,
+      "expected_revenue": 4.47,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.25
+    },
+    {
+      "customer_id": "OPT_000267",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.625962,
+      "expected_revenue": 56.68,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 20.35
+    },
+    {
+      "customer_id": "OPT_000268",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.145664,
+      "expected_revenue": 5.5,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.56
+    },
+    {
+      "customer_id": "OPT_000269",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.402777,
+      "expected_revenue": 31.2,
+      "expected_discount_cost": 4.03,
+      "expected_net_profit": 6.92
+    },
+    {
+      "customer_id": "OPT_000270",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.299606,
+      "expected_revenue": 10.73,
+      "expected_discount_cost": 3.0,
+      "expected_net_profit": 0.9
+    },
+    {
+      "customer_id": "OPT_000271",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.164546,
+      "expected_revenue": 6.82,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.9
+    },
+    {
+      "customer_id": "OPT_000272",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.161788,
+      "expected_revenue": 2.68,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.82
+    },
+    {
+      "customer_id": "OPT_000273",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.12106,
+      "expected_revenue": 3.31,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.24
+    },
+    {
+      "customer_id": "OPT_000274",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.534835,
+      "expected_revenue": 36.34,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 16.91
+    },
+    {
+      "customer_id": "OPT_000275",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.382332,
+      "expected_revenue": 55.31,
+      "expected_discount_cost": 3.82,
+      "expected_net_profit": 21.23
+    },
+    {
+      "customer_id": "OPT_000276",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.2394,
+      "expected_revenue": 10.02,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.28
+    },
+    {
+      "customer_id": "OPT_000277",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.507147,
+      "expected_revenue": 42.33,
+      "expected_discount_cost": 5.07,
+      "expected_net_profit": 10.2
+    },
+    {
+      "customer_id": "OPT_000278",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.510547,
+      "expected_revenue": 45.42,
+      "expected_discount_cost": 5.11,
+      "expected_net_profit": 16.39
+    },
+    {
+      "customer_id": "OPT_000279",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.836049,
+      "expected_revenue": 87.26,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 54.01
+    },
+    {
+      "customer_id": "OPT_000280",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.83024,
+      "expected_revenue": 154.71,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 74.31
+    },
+    {
+      "customer_id": "OPT_000281",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.195092,
+      "expected_revenue": 6.91,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.83
+    },
+    {
+      "customer_id": "OPT_000282",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.139815,
+      "expected_revenue": 6.07,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.76
+    },
+    {
+      "customer_id": "OPT_000283",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.210771,
+      "expected_revenue": 7.67,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.08
+    },
+    {
+      "customer_id": "OPT_000284",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.205384,
+      "expected_revenue": 6.34,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.57
+    },
+    {
+      "customer_id": "OPT_000285",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.211107,
+      "expected_revenue": 11.28,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.55
+    },
+    {
+      "customer_id": "OPT_000286",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.320608,
+      "expected_revenue": 24.77,
+      "expected_discount_cost": 3.21,
+      "expected_net_profit": 5.85
+    },
+    {
+      "customer_id": "OPT_000287",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.100106,
+      "expected_revenue": 2.21,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.62
+    },
+    {
+      "customer_id": "OPT_000288",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.728888,
+      "expected_revenue": 55.55,
+      "expected_discount_cost": 7.29,
+      "expected_net_profit": 16.5
+    },
+    {
+      "customer_id": "OPT_000289",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.251396,
+      "expected_revenue": 11.43,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.82
+    },
+    {
+      "customer_id": "OPT_000290",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.165192,
+      "expected_revenue": 9.87,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.0
+    },
+    {
+      "customer_id": "OPT_000291",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.722152,
+      "expected_revenue": 82.53,
+      "expected_discount_cost": 7.22,
+      "expected_net_profit": 30.12
+    },
+    {
+      "customer_id": "OPT_000292",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.147162,
+      "expected_revenue": 7.11,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.93
+    },
+    {
+      "customer_id": "OPT_000293",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.751232,
+      "expected_revenue": 116.16,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 68.08
+    },
+    {
+      "customer_id": "OPT_000294",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.347022,
+      "expected_revenue": 15.02,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.74
+    },
+    {
+      "customer_id": "OPT_000295",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.583579,
+      "expected_revenue": 48.16,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 21.25
+    },
+    {
+      "customer_id": "OPT_000296",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.733459,
+      "expected_revenue": 110.16,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 57.57
+    },
+    {
+      "customer_id": "OPT_000297",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.818292,
+      "expected_revenue": 179.8,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 117.83
+    },
+    {
+      "customer_id": "OPT_000298",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.523389,
+      "expected_revenue": 43.09,
+      "expected_discount_cost": 5.23,
+      "expected_net_profit": 14.63
+    },
+    {
+      "customer_id": "OPT_000299",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.635044,
+      "expected_revenue": 54.83,
+      "expected_discount_cost": 6.35,
+      "expected_net_profit": 22.01
+    },
+    {
+      "customer_id": "OPT_000300",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.73214,
+      "expected_revenue": 103.81,
+      "expected_discount_cost": 7.32,
+      "expected_net_profit": 40.75
+    },
+    {
+      "customer_id": "OPT_000301",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.860025,
+      "expected_revenue": 122.28,
+      "expected_discount_cost": 8.6,
+      "expected_net_profit": 51.52
+    },
+    {
+      "customer_id": "OPT_000302",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.302146,
+      "expected_revenue": 5.66,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.71
+    },
+    {
+      "customer_id": "OPT_000303",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.802423,
+      "expected_revenue": 18.57,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 6.64
+    },
+    {
+      "customer_id": "OPT_000304",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.506371,
+      "expected_revenue": 40.56,
+      "expected_discount_cost": 5.06,
+      "expected_net_profit": 8.49
+    },
+    {
+      "customer_id": "OPT_000305",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.762474,
+      "expected_revenue": 178.2,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 87.42
+    },
+    {
+      "customer_id": "OPT_000306",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.318739,
+      "expected_revenue": 14.66,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.83
+    },
+    {
+      "customer_id": "OPT_000307",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.56302,
+      "expected_revenue": 50.72,
+      "expected_discount_cost": 5.63,
+      "expected_net_profit": 18.27
+    },
+    {
+      "customer_id": "OPT_000308",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.652887,
+      "expected_revenue": 41.24,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 16.42
+    },
+    {
+      "customer_id": "OPT_000309",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.280987,
+      "expected_revenue": 13.24,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.83
+    },
+    {
+      "customer_id": "OPT_000310",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.335833,
+      "expected_revenue": 19.98,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 6.7
+    },
+    {
+      "customer_id": "OPT_000311",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.552867,
+      "expected_revenue": 22.76,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.54
+    },
+    {
+      "customer_id": "OPT_000312",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.274851,
+      "expected_revenue": 13.99,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 6.21
+    },
+    {
+      "customer_id": "OPT_000313",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.12106,
+      "expected_revenue": 4.21,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.38
+    },
+    {
+      "customer_id": "OPT_000314",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.377944,
+      "expected_revenue": 29.33,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.25
+    },
+    {
+      "customer_id": "OPT_000315",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.320242,
+      "expected_revenue": 12.7,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.86
+    },
+    {
+      "customer_id": "OPT_000316",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.370216,
+      "expected_revenue": 14.25,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.89
+    },
+    {
+      "customer_id": "OPT_000317",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.349448,
+      "expected_revenue": 16.67,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 6.38
+    },
+    {
+      "customer_id": "OPT_000318",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.345065,
+      "expected_revenue": 24.25,
+      "expected_discount_cost": 3.45,
+      "expected_net_profit": 8.0
+    },
+    {
+      "customer_id": "OPT_000319",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.448592,
+      "expected_revenue": 27.88,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 10.02
+    },
+    {
+      "customer_id": "OPT_000320",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.739499,
+      "expected_revenue": 79.68,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 47.16
+    },
+    {
+      "customer_id": "OPT_000321",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.769948,
+      "expected_revenue": 116.76,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 61.71
+    },
+    {
+      "customer_id": "OPT_000322",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.295247,
+      "expected_revenue": 13.74,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.82
+    },
+    {
+      "customer_id": "OPT_000323",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.227887,
+      "expected_revenue": 12.22,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.2
+    },
+    {
+      "customer_id": "OPT_000324",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.443861,
+      "expected_revenue": 33.43,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 12.3
+    },
+    {
+      "customer_id": "OPT_000325",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.861524,
+      "expected_revenue": 110.45,
+      "expected_discount_cost": 8.62,
+      "expected_net_profit": 41.54
+    },
+    {
+      "customer_id": "OPT_000326",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.544996,
+      "expected_revenue": 45.61,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 18.2
+    },
+    {
+      "customer_id": "OPT_000327",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.510903,
+      "expected_revenue": 67.05,
+      "expected_discount_cost": 5.11,
+      "expected_net_profit": 24.9
+    },
+    {
+      "customer_id": "OPT_000328",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.333131,
+      "expected_revenue": 11.03,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.42
+    },
+    {
+      "customer_id": "OPT_000329",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.724986,
+      "expected_revenue": 66.67,
+      "expected_discount_cost": 7.25,
+      "expected_net_profit": 26.44
+    },
+    {
+      "customer_id": "OPT_000330",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.492168,
+      "expected_revenue": 46.59,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 13.47
+    },
+    {
+      "customer_id": "OPT_000331",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.528087,
+      "expected_revenue": 39.96,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 16.43
+    },
+    {
+      "customer_id": "OPT_000332",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.180553,
+      "expected_revenue": 9.47,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.45
+    },
+    {
+      "customer_id": "OPT_000333",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.673217,
+      "expected_revenue": 52.51,
+      "expected_discount_cost": 6.73,
+      "expected_net_profit": 16.98
+    },
+    {
+      "customer_id": "OPT_000334",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.73198,
+      "expected_revenue": 124.36,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 63.52
+    },
+    {
+      "customer_id": "OPT_000335",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.183689,
+      "expected_revenue": 6.09,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.97
+    },
+    {
+      "customer_id": "OPT_000336",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.385289,
+      "expected_revenue": 18.39,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.67
+    },
+    {
+      "customer_id": "OPT_000337",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.319208,
+      "expected_revenue": 11.81,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.3
+    },
+    {
+      "customer_id": "OPT_000338",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.638089,
+      "expected_revenue": 61.99,
+      "expected_discount_cost": 6.38,
+      "expected_net_profit": 22.08
+    },
+    {
+      "customer_id": "OPT_000339",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.329432,
+      "expected_revenue": 8.89,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.42
+    },
+    {
+      "customer_id": "OPT_000340",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.668464,
+      "expected_revenue": 93.89,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 51.82
+    },
+    {
+      "customer_id": "OPT_000341",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.159438,
+      "expected_revenue": 4.8,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.48
+    },
+    {
+      "customer_id": "OPT_000342",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.699963,
+      "expected_revenue": 134.96,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 79.63
+    },
+    {
+      "customer_id": "OPT_000343",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.676346,
+      "expected_revenue": 72.61,
+      "expected_discount_cost": 6.76,
+      "expected_net_profit": 28.9
+    },
+    {
+      "customer_id": "OPT_000344",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.500404,
+      "expected_revenue": 36.11,
+      "expected_discount_cost": 5.0,
+      "expected_net_profit": 13.34
+    },
+    {
+      "customer_id": "OPT_000345",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.288848,
+      "expected_revenue": 17.88,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.55
+    },
+    {
+      "customer_id": "OPT_000346",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.695958,
+      "expected_revenue": 81.77,
+      "expected_discount_cost": 6.96,
+      "expected_net_profit": 33.72
+    },
+    {
+      "customer_id": "OPT_000347",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.761777,
+      "expected_revenue": 109.88,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 54.95
+    },
+    {
+      "customer_id": "OPT_000348",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.371794,
+      "expected_revenue": 32.94,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 14.26
+    },
+    {
+      "customer_id": "OPT_000349",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.356479,
+      "expected_revenue": 20.6,
+      "expected_discount_cost": 3.56,
+      "expected_net_profit": 6.27
+    },
+    {
+      "customer_id": "OPT_000350",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.29932,
+      "expected_revenue": 11.94,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.55
+    },
+    {
+      "customer_id": "OPT_000351",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.481971,
+      "expected_revenue": 28.47,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 13.99
+    },
+    {
+      "customer_id": "OPT_000352",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.157492,
+      "expected_revenue": 4.31,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.16
+    },
+    {
+      "customer_id": "OPT_000353",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.588678,
+      "expected_revenue": 64.25,
+      "expected_discount_cost": 5.89,
+      "expected_net_profit": 24.87
+    },
+    {
+      "customer_id": "OPT_000354",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.441894,
+      "expected_revenue": 22.93,
+      "expected_discount_cost": 4.42,
+      "expected_net_profit": 6.51
+    },
+    {
+      "customer_id": "OPT_000355",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.392483,
+      "expected_revenue": 25.25,
+      "expected_discount_cost": 3.92,
+      "expected_net_profit": 6.17
+    },
+    {
+      "customer_id": "OPT_000356",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.660885,
+      "expected_revenue": 49.84,
+      "expected_discount_cost": 6.61,
+      "expected_net_profit": 16.12
+    },
+    {
+      "customer_id": "OPT_000357",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.556915,
+      "expected_revenue": 46.25,
+      "expected_discount_cost": 5.57,
+      "expected_net_profit": 16.7
+    },
+    {
+      "customer_id": "OPT_000358",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.437595,
+      "expected_revenue": 34.17,
+      "expected_discount_cost": 4.38,
+      "expected_net_profit": 10.79
+    },
+    {
+      "customer_id": "OPT_000359",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.565135,
+      "expected_revenue": 40.42,
+      "expected_discount_cost": 5.65,
+      "expected_net_profit": 9.57
+    },
+    {
+      "customer_id": "OPT_000360",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.488146,
+      "expected_revenue": 19.93,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 9.17
+    },
+    {
+      "customer_id": "OPT_000361",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.886465,
+      "expected_revenue": 222.66,
+      "expected_discount_cost": 8.86,
+      "expected_net_profit": 116.58
+    },
+    {
+      "customer_id": "OPT_000362",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.175068,
+      "expected_revenue": 7.19,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.97
+    },
+    {
+      "customer_id": "OPT_000363",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.09296,
+      "expected_revenue": 3.49,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.09
+    },
+    {
+      "customer_id": "OPT_000364",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.126174,
+      "expected_revenue": 3.93,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.08
+    },
+    {
+      "customer_id": "OPT_000365",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.528748,
+      "expected_revenue": 46.69,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 18.6
+    },
+    {
+      "customer_id": "OPT_000366",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.47066,
+      "expected_revenue": 46.81,
+      "expected_discount_cost": 4.71,
+      "expected_net_profit": 13.28
+    },
+    {
+      "customer_id": "OPT_000367",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.671138,
+      "expected_revenue": 75.14,
+      "expected_discount_cost": 6.71,
+      "expected_net_profit": 23.31
+    },
+    {
+      "customer_id": "OPT_000368",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.611582,
+      "expected_revenue": 32.32,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 14.86
+    },
+    {
+      "customer_id": "OPT_000369",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.489514,
+      "expected_revenue": 19.21,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 6.54
+    },
+    {
+      "customer_id": "OPT_000370",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.772275,
+      "expected_revenue": 123.54,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 66.64
+    },
+    {
+      "customer_id": "OPT_000371",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.653639,
+      "expected_revenue": 36.34,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 15.03
+    },
+    {
+      "customer_id": "OPT_000372",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.337813,
+      "expected_revenue": 13.25,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.95
+    },
+    {
+      "customer_id": "OPT_000373",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.246679,
+      "expected_revenue": 14.52,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 6.09
+    },
+    {
+      "customer_id": "OPT_000374",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.355058,
+      "expected_revenue": 20.46,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.02
+    },
+    {
+      "customer_id": "OPT_000375",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.176083,
+      "expected_revenue": 6.59,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.08
+    },
+    {
+      "customer_id": "OPT_000376",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.122119,
+      "expected_revenue": 4.95,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.61
+    },
+    {
+      "customer_id": "OPT_000377",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.768055,
+      "expected_revenue": 89.69,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 45.17
+    },
+    {
+      "customer_id": "OPT_000378",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.317381,
+      "expected_revenue": 13.63,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.73
+    },
+    {
+      "customer_id": "OPT_000379",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.205511,
+      "expected_revenue": 9.08,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.66
+    },
+    {
+      "customer_id": "OPT_000380",
+      "recommended_discount": 20,
+      "predicted_purchase_probability": 0.372567,
+      "expected_revenue": 57.0,
+      "expected_discount_cost": 7.45,
+      "expected_net_profit": 19.84
+    },
+    {
+      "customer_id": "OPT_000381",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.460077,
+      "expected_revenue": 27.67,
+      "expected_discount_cost": 4.6,
+      "expected_net_profit": 8.35
+    },
+    {
+      "customer_id": "OPT_000382",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.786556,
+      "expected_revenue": 88.36,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 48.6
+    },
+    {
+      "customer_id": "OPT_000383",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.242016,
+      "expected_revenue": 7.79,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.76
+    },
+    {
+      "customer_id": "OPT_000384",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.269032,
+      "expected_revenue": 14.68,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.71
+    },
+    {
+      "customer_id": "OPT_000385",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.239094,
+      "expected_revenue": 10.56,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.89
+    },
+    {
+      "customer_id": "OPT_000386",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.861378,
+      "expected_revenue": 178.22,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 93.19
+    },
+    {
+      "customer_id": "OPT_000387",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.566615,
+      "expected_revenue": 42.45,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 17.47
+    },
+    {
+      "customer_id": "OPT_000388",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.750031,
+      "expected_revenue": 100.0,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 49.47
+    },
+    {
+      "customer_id": "OPT_000389",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.204605,
+      "expected_revenue": 7.17,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.34
+    },
+    {
+      "customer_id": "OPT_000390",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.862547,
+      "expected_revenue": 89.02,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 54.3
+    },
+    {
+      "customer_id": "OPT_000391",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.517273,
+      "expected_revenue": 29.39,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 13.28
+    },
+    {
+      "customer_id": "OPT_000392",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.208136,
+      "expected_revenue": 9.25,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.12
+    },
+    {
+      "customer_id": "OPT_000393",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.405624,
+      "expected_revenue": 25.21,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 10.43
+    },
+    {
+      "customer_id": "OPT_000394",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.478534,
+      "expected_revenue": 29.82,
+      "expected_discount_cost": 4.79,
+      "expected_net_profit": 11.01
+    },
+    {
+      "customer_id": "OPT_000395",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.331227,
+      "expected_revenue": 13.93,
+      "expected_discount_cost": 3.31,
+      "expected_net_profit": 1.9
+    },
+    {
+      "customer_id": "OPT_000396",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.445099,
+      "expected_revenue": 39.04,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 12.71
+    },
+    {
+      "customer_id": "OPT_000397",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.585726,
+      "expected_revenue": 44.36,
+      "expected_discount_cost": 5.86,
+      "expected_net_profit": 13.27
+    },
+    {
+      "customer_id": "OPT_000398",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.395271,
+      "expected_revenue": 29.91,
+      "expected_discount_cost": 3.95,
+      "expected_net_profit": 6.72
+    },
+    {
+      "customer_id": "OPT_000399",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.124844,
+      "expected_revenue": 3.95,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.56
+    },
+    {
+      "customer_id": "OPT_000400",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.35493,
+      "expected_revenue": 21.05,
+      "expected_discount_cost": 3.55,
+      "expected_net_profit": 5.25
+    },
+    {
+      "customer_id": "OPT_000401",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.4847,
+      "expected_revenue": 57.46,
+      "expected_discount_cost": 4.85,
+      "expected_net_profit": 18.27
+    },
+    {
+      "customer_id": "OPT_000402",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.704054,
+      "expected_revenue": 107.11,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 54.04
+    },
+    {
+      "customer_id": "OPT_000403",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.707273,
+      "expected_revenue": 62.18,
+      "expected_discount_cost": 7.07,
+      "expected_net_profit": 20.05
+    },
+    {
+      "customer_id": "OPT_000404",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.232654,
+      "expected_revenue": 4.99,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.56
+    },
+    {
+      "customer_id": "OPT_000405",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.777962,
+      "expected_revenue": 85.46,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 52.87
+    },
+    {
+      "customer_id": "OPT_000406",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.800413,
+      "expected_revenue": 121.81,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 59.57
+    },
+    {
+      "customer_id": "OPT_000407",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.293544,
+      "expected_revenue": 9.79,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.64
+    },
+    {
+      "customer_id": "OPT_000408",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.526739,
+      "expected_revenue": 43.98,
+      "expected_discount_cost": 5.27,
+      "expected_net_profit": 12.42
+    },
+    {
+      "customer_id": "OPT_000409",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.236657,
+      "expected_revenue": 10.72,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.31
+    },
+    {
+      "customer_id": "OPT_000410",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.783714,
+      "expected_revenue": 79.36,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 41.73
+    },
+    {
+      "customer_id": "OPT_000411",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.540471,
+      "expected_revenue": 37.08,
+      "expected_discount_cost": 5.4,
+      "expected_net_profit": 10.67
+    },
+    {
+      "customer_id": "OPT_000412",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.51101,
+      "expected_revenue": 33.81,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 12.62
+    },
+    {
+      "customer_id": "OPT_000413",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.218137,
+      "expected_revenue": 5.29,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.66
+    },
+    {
+      "customer_id": "OPT_000414",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.732343,
+      "expected_revenue": 102.97,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 58.24
+    },
+    {
+      "customer_id": "OPT_000415",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.220559,
+      "expected_revenue": 7.06,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.19
+    },
+    {
+      "customer_id": "OPT_000416",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.427842,
+      "expected_revenue": 40.07,
+      "expected_discount_cost": 4.28,
+      "expected_net_profit": 8.24
+    },
+    {
+      "customer_id": "OPT_000417",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.185537,
+      "expected_revenue": 3.71,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.17
+    },
+    {
+      "customer_id": "OPT_000418",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.304023,
+      "expected_revenue": 17.44,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 6.12
+    },
+    {
+      "customer_id": "OPT_000419",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.117568,
+      "expected_revenue": 2.27,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.65
+    },
+    {
+      "customer_id": "OPT_000420",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.82641,
+      "expected_revenue": 123.57,
+      "expected_discount_cost": 8.26,
+      "expected_net_profit": 57.64
+    },
+    {
+      "customer_id": "OPT_000421",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.488501,
+      "expected_revenue": 37.56,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 16.64
+    },
+    {
+      "customer_id": "OPT_000422",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.285945,
+      "expected_revenue": 10.94,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.19
+    },
+    {
+      "customer_id": "OPT_000423",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.076624,
+      "expected_revenue": 2.41,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.61
+    },
+    {
+      "customer_id": "OPT_000424",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.182632,
+      "expected_revenue": 10.05,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.14
+    },
+    {
+      "customer_id": "OPT_000425",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.454136,
+      "expected_revenue": 40.29,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 16.48
+    },
+    {
+      "customer_id": "OPT_000426",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.541368,
+      "expected_revenue": 72.0,
+      "expected_discount_cost": 5.41,
+      "expected_net_profit": 26.42
+    },
+    {
+      "customer_id": "OPT_000427",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.059452,
+      "expected_revenue": 3.18,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.75
+    },
+    {
+      "customer_id": "OPT_000428",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.381166,
+      "expected_revenue": 24.92,
+      "expected_discount_cost": 3.81,
+      "expected_net_profit": 5.72
+    },
+    {
+      "customer_id": "OPT_000429",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.194368,
+      "expected_revenue": 4.09,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.36
+    },
+    {
+      "customer_id": "OPT_000430",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.551901,
+      "expected_revenue": 56.63,
+      "expected_discount_cost": 5.52,
+      "expected_net_profit": 18.27
+    },
+    {
+      "customer_id": "OPT_000431",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.740312,
+      "expected_revenue": 101.39,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 60.54
+    },
+    {
+      "customer_id": "OPT_000432",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.540619,
+      "expected_revenue": 50.2,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 18.61
+    },
+    {
+      "customer_id": "OPT_000433",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.624941,
+      "expected_revenue": 46.05,
+      "expected_discount_cost": 6.25,
+      "expected_net_profit": 13.29
+    },
+    {
+      "customer_id": "OPT_000434",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.436469,
+      "expected_revenue": 43.75,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 18.04
+    },
+    {
+      "customer_id": "OPT_000435",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.141944,
+      "expected_revenue": 2.98,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.77
+    },
+    {
+      "customer_id": "OPT_000436",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.200889,
+      "expected_revenue": 10.03,
+      "expected_discount_cost": 2.01,
+      "expected_net_profit": 2.24
+    },
+    {
+      "customer_id": "OPT_000437",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.134982,
+      "expected_revenue": 4.92,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.38
+    },
+    {
+      "customer_id": "OPT_000438",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.324414,
+      "expected_revenue": 16.81,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.89
+    },
+    {
+      "customer_id": "OPT_000439",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.615298,
+      "expected_revenue": 75.35,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 41.46
+    },
+    {
+      "customer_id": "OPT_000440",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.534907,
+      "expected_revenue": 27.86,
+      "expected_discount_cost": 5.35,
+      "expected_net_profit": 7.47
+    },
+    {
+      "customer_id": "OPT_000441",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.763553,
+      "expected_revenue": 48.89,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 30.47
+    },
+    {
+      "customer_id": "OPT_000442",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.230096,
+      "expected_revenue": 6.37,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.71
+    },
+    {
+      "customer_id": "OPT_000443",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.542034,
+      "expected_revenue": 45.77,
+      "expected_discount_cost": 5.42,
+      "expected_net_profit": 14.02
+    },
+    {
+      "customer_id": "OPT_000444",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.113219,
+      "expected_revenue": 4.8,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.42
+    },
+    {
+      "customer_id": "OPT_000445",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.596275,
+      "expected_revenue": 49.87,
+      "expected_discount_cost": 5.96,
+      "expected_net_profit": 14.96
+    },
+    {
+      "customer_id": "OPT_000446",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.434252,
+      "expected_revenue": 54.9,
+      "expected_discount_cost": 4.34,
+      "expected_net_profit": 21.78
+    },
+    {
+      "customer_id": "OPT_000447",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.721199,
+      "expected_revenue": 122.82,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 64.86
+    },
+    {
+      "customer_id": "OPT_000448",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.544293,
+      "expected_revenue": 54.37,
+      "expected_discount_cost": 5.44,
+      "expected_net_profit": 21.41
+    },
+    {
+      "customer_id": "OPT_000449",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.099328,
+      "expected_revenue": 2.23,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.63
+    },
+    {
+      "customer_id": "OPT_000450",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.633593,
+      "expected_revenue": 62.34,
+      "expected_discount_cost": 6.34,
+      "expected_net_profit": 24.22
+    },
+    {
+      "customer_id": "OPT_000451",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.180952,
+      "expected_revenue": 7.86,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.92
+    },
+    {
+      "customer_id": "OPT_000452",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.474026,
+      "expected_revenue": 90.39,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 47.29
+    },
+    {
+      "customer_id": "OPT_000453",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.463384,
+      "expected_revenue": 20.76,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 9.07
+    },
+    {
+      "customer_id": "OPT_000454",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.172688,
+      "expected_revenue": 5.78,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.7
+    },
+    {
+      "customer_id": "OPT_000455",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.207795,
+      "expected_revenue": 9.35,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.38
+    },
+    {
+      "customer_id": "OPT_000456",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.127084,
+      "expected_revenue": 2.1,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 0.7
+    },
+    {
+      "customer_id": "OPT_000457",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.93091,
+      "expected_revenue": 129.57,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 71.45
+    },
+    {
+      "customer_id": "OPT_000458",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.467299,
+      "expected_revenue": 21.0,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 8.19
+    },
+    {
+      "customer_id": "OPT_000459",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.434102,
+      "expected_revenue": 38.71,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 15.72
+    },
+    {
+      "customer_id": "OPT_000460",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.582504,
+      "expected_revenue": 45.71,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 19.9
+    },
+    {
+      "customer_id": "OPT_000461",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.516355,
+      "expected_revenue": 33.51,
+      "expected_discount_cost": 5.16,
+      "expected_net_profit": 8.77
+    },
+    {
+      "customer_id": "OPT_000462",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.23296,
+      "expected_revenue": 6.27,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 2.13
+    },
+    {
+      "customer_id": "OPT_000463",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.51443,
+      "expected_revenue": 83.63,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 46.39
+    },
+    {
+      "customer_id": "OPT_000464",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.233852,
+      "expected_revenue": 8.72,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.59
+    },
+    {
+      "customer_id": "OPT_000465",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.479286,
+      "expected_revenue": 35.8,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 14.33
+    },
+    {
+      "customer_id": "OPT_000466",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.416787,
+      "expected_revenue": 25.99,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 11.59
+    },
+    {
+      "customer_id": "OPT_000467",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.755279,
+      "expected_revenue": 61.04,
+      "expected_discount_cost": 7.55,
+      "expected_net_profit": 18.91
+    },
+    {
+      "customer_id": "OPT_000468",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.618429,
+      "expected_revenue": 60.91,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 32.28
+    },
+    {
+      "customer_id": "OPT_000469",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.141849,
+      "expected_revenue": 4.52,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.68
+    },
+    {
+      "customer_id": "OPT_000470",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.23966,
+      "expected_revenue": 12.28,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.65
+    },
+    {
+      "customer_id": "OPT_000471",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.237853,
+      "expected_revenue": 18.67,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.82
+    },
+    {
+      "customer_id": "OPT_000472",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.374695,
+      "expected_revenue": 25.4,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.99
+    },
+    {
+      "customer_id": "OPT_000473",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.262658,
+      "expected_revenue": 17.78,
+      "expected_discount_cost": 2.63,
+      "expected_net_profit": 3.34
+    },
+    {
+      "customer_id": "OPT_000474",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.170111,
+      "expected_revenue": 6.11,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.85
+    },
+    {
+      "customer_id": "OPT_000475",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.587094,
+      "expected_revenue": 39.26,
+      "expected_discount_cost": 5.87,
+      "expected_net_profit": 10.12
+    },
+    {
+      "customer_id": "OPT_000476",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.224715,
+      "expected_revenue": 8.65,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.95
+    },
+    {
+      "customer_id": "OPT_000477",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.519262,
+      "expected_revenue": 49.45,
+      "expected_discount_cost": 5.19,
+      "expected_net_profit": 15.16
+    },
+    {
+      "customer_id": "OPT_000478",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.4942,
+      "expected_revenue": 68.56,
+      "expected_discount_cost": 4.94,
+      "expected_net_profit": 26.48
+    },
+    {
+      "customer_id": "OPT_000479",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.409916,
+      "expected_revenue": 33.15,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 14.58
+    },
+    {
+      "customer_id": "OPT_000480",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.440598,
+      "expected_revenue": 32.87,
+      "expected_discount_cost": 4.41,
+      "expected_net_profit": 8.86
+    },
+    {
+      "customer_id": "OPT_000481",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.387161,
+      "expected_revenue": 19.68,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 7.16
+    },
+    {
+      "customer_id": "OPT_000482",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.167198,
+      "expected_revenue": 4.49,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.27
+    },
+    {
+      "customer_id": "OPT_000483",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.837594,
+      "expected_revenue": 66.44,
+      "expected_discount_cost": 8.38,
+      "expected_net_profit": 22.54
+    },
+    {
+      "customer_id": "OPT_000484",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.295678,
+      "expected_revenue": 21.99,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 9.56
+    },
+    {
+      "customer_id": "OPT_000485",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.150942,
+      "expected_revenue": 6.08,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 1.77
+    },
+    {
+      "customer_id": "OPT_000486",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.305351,
+      "expected_revenue": 17.85,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 5.78
+    },
+    {
+      "customer_id": "OPT_000487",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.589143,
+      "expected_revenue": 59.38,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 20.96
+    },
+    {
+      "customer_id": "OPT_000488",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.245532,
+      "expected_revenue": 9.79,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 3.07
+    },
+    {
+      "customer_id": "OPT_000489",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.632804,
+      "expected_revenue": 101.15,
+      "expected_discount_cost": 6.33,
+      "expected_net_profit": 36.73
+    },
+    {
+      "customer_id": "OPT_000490",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.451818,
+      "expected_revenue": 48.12,
+      "expected_discount_cost": 4.52,
+      "expected_net_profit": 17.87
+    },
+    {
+      "customer_id": "OPT_000491",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.620958,
+      "expected_revenue": 61.67,
+      "expected_discount_cost": 6.21,
+      "expected_net_profit": 19.85
+    },
+    {
+      "customer_id": "OPT_000492",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.606279,
+      "expected_revenue": 63.73,
+      "expected_discount_cost": 6.06,
+      "expected_net_profit": 22.83
+    },
+    {
+      "customer_id": "OPT_000493",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.420811,
+      "expected_revenue": 27.81,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 12.94
+    },
+    {
+      "customer_id": "OPT_000494",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.302916,
+      "expected_revenue": 13.94,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 4.53
+    },
+    {
+      "customer_id": "OPT_000495",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.495187,
+      "expected_revenue": 38.91,
+      "expected_discount_cost": 4.95,
+      "expected_net_profit": 14.58
+    },
+    {
+      "customer_id": "OPT_000496",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.461395,
+      "expected_revenue": 52.83,
+      "expected_discount_cost": 4.61,
+      "expected_net_profit": 19.2
+    },
+    {
+      "customer_id": "OPT_000497",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.453159,
+      "expected_revenue": 27.17,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 9.8
+    },
+    {
+      "customer_id": "OPT_000498",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.394577,
+      "expected_revenue": 26.95,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 13.05
+    },
+    {
+      "customer_id": "OPT_000499",
+      "recommended_discount": 10,
+      "predicted_purchase_probability": 0.4986,
+      "expected_revenue": 37.85,
+      "expected_discount_cost": 4.99,
+      "expected_net_profit": 10.49
+    },
+    {
+      "customer_id": "OPT_000500",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.504718,
+      "expected_revenue": 30.39,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 12.12
+    }
+  ]
+}

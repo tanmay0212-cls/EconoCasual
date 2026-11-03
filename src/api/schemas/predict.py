@@ -12,8 +12,13 @@ class CustomerFeatureRecord(BaseModel):
     previous_purchases: int = Field(..., ge=0, description="Historical purchase transaction count", examples=[4])
     customer_segment: str = Field(
         ...,
-        description="Behavioral customer segment: 'budget_seeker' | 'casual_shopper' | 'regular_buyer' | 'vip_loyalist' | 'Standard'",
+        description="Behavioral customer segment: 'budget_seeker' | 'casual_shopper' | 'regular_buyer' | 'vip_loyalist'",
         examples=["regular_buyer"]
+    )
+    campaign_channel: str = Field(
+        default="email",
+        description="Marketing campaign channel: 'email' | 'push' | 'sms' | 'social'",
+        examples=["email"]
     )
     product_price: Optional[float] = Field(85.0, ge=0.0, description="Unit base price in USD", examples=[85.0])
     gross_margin_rate: Optional[float] = Field(0.40, ge=0.0, le=1.0, description="Product margin rate [0-1]", examples=[0.40])

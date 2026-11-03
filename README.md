@@ -5,7 +5,8 @@
 [![EconML](https://img.shields.io/badge/Causal%20ML-EconML%200.17-blue)](https://econml.azurewebsites.net/)
 [![DoWhy](https://img.shields.io/badge/Causal%20DAG-DoWhy%200.14-orange)](https://py-why.github.io/dowhy/)
 [![React 19](https://img.shields.io/badge/Frontend-React%2019%20%2B%20Vite%208-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Tests Passing](https://img.shields.io/badge/Tests-75%20Passed%20(55%20py%20%2B%2020%20js)-brightgreen)](https://github.com/tanmay0212-cls/EconoCasual)
+[![Tests Passing](https://img.shields.io/badge/Tests-129%20Passed%20(82%20py%20%2B%2047%20js)-brightgreen)](https://github.com/tanmay0212-cls/EconoCasual)
+[![FastAPI](https://img.shields.io/badge/API-FastAPI%200.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 
 > **Causal Machine Learning for Promotional Pricing Optimization**  
 > Formulate causal DAGs, identify unconfounded adjustment sets, estimate heterogeneous customer price elasticity using Double Machine Learning (DML), optimize personalized discount allocations under marketing budget caps via SciPy MILP, and inspect customer policies in a modern React Allocation Matrix dashboard.
@@ -97,9 +98,19 @@ This satisfies Neyman orthogonality, ensuring first-stage regularization bias co
 * **Uplift & Qini Visualizations:** Radcliffe Qini curve, cumulative uplift curve, AUUC, decile table, and interactive Plotly HTML figures (`src/causal/evaluation.py`).
 * **Comprehensive Test Suite:** 39 backend pytest tests and 12 frontend Vitest tests covering edge cases, non-finite features, empty inputs, and seed reproducibility.
 
-#### Week 3 (Planned / Future Scope):
-* **Budget-Constrained Dynamic Pricing Optimizer:** Integer Linear Programming / Knapsack allocation to assign optimal discount depths under a marketing budget constraint.
-* **REST API Layer:** FastAPI backend exposing CATE inference and optimization endpoints.
+#### Week 3 (Completed): Multi-Tier Causal DML & SciPy Budget Optimization
+* **Multi-Treatment Synthetic Retail Data:** 15,000 customers supporting three discount options ($0, $10, $20) with non-linear confounding, variable baseline order values, and margin rates (`data/optimization_retail_data.csv`).
+* **Multi-Treatment EconML DML Estimator:** Production `LinearDRLearner` estimating counterfactual purchase probabilities $\hat{P}(Y=1 \mid X, d)$ and treatment effects $\hat{\tau}_{10}, \hat{\tau}_{20}$ relative to $0 (`src/causal/multitreatment_dml.py`).
+* **SciPy MILP Budget Optimizer:** Binary Mixed-Integer Linear Programming solver via HiGHS enforcing strict marketing budget adherence ($\sum d_i \cdot \hat{P}_i \le B$) and single-choice mutually exclusive constraints (`src/optimization/budget_optimizer.py`).
+* **Interactive Allocation Matrix Dashboard:** Full React 19 console with 8 real-time KPI cards, strategy benchmarks, search/tier filters, and customer-level counterfactual projections (`frontend/src/components/AllocationMatrix.jsx`).
+
+#### Week 4 (Completed): FastAPI REST API, Automated Drift Detection & Natural-Language Synthesis
+* **Production FastAPI REST API:** Robust API layer wrapping causal inference, dataset validation, budget optimization, and drift detection with Pydantic v2 schemas and OpenAPI docs (`src/api/`).
+* **Automated Data Drift Detection Engine:** Continuous statistical monitoring combining two-sample Kolmogorov-Smirnov tests, Population Stability Index (PSI), Wasserstein distance, Pearson Chi-Square tests, Total Variation Distance (TVD), and new category detection (`src/monitoring/drift_detector.py`).
+* **Strict Schema Integrity Quarantine:** Pre-statistical validation isolating data corruptions, missing columns, type failures, nulls, and domain range violations from genuine covariate shift.
+* **Natural-Language Executive Summary Service:** 100% deterministic rule-based summary generator synthesizing optimization decisions, budget utilization, customer allocations, financial lifts, drift alerts, and actionable next steps without paid LLMs (`frontend/src/services/summaryService.js`).
+* **Executive Decision Briefing Console:** React 19 dashboard panel with run ID/timestamp tracking, top-level takeaway banners, expandable underlying metric inspection drawers, and causal accounting disclaimers (`frontend/src/components/BusinessSummaryPanel.jsx`).
+* **Causal Methodological Safeguards:** Rigorously documents the distinction between Covariate Shift ($P(X)$) and Concept Drift ($P(Y \mid X, T)$), enforcing prohibitions against unmonitored automated model retraining (`reports/data_drift_report.md` & `reports/natural_language_summary_report.md`).
 
 ---
 
@@ -122,18 +133,26 @@ EconoCasual/
 │   ├── DATASET_METADATA.md         # Technical DGP specification & logit parameters
 │   └── README.md                   # Sample data directory overview
 ├── docs/
-│   └── CAUSAL_MODELING_SPEC.md     # Methodological DAG specification & backdoor identification
+│   ├── system_architecture.md      # High-level architecture, Mermaid diagrams, & subsystem data flow
+│   ├── model_documentation.md      # Multi-tier DML mathematical specification & Neyman orthogonality
+│   ├── api_documentation.md        # Complete OpenAPI / FastAPI endpoint reference with curl examples
+│   ├── data_drift_documentation.md # Statistical drift formulations (KS, PSI, TVD, Chi2) & governance
+│   ├── CAUSAL_MODELING_SPEC.md     # Methodological DAG specification & backdoor identification
+│   └── DML_ESTIMATION_SPEC.md      # Week 2 DML estimation specification
 ├── models/
-│   ├── README.md                   # Model training and artifact documentation
-│   ├── dml_metadata.json           # Tracked DML configuration, hyperparams, & benchmarks
-│   └── dml_model.joblib            # (Ignored binary weights; generated via train_dml.py)
+│   ├── dml_metadata.json           # Week 2 binary DML metadata
+│   ├── dml_model.joblib            # Week 2 binary DML weights
+│   ├── multitreatment_metadata.json# Week 3 multi-tier model metadata
+│   ├── multitreatment_model.joblib # Week 3 multi-tier DML weights (4.84 MB)
+│   └── runs/                       # Persisted optimization run JSON artifacts
 ├── reports/
-│   ├── week2_final_report.md       # Week 2 completion review & validation report
-│   ├── week2_data_audit.md         # Pre-training dataset audit & feature approval
+│   ├── final_project_report.md     # Master final integration & validation report (Weeks 1-4)
+│   ├── natural_language_summary_report.md # Week 4 natural-language synthesis report
+│   ├── data_drift_report.md        # Week 4 data drift statistical surveillance report
+│   ├── api_implementation_report.md # Week 4 REST API implementation report
+│   ├── optimization_summary.md     # Week 3 SciPy MILP knapsack optimization report
 │   ├── dml_training_report.md      # DML training & cross-fitting execution diagnostics
-│   ├── customer_treatment_effects.csv # 500-customer evaluation CATE estimates & 95% CIs
-│   ├── customer_treatment_effects_summary.md # CATE distribution & taxonomy summary
-│   ├── uplift_qini_report.md       # Qini score, AUUC, & decile analysis report
+│   ├── customer_treatment_effects.csv # Evaluated CATE point estimates & 95% CIs
 │   └── figures/                    # Standalone interactive Plotly HTML figures
 │       ├── uplift_curve.html
 │       ├── qini_curve.html
@@ -287,34 +306,39 @@ All metrics were evaluated on the **500 held-out evaluation customers** (20% tes
 
 The repository includes a comprehensive, multi-framework automated test suite:
 
-### Backend Pytest Suite (55 Tests)
+### Backend Pytest Suite (82 Tests)
 ```bash
 pytest -v
 ```
 ```text
+tests/test_api.py              17 passed  (Health, OpenAPI, upload/reference validation, CATE inference, MILP optimization, drift KS/PSI, CORS)
 tests/test_causal_dag.py        6 passed  (DAG acyclicity, DoWhy backdoor identification, input corruption)
 tests/test_data_generation.py   7 passed  (Reproducibility, sample size, schema domains, business logic)
 tests/test_dml.py              10 passed  (DML fit/shapes, anti-leakage, binary domains, serialization, reproducibility, non-finite features)
+tests/test_drift.py            10 passed  (Identical/shifted distributions, categorical shift, missing columns, new categories, small N, schema integrity, bounds, notice)
 tests/test_evaluation.py        8 passed  (Ranking monotonicity, Qini/AUUC, zero-treated/control edge cases, tied effects, empty inputs)
 tests/test_interpreter.py       8 passed  (Row alignment, customer ID quarantine, 95% CIs, non-finite checks, configurable threshold)
 tests/test_multitreatment.py    8 passed  (Multi-tier DML, probability calibration [0, 1], cross-fitting, overlap, anti-leakage)
 tests/test_optimization.py      8 passed  (SciPy MILP budget adherence, mutually exclusive knapsack, edge cases, benchmarks)
-============================= 55 passed in ~95s =============================
+============================= 82 passed in ~18s =============================
 ```
 
-### Frontend Vitest Suite (20 Tests)
+### Frontend Vitest Suite (47 Tests)
 ```bash
 cd frontend
 npm test
 ```
 ```text
+ ✓ src/tests/summaryService.test.js (15 tests: currency/count/pct formatting, 6 section templates, zero-budget, clean drift, missing/inconsistent metrics)
  ✓ src/tests/csvValidator.test.js (5 tests)
  ✓ src/tests/Header.test.jsx (3 tests)
  ✓ src/tests/BudgetSettings.test.jsx (2 tests)
  ✓ src/tests/DatasetUploader.test.jsx (2 tests)
+ ✓ src/tests/BusinessSummaryPanel.test.jsx (6 tests: title/run ID, 6 dashboard sections, narrative accuracy, metrics drawer inspection, missing data fallback)
+ ✓ src/tests/DataDriftViewer.test.jsx (6 tests: title/badges, KPI cards, KS/Chi-Square metrics, cohort toggle, distribution chart, causal guidance)
  ✓ src/tests/AllocationMatrix.test.jsx (8 tests: budget input, 8 KPI cards, strategy benchmarks, search/tier filters, uplift expander, error state)
- Test Files  5 passed (5)
-      Tests  20 passed (20)
+ Test Files  8 passed (8)
+      Tests  47 passed (47)
 ```
 
 ---
@@ -336,8 +360,8 @@ npm test
 
 * [x] **Week 1:** Causal DAG specification, DoWhy backdoor identification, synthetic DGP, and React dashboard.
 * [x] **Week 2:** EconML Double Machine Learning, cross-fitting, customer-level CATE estimation, Wald CIs, Qini/uplift curves, and automated test suite.
-* [ ] **Week 3 (Planned):** Budget-constrained dynamic pricing optimization using Integer Linear Programming / Knapsack allocation to assign optimal discount face values ($\$10$, $\$20$) maximizing net incremental revenue under campaign budget caps.
-* [ ] **Week 4 (Planned):** FastAPI backend integration connecting the React frontend to the DML estimator and knapsack policy allocator.
+* [x] **Week 3:** Multi-treatment retail DGP ($0, $10, $20), multi-tier `LinearDRLearner` DML, SciPy MILP budget-constrained optimization, and React Prescriptive Allocation Matrix.
+* [x] **Week 4:** FastAPI REST API wrapping the causal engine, automated statistical data drift detection (KS, PSI, TVD, Chi-square), React continuous monitoring dashboard, natural-language executive summary synthesis, and causal methodological safeguards.
 
 ---
 

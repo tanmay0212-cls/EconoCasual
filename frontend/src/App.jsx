@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Papa from 'papaparse';
-import { SlidersHorizontal, BarChart3, Database } from 'lucide-react';
+import { SlidersHorizontal, BarChart3, Database, Activity, FileText } from 'lucide-react';
 import Header from './components/Header';
 import MetricsCards from './components/MetricsCards';
 import DatasetUploader from './components/DatasetUploader';
@@ -9,10 +9,12 @@ import CausalDAGViewer from './components/CausalDAGViewer';
 import MarketingTelemetry from './components/MarketingTelemetry';
 import FutureDeliverables from './components/FutureDeliverables';
 import AllocationMatrix from './components/AllocationMatrix';
+import DataDriftViewer from './components/DataDriftViewer';
+import BusinessSummaryPanel from './components/BusinessSummaryPanel';
 import { validateDatasetRows } from './utils/csvValidator';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('matrix'); // 'matrix' | 'telemetry'
+  const [activeTab, setActiveTab] = useState('summary'); // 'summary' | 'matrix' | 'telemetry' | 'drift'
   const [datasetSource, setDatasetSource] = useState('none'); // 'synthetic' | 'uploaded' | 'none'
   const [datasetName, setDatasetName] = useState('');
   const [validationResult, setValidationResult] = useState(null);
@@ -153,12 +155,32 @@ export default function App() {
         <nav className="tab-navigation-bar" aria-label="Main Navigation">
           <button
             type="button"
+            className={`nav-tab-btn ${activeTab === 'summary' ? 'active' : ''}`}
+            onClick={() => setActiveTab('summary')}
+          >
+            <FileText size={17} />
+            <span>Executive Summary</span>
+            <span className="tab-badge tab-badge-highlight">Week 4</span>
+          </button>
+
+          <button
+            type="button"
             className={`nav-tab-btn ${activeTab === 'matrix' ? 'active' : ''}`}
             onClick={() => setActiveTab('matrix')}
           >
             <SlidersHorizontal size={17} />
             <span>Prescriptive Allocation Matrix</span>
             <span className="tab-badge tab-badge-highlight">Week 3</span>
+          </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === 'drift' ? 'active' : ''}`}
+            onClick={() => setActiveTab('drift')}
+          >
+            <Activity size={17} />
+            <span>Data Drift & Monitoring</span>
+            <span className="tab-badge tab-badge-highlight">Week 4</span>
           </button>
 
           <button
@@ -174,9 +196,22 @@ export default function App() {
       </div>
 
       <main className="main-content">
-        {/* TAB 1: WEEK 3 PRESCRIPTIVE ALLOCATION MATRIX */}
+        {/* TAB 1: WEEK 4 NATURAL-LANGUAGE EXECUTIVE SUMMARY */}
+        {activeTab === 'summary' && (
+          <BusinessSummaryPanel
+            onNavigateToMatrix={() => setActiveTab('matrix')}
+            onNavigateToDrift={() => setActiveTab('drift')}
+          />
+        )}
+
+        {/* TAB 2: WEEK 3 PRESCRIPTIVE ALLOCATION MATRIX */}
         {activeTab === 'matrix' && (
           <AllocationMatrix initialBudget={budget} />
+        )}
+
+        {/* TAB 3: WEEK 4 AUTOMATED DATA DRIFT & COVARIATE SHIFT MONITORING */}
+        {activeTab === 'drift' && (
+          <DataDriftViewer />
         )}
 
         {/* TAB 2: WEEK 1 & 2 EXPLORATORY TELEMETRY & CAUSAL DAG */}
@@ -224,7 +259,10 @@ export default function App() {
             />
 
             {/* Reserved / Completed Project Deliverables */}
-            <FutureDeliverables onNavigateToMatrix={() => setActiveTab('matrix')} />
+            <FutureDeliverables
+              onNavigateToMatrix={() => setActiveTab('matrix')}
+              onNavigateToDrift={() => setActiveTab('drift')}
+            />
           </>
         )}
       </main>

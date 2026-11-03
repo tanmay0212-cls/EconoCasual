@@ -44,6 +44,8 @@ class APISettings(BaseModel):
     allowed_dataset_references: Dict[str, str] = {
         "optimization_retail_data": os.path.join(PROJECT_ROOT, "data", "optimization_retail_data.csv"),
         "mock_retail_data": os.path.join(PROJECT_ROOT, "data", "mock_retail_data.csv"),
+        "drift_reference": os.path.join(PROJECT_ROOT, "data", "drift_reference.csv"),
+        "drift_current": os.path.join(PROJECT_ROOT, "data", "drift_current.csv"),
     }
 
     # Computational Guardrails
@@ -54,3 +56,4 @@ class APISettings(BaseModel):
 
 
 settings = APISettings()
+

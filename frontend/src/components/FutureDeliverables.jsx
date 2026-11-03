@@ -1,7 +1,7 @@
 import React from 'react';
-import { Lock, Construction, SlidersHorizontal, ShieldAlert, CheckCircle2, ArrowRight } from 'lucide-react';
+import { SlidersHorizontal, CheckCircle2, ArrowRight, Activity, ShieldAlert } from 'lucide-react';
 
-export default function FutureDeliverables({ onNavigateToMatrix }) {
+export default function FutureDeliverables({ onNavigateToMatrix, onNavigateToDrift }) {
   return (
     <div className="future-sections-grid">
       {/* Section 1: Causal Uplift Curves (Week 2 Model Trained) */}
@@ -77,6 +77,53 @@ export default function FutureDeliverables({ onNavigateToMatrix }) {
                 style={{ width: '100%', justifyContent: 'center' }}
               >
                 <span>View Allocation Matrix & Run Optimization</span>
+                <ArrowRight size={16} />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Section 3: Automated Data Drift Detection (Week 4 Completed) */}
+      <div className="card placeholder-card">
+        <div className="card-header">
+          <div className="title-with-icon">
+            <div className="icon-badge icon-cyan">
+              <Activity size={18} />
+            </div>
+            <div>
+              <div className="future-badge-row">
+                <h3 className="card-title">Automated Data Drift Detection</h3>
+                <span className="badge badge-success">Week 4 Completed</span>
+              </div>
+              <p className="card-subtitle">
+                Two-Sample KS, Chi-Square, PSI, TVD & Model-Input Schema Validation
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="placeholder-content">
+          <div className="alert alert-neutral">
+            <div className="alert-header">
+              <CheckCircle2 size={14} className="text-emerald" />
+              <strong>Continuous Drift Telemetry Active</strong>
+            </div>
+            <p>
+              Tracks distributional shifts across customer covariates (<code>drift_reference.csv</code> vs <code>drift_current.csv</code>).
+              Separates statistical covariate shift from schema corruption and isolates policy elasticity monitoring.
+            </p>
+          </div>
+
+          {onNavigateToDrift && (
+            <div style={{ marginTop: '1rem' }}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={onNavigateToDrift}
+                style={{ width: '100%', justifyContent: 'center' }}
+              >
+                <span>View Data Drift Monitoring Dashboard</span>
                 <ArrowRight size={16} />
               </button>
             </div>

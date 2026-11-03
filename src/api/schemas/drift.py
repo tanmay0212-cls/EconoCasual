@@ -13,8 +13,8 @@ class DriftCheckRequest(BaseModel):
     )
     dataset_reference: Optional[str] = Field(
         None,
-        description="Approved dataset reference to compare against baseline (e.g. 'optimization_retail_data')",
-        examples=["optimization_retail_data"]
+        description="Approved dataset reference to compare against baseline (e.g. 'optimization_retail_data', 'drift_reference', 'drift_current')",
+        examples=["drift_current"]
     )
     ks_p_value_threshold: float = Field(
         default=0.05,
@@ -41,18 +41,32 @@ class FeatureDriftDetail(BaseModel):
     p_value: Optional[float] = None
     psi: Optional[float] = None
     wasserstein_distance: Optional[float] = None
+    tvd: Optional[float] = None
     reference_mean: Optional[float] = None
     current_mean: Optional[float] = None
     reference_std: Optional[float] = None
     current_std: Optional[float] = None
+    reference_summary: Dict[str, Any] = Field(default_factory=dict)
+    current_summary: Dict[str, Any] = Field(default_factory=dict)
+    new_categories: List[str] = Field(default_factory=list)
+    missing_categories: List[str] = Field(default_factory=list)
+    recommended_action: str = ""
 
 
 class DriftCheckResponse(BaseModel):
     """Comprehensive data drift report."""
+    overall_status: str = Field("No significant drift detected", description="Overall assessment")
     drift_detected: bool = Field(..., description="True if any evaluated feature has significant drift")
     total_features_evaluated: int
     drifted_features_count: int
+    severe_drift_count: int = 0
     reference_sample_size: int
     current_sample_size: int
     features: List[FeatureDriftDetail]
     summary_message: str
+    recommended_next_action: str = ""
+    methodological_notice: str = (
+        "Methodological Notice: Covariate drift (P(X)) measures shift in customer features. "
+        "It does NOT automatically imply concept drift (P(Y | X, T)) or invalidity of causal treatment effects. "
+        "Do not automatically retrain models without empirical policy verification."
+    )

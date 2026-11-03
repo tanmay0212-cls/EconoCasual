@@ -19,3 +19,4 @@ class APIResponse(BaseModel, Generic[T]):
     data: Optional[T] = Field(None, description="Payload data")
     errors: Optional[List[APIErrorDetail]] = Field(None, description="Errors if request failed")
     metadata: Optional[Dict[str, Any]] = Field(None, description="Request execution metadata")
+

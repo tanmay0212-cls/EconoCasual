@@ -24,3 +24,4 @@ async def predict_effects(
 ) -> PredictEffectsResponse:
     """Compute individual customer CATEs and counterfactual conversion probabilities."""
     return PredictService.predict_effects(records=request.records, model=model)
+

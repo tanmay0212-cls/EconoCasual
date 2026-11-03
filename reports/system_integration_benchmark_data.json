@@ -1,0 +1,151 @@
+{
+  "health": {
+    "status_code": 200,
+    "latency_ms": 229.29,
+    "data": {
+      "status": "healthy",
+      "app_version": "1.0.0",
+      "environment": "production",
+      "models": {
+        "multi_tier_dml": {
+          "model_name": "multi_tier_dml",
+          "estimator_class": "LinearDRLearner (EconML) + CalibratedGBM",
+          "is_loaded": true,
+          "version": "1.0.0",
+          "treatment_levels": [
+            0,
+            10,
+            20
+          ],
+          "feature_names": [
+            "age",
+            "loyalty_score",
+            "previous_purchases",
+            "customer_segment",
+            "campaign_channel"
+          ],
+          "model_file_size_mb": 4.84
+        }
+      },
+      "reference_data_available": true,
+      "timestamp": "2026-11-03T09:57:49.831999+00:00"
+    }
+  },
+  "security_and_validation": {
+    "approved_val_latency_ms": 50.66,
+    "path_traversal_blocked": true,
+    "unapproved_ref_blocked": true,
+    "csv_upload_valid": true
+  },
+  "predict_benchmarks": {
+    "10": {
+      "mean_ms": 33.83,
+      "min_ms": 19.55,
+      "max_ms": 67.99
+    },
+    "100": {
+      "mean_ms": 29.65,
+      "min_ms": 26.69,
+      "max_ms": 34.14
+    },
+    "500": {
+      "mean_ms": 54.73,
+      "min_ms": 46.72,
+      "max_ms": 61.86
+    },
+    "1000": {
+      "mean_ms": 87.62,
+      "min_ms": 83.01,
+      "max_ms": 91.73
+    }
+  },
+  "optimization_benchmarks": {
+    "100": {
+      "api_latency_ms": 45.41,
+      "solve_time_seconds": 0.0237,
+      "expected_discount_cost": 158.84,
+      "expected_net_profit": 1478.53,
+      "budget_utilization_pct": 3.18,
+      "count_0": 70,
+      "count_10": 30,
+      "count_20": 0,
+      "run_id": "08ae69fb-197a-4025-a536-2544c74f12d1"
+    },
+    "500": {
+      "api_latency_ms": 77.66,
+      "solve_time_seconds": 0.0356,
+      "expected_discount_cost": 793.7,
+      "expected_net_profit": 8746.5,
+      "budget_utilization_pct": 15.87,
+      "count_0": 358,
+      "count_10": 141,
+      "count_20": 1,
+      "run_id": "597eac41-f10b-4bc8-8c63-1f3ff48763b2"
+    },
+    "1500": {
+      "api_latency_ms": 163.62,
+      "solve_time_seconds": 0.0517,
+      "expected_discount_cost": 2288.5,
+      "expected_net_profit": 27328.97,
+      "budget_utilization_pct": 45.77,
+      "count_0": 1083,
+      "count_10": 413,
+      "count_20": 4,
+      "run_id": "bb207048-1f4c-4630-917f-1faf62723cc9"
+    },
+    "3000": {
+      "api_latency_ms": 289.8,
+      "solve_time_seconds": 0.0805,
+      "expected_discount_cost": 4327.86,
+      "expected_net_profit": 53855.38,
+      "budget_utilization_pct": 86.56,
+      "count_0": 2213,
+      "count_10": 775,
+      "count_20": 12,
+      "run_id": "6cdab024-45a5-4d61-ad17-1caec17dfad2"
+    }
+  },
+  "allocation_retrieval": {
+    "status_code": 200,
+    "latency_ms": 15.29,
+    "total_records": 3000
+  },
+  "drift_detection": {
+    "clean_status": "Potential drift detected",
+    "clean_latency_ms": 91.62,
+    "shifted_status": "Severe or widespread drift detected",
+    "shifted_drifted_count": 7,
+    "shifted_severe_count": 6,
+    "shifted_latency_ms": 42.83
+  },
+  "concurrency": {
+    "total_requests": 30,
+    "total_time_ms": 357.13,
+    "success_rate_pct": 100.0
+  },
+  "security_audit": {
+    "sensitive_findings_count": 5,
+    "findings": [
+      [
+        "scripts\\verify_system_integration.py",
+        "sensitive_patterns = [\"password\", \"secret_key\", \"api_key\", \""
+      ],
+      [
+        "scripts\\verify_system_integration.py",
+        "sensitive_patterns = [\"password\", \"secret_key\", \"api_key\", \""
+      ],
+      [
+        "scripts\\verify_system_integration.py",
+        "sensitive_patterns = [\"password\", \"secret_key\", \"api_key\", \""
+      ],
+      [
+        "scripts\\verify_system_integration.py",
+        "sensitive_patterns = [\"password\", \"secret_key\", \"api_key\", \""
+      ],
+      [
+        "scripts\\verify_system_integration.py",
+        "sensitive_patterns = [\"password\", \"secret_key\", \"api_key\", \""
+      ]
+    ]
+  }
+}

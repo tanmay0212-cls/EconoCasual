@@ -32,3 +32,4 @@ async def get_health() -> HealthResponse:
         reference_data_available=ref_exists,
         timestamp=datetime.now(timezone.utc).isoformat(),
     )
+

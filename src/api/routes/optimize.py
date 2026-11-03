@@ -42,3 +42,4 @@ async def get_allocation_results(
 ) -> OptimizationResponse:
     """Look up a saved optimization run by run_id."""
     return OptimizeService.get_allocation_run(run_id=run_id)
+

@@ -1,0 +1,60 @@
+{
+  "run_id": "997141b4-7027-4394-9110-a8cdd203068e",
+  "solver_status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+  "objective_type": "net_profit",
+  "solve_time_seconds": 0.046,
+  "kpis": {
+    "total_customers": 5,
+    "count_discount_0": 5,
+    "count_discount_10": 0,
+    "count_discount_20": 0,
+    "expected_revenue": 279.88,
+    "expected_discount_expenditure": 0.0,
+    "expected_net_profit": 125.95,
+    "budget_cap": 100.0,
+    "remaining_budget": 100.0,
+    "budget_utilization_pct": 0.0
+  },
+  "allocation": [
+    {
+      "customer_id": "HIST_CUST_0",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.621951,
+      "expected_revenue": 55.98,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 25.19
+    },
+    {
+      "customer_id": "HIST_CUST_1",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.621951,
+      "expected_revenue": 55.98,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 25.19
+    },
+    {
+      "customer_id": "HIST_CUST_2",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.621951,
+      "expected_revenue": 55.98,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 25.19
+    },
+    {
+      "customer_id": "HIST_CUST_3",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.621951,
+      "expected_revenue": 55.98,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 25.19
+    },
+    {
+      "customer_id": "HIST_CUST_4",
+      "recommended_discount": 0,
+      "predicted_purchase_probability": 0.621951,
+      "expected_revenue": 55.98,
+      "expected_discount_cost": 0.0,
+      "expected_net_profit": 25.19
+    }
+  ]
+}

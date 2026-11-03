@@ -44,6 +44,8 @@ class PredictService:
         # Convert records to DataFrame
         data_dicts = [r.model_dump() for r in records]
         df = pd.DataFrame(data_dicts)
+        if "campaign_channel" not in df.columns:
+            df["campaign_channel"] = "email"
 
         try:
             # Predict counterfactual probabilities and CATE lifts using MultiTierCausalDML

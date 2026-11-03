@@ -51,15 +51,20 @@ class ModelRegistry:
 
     @property
     def multi_tier_model(self) -> Optional[MultiTierCausalDML]:
+        if self._multi_tier_model is None:
+            self.load_models()
         return self._multi_tier_model
 
     @property
     def metadata(self) -> Optional[Dict[str, Any]]:
+        if self._metadata is None:
+            self.load_models()
         return self._metadata
 
     def get_status(self) -> Dict[str, ModelStatus]:
         """Return diagnostic status of registered models."""
-        is_loaded = self._multi_tier_model is not None and getattr(self._multi_tier_model, "is_fitted_", False)
+        model = self.multi_tier_model
+        is_loaded = model is not None and getattr(model, "is_fitted_", False)
         file_size_mb = None
         if os.path.exists(settings.model_path):
             file_size_mb = round(os.path.getsize(settings.model_path) / (1024 * 1024), 2)

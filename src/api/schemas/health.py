@@ -23,3 +23,4 @@ class HealthResponse(BaseModel):
     models: Dict[str, ModelStatus] = Field(..., description="Availability status of registered models")
     reference_data_available: bool = Field(..., description="Indicates if baseline drift dataset is available")
     timestamp: str = Field(..., description="Current ISO-8601 UTC timestamp")
+

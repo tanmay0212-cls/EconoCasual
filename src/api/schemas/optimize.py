@@ -65,3 +65,4 @@ class OptimizationResponse(BaseModel):
     solve_time_seconds: float
     kpis: OptimizationKPIs
     allocation: List[CustomerAllocationRecord]
+

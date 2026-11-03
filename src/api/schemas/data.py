@@ -34,3 +34,4 @@ class DatasetValidationResponse(BaseModel):
     errors: List[str] = Field(default_factory=list, description="Critical validation errors")
     warnings: List[str] = Field(default_factory=list, description="Advisory schema warnings")
     summary: DatasetValidationSummary
+
