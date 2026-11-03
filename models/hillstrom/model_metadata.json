@@ -1,0 +1,47 @@
+{
+  "model_type": "LinearDML_MultiOutcome",
+  "treatment_classes": [
+    0,
+    1,
+    2
+  ],
+  "treatment_labels": {
+    "0": "no_email",
+    "1": "mens_email",
+    "2": "womens_email"
+  },
+  "outcomes": [
+    "visit",
+    "conversion",
+    "spend"
+  ],
+  "numerical_features": [
+    "recency",
+    "history",
+    "mens",
+    "womens",
+    "newbie"
+  ],
+  "categorical_features": [
+    "zip_code",
+    "channel",
+    "history_segment"
+  ],
+  "transformed_features": [
+    "recency",
+    "history",
+    "mens",
+    "womens",
+    "newbie",
+    "zip_code_Surburban",
+    "zip_code_Urban",
+    "channel_Phone",
+    "channel_Web",
+    "history_segment_2) $100 - $200",
+    "history_segment_3) $200 - $350",
+    "history_segment_4) $350 - $500",
+    "history_segment_5) $500 - $750",
+    "history_segment_6) $750 - $1,000",
+    "history_segment_7) $1,000 +"
+  ]
+}

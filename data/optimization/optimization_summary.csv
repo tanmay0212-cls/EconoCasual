@@ -1,0 +1,2 @@
+budget,budget_type,status,total_expected_profit,profit_per_customer,expected_redemption_cost,issued_face_value_exposure,budget_utilization_pct,expected_conversions,expected_conversion_rate_pct,count_discount_0,count_discount_10,count_discount_20
+5000.0,redemption,Optimal,100786.25,16.78,4998.74,12100.0,99.97,1955.3,32.56,4816,1168,21

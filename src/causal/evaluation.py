@@ -569,3 +569,209 @@ def plot_effect_distribution(
         fig.write_html(output_path, include_plotlyjs="cdn")
 
     return fig
+
+
+# =============================================================================
+# MULTI-TREATMENT EXTENSIONS (SYNTHETIC RETAIL & HILLSTROM BENCHMARK)
+# =============================================================================
+
+def evaluate_synthetic_multi_treatment(
+    preds_df: pd.DataFrame,
+    df_ground_truth: pd.DataFrame,
+) -> Dict[str, Any]:
+    """Evaluate estimated causal effects against isolated ground-truth potential outcomes on test set."""
+    merged = pd.merge(preds_df, df_ground_truth, on="customer_id")
+    n_test = len(merged)
+
+    # 1. ATE Comparisons
+    true_ate_10 = float(merged["true_ite_10_vs_0"].mean())
+    pred_ate_10 = float(merged["pred_ite_10_vs_0"].mean())
+    true_ate_20 = float(merged["true_ite_20_vs_0"].mean())
+    pred_ate_20 = float(merged["pred_ite_20_vs_0"].mean())
+    true_ate_20_10 = float((merged["true_ite_20_vs_0"] - merged["true_ite_10_vs_0"]).mean())
+    pred_ate_20_10 = float(merged["pred_ite_20_vs_10"].mean())
+
+    # 2. ITE Accuracy Metrics
+    err_10 = merged["pred_ite_10_vs_0"] - merged["true_ite_10_vs_0"]
+    err_20 = merged["pred_ite_20_vs_0"] - merged["true_ite_20_vs_0"]
+
+    mae_10 = float(err_10.abs().mean())
+    rmse_10 = float(np.sqrt((err_10 ** 2).mean()))
+    corr_10 = float(merged["pred_ite_10_vs_0"].corr(merged["true_ite_10_vs_0"]))
+    spearman_10 = float(merged["pred_ite_10_vs_0"].corr(merged["true_ite_10_vs_0"], method="spearman"))
+
+    mae_20 = float(err_20.abs().mean())
+    rmse_20 = float(np.sqrt((err_20 ** 2).mean()))
+    corr_20 = float(merged["pred_ite_20_vs_0"].corr(merged["true_ite_20_vs_0"]))
+    spearman_20 = float(merged["pred_ite_20_vs_0"].corr(merged["true_ite_20_vs_0"], method="spearman"))
+
+    # 3. Policy Value Evaluation (Expected Net Profit per Customer)
+    opt_col = "optimal_unconstrained_discount" if "optimal_unconstrained_discount" in merged.columns else "optimal_discount"
+    p0_col = "expected_net_profit_0" if "expected_net_profit_0" in merged.columns else "exp_profit_0_pot"
+    p10_col = "expected_net_profit_10" if "expected_net_profit_10" in merged.columns else "exp_profit_10_pot"
+    p20_col = "expected_net_profit_20" if "expected_net_profit_20" in merged.columns else "exp_profit_20_pot"
+
+    oracle_profits = np.where(
+        merged[opt_col] == 0,
+        merged[p0_col],
+        np.where(merged[opt_col] == 10, merged[p10_col], merged[p20_col])
+    )
+    oracle_val = float(oracle_profits.mean())
+
+    model_choices = merged["model_recommended_discount"].to_numpy()
+    model_realized_exp_profit = np.where(
+        model_choices == 0,
+        merged[p0_col],
+        np.where(model_choices == 10, merged[p10_col], merged[p20_col])
+    )
+    model_val = float(model_realized_exp_profit.mean())
+
+    blanket_0_val = float(merged[p0_col].mean())
+    blanket_10_val = float(merged[p10_col].mean())
+    blanket_20_val = float(merged[p20_col].mean())
+
+    policy_agreement = float((model_choices == merged[opt_col].to_numpy()).mean())
+
+    return {
+        "sample_size": n_test,
+        "ate_metrics": {
+            "contrast_10_vs_0": {
+                "true_ate": round(true_ate_10, 4),
+                "pred_ate": round(pred_ate_10, 4),
+                "bias": round(pred_ate_10 - true_ate_10, 4),
+                "relative_error": round(abs(pred_ate_10 - true_ate_10) / true_ate_10, 4),
+            },
+            "contrast_20_vs_0": {
+                "true_ate": round(true_ate_20, 4),
+                "pred_ate": round(pred_ate_20, 4),
+                "bias": round(pred_ate_20 - true_ate_20, 4),
+                "relative_error": round(abs(pred_ate_20 - true_ate_20) / true_ate_20, 4),
+            },
+            "contrast_20_vs_10": {
+                "true_ate": round(true_ate_20_10, 4),
+                "pred_ate": round(pred_ate_20_10, 4),
+                "bias": round(pred_ate_20_10 - true_ate_20_10, 4),
+            },
+        },
+        "ite_accuracy": {
+            "ite_10": {
+                "mae": round(mae_10, 4),
+                "rmse": round(rmse_10, 4),
+                "pearson_corr": round(corr_10, 4),
+                "spearman_rank_corr": round(spearman_10, 4),
+            },
+            "ite_20": {
+                "mae": round(mae_20, 4),
+                "rmse": round(rmse_20, 4),
+                "pearson_corr": round(corr_20, 4),
+                "spearman_rank_corr": round(spearman_20, 4),
+            },
+        },
+        "policy_evaluation": {
+            "oracle_optimal_profit_per_customer": round(oracle_val, 2),
+            "model_policy_profit_per_customer": round(model_val, 2),
+            "blanket_0_profit_per_customer": round(blanket_0_val, 2),
+            "blanket_10_profit_per_customer": round(blanket_10_val, 2),
+            "blanket_20_profit_per_customer": round(blanket_20_val, 2),
+            "profit_lift_over_blanket_10": round(model_val - blanket_10_val, 2),
+            "oracle_policy_agreement_rate": round(policy_agreement * 100, 2),
+        },
+    }
+
+
+def evaluate_hillstrom_rct(
+    df: pd.DataFrame,
+    hillstrom_engine,
+    treatment_col: str = "treatment_group",
+) -> Dict[str, Any]:
+    """Evaluate Hillstrom RCT empirical differences vs DML causal estimates."""
+    results = {}
+
+    for outcome in ["visit", "conversion", "spend"]:
+        y0 = df[df[treatment_col] == 0][outcome]
+        y1 = df[df[treatment_col] == 1][outcome]
+        y2 = df[df[treatment_col] == 2][outcome]
+
+        emp_rate_0 = float(y0.mean())
+        emp_rate_1 = float(y1.mean())
+        emp_rate_2 = float(y2.mean())
+
+        emp_ate_1_0 = emp_rate_1 - emp_rate_0
+        emp_ate_2_0 = emp_rate_2 - emp_rate_0
+        emp_ate_2_1 = emp_rate_2 - emp_rate_1
+
+        effects = hillstrom_engine.predict_effects(df, outcome=outcome)
+        pred_ate_1_0 = float(effects[f"ite_{outcome}_mens_vs_control"].mean())
+        pred_ate_2_0 = float(effects[f"ite_{outcome}_womens_vs_control"].mean())
+        pred_ate_2_1 = float(effects[f"ite_{outcome}_womens_vs_mens"].mean())
+
+        results[outcome] = {
+            "baseline_mean_control": round(emp_rate_0, 5),
+            "mens_email_mean": round(emp_rate_1, 5),
+            "womens_email_mean": round(emp_rate_2, 5),
+            "empirical_ate": {
+                "mens_vs_control": round(emp_ate_1_0, 5),
+                "womens_vs_control": round(emp_ate_2_0, 5),
+                "womens_vs_mens": round(emp_ate_2_1, 5),
+            },
+            "model_estimated_ate": {
+                "mens_vs_control": round(pred_ate_1_0, 5),
+                "womens_vs_control": round(pred_ate_2_0, 5),
+                "womens_vs_mens": round(pred_ate_2_1, 5),
+            },
+            "estimation_discrepancy": {
+                "mens_vs_control": round(abs(pred_ate_1_0 - emp_ate_1_0), 5),
+                "womens_vs_control": round(abs(pred_ate_2_0 - emp_ate_2_0), 5),
+            },
+        }
+
+    return results
+
+
+def compute_multi_arm_uplift(
+    df: pd.DataFrame,
+    treatment_col: str,
+    outcome_col: str,
+    target_treatment: int,
+    control_treatment: int,
+    score_col: str,
+    n_bins: int = 10,
+) -> pd.DataFrame:
+    """Compute cumulative uplift and Qini curve points for a specific treatment contrast."""
+    sub_df = df[df[treatment_col].isin([target_treatment, control_treatment])].copy()
+    sub_df = sub_df.sort_values(by=score_col, ascending=False).reset_index(drop=True)
+    sub_df["bin"] = pd.qcut(sub_df.index, q=n_bins, labels=False)
+
+    records = []
+    cum_t_n = 0
+    cum_c_n = 0
+    cum_t_y = 0
+    cum_c_y = 0
+
+    for b in range(n_bins):
+        bin_data = sub_df[sub_df["bin"] == b]
+        t_mask = (bin_data[treatment_col] == target_treatment)
+        c_mask = (bin_data[treatment_col] == control_treatment)
+
+        cum_t_n += int(t_mask.sum())
+        cum_c_n += int(c_mask.sum())
+        cum_t_y += float(bin_data.loc[t_mask, outcome_col].sum())
+        cum_c_y += float(bin_data.loc[c_mask, outcome_col].sum())
+
+        t_rate = cum_t_y / cum_t_n if cum_t_n > 0 else 0.0
+        c_rate = cum_c_y / cum_c_n if cum_c_n > 0 else 0.0
+        uplift = t_rate - c_rate
+        qini = cum_t_y - cum_c_y * (cum_t_n / cum_c_n) if cum_c_n > 0 else 0.0
+
+        records.append({
+            "decile": b + 1,
+            "population_fraction": round((b + 1) / n_bins, 2),
+            "cum_treated": cum_t_n,
+            "cum_control": cum_c_n,
+            "cum_treated_positives": cum_t_y,
+            "cum_control_positives": cum_c_y,
+            "cumulative_uplift": round(uplift, 5),
+            "qini_value": round(qini, 2),
+        })
+
+    return pd.DataFrame(records)

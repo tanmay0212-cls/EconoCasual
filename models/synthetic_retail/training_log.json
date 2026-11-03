@@ -1,0 +1,11 @@
+{
+  "training_timestamp": "2026-11-03 16:56:13",
+  "training_time_seconds": 3.11,
+  "train_rows": 27998,
+  "val_rows": 5997,
+  "validation_estimated_ate": {
+    "tau_10_vs_0_pp": 19.9,
+    "tau_20_vs_0_pp": 26.11,
+    "tau_20_vs_10_pp": 6.21
+  }
+}

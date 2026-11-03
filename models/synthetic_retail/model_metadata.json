@@ -1,0 +1,36 @@
+{
+  "model_type": "CausalForestDML",
+  "treatment_classes": [
+    0,
+    10,
+    20
+  ],
+  "numerical_features": [
+    "age",
+    "loyalty_score",
+    "previous_purchases",
+    "average_previous_order_value",
+    "customer_activity_score"
+  ],
+  "categorical_features": [
+    "customer_segment"
+  ],
+  "transformed_features": [
+    "age",
+    "loyalty_score",
+    "previous_purchases",
+    "average_previous_order_value",
+    "customer_activity_score",
+    "customer_segment_premium",
+    "customer_segment_regular",
+    "customer_segment_vip"
+  ],
+  "hyperparameters": {
+    "n_estimators": 120,
+    "subforest_size": 4,
+    "min_samples_leaf": 15,
+    "max_depth": 8,
+    "cv": 3,
+    "random_state": 42
+  }
+}

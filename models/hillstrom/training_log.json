@@ -1,0 +1,14 @@
+{
+  "training_timestamp": "2026-11-03 16:56:29",
+  "training_time_seconds": 1.27,
+  "train_rows": 44796,
+  "val_rows": 9598,
+  "validation_estimated_ate": {
+    "visit_mens_vs_control_pp": 7.95,
+    "visit_womens_vs_control_pp": 4.47,
+    "conv_mens_vs_control_pp": 0.67,
+    "conv_womens_vs_control_pp": 0.31,
+    "spend_mens_vs_control_usd": 0.82,
+    "spend_womens_vs_control_usd": 0.37
+  }
+}

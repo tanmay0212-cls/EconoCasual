@@ -1,0 +1,57 @@
+{
+  "dataset_name": "EconoCasual Multi-Treatment Synthetic Retail Dataset",
+  "generated_timestamp": "2026-11-03T16:45:51.624883",
+  "random_seed": 42,
+  "n_samples": 40000,
+  "partitions": {
+    "train": {
+      "rows": 27998,
+      "pct": 70.0,
+      "file": "synthetic_retail_train.csv"
+    },
+    "validation": {
+      "rows": 5997,
+      "pct": 15.0,
+      "file": "synthetic_retail_validation.csv"
+    },
+    "test": {
+      "rows": 6005,
+      "pct": 15.0,
+      "file": "synthetic_retail_test.csv"
+    },
+    "ground_truth": {
+      "rows": 40000,
+      "file": "synthetic_retail_ground_truth.csv"
+    }
+  },
+  "treatments": {
+    "0": {
+      "name": "No Discount ($0)",
+      "count": 13024
+    },
+    "10": {
+      "name": "Moderate Discount ($10)",
+      "count": 15873
+    },
+    "20": {
+      "name": "Deep Discount ($20)",
+      "count": 11103
+    }
+  },
+  "true_average_treatment_effects": {
+    "ate_10_vs_0": 0.19579154996718823,
+    "ate_20_vs_0": 0.26064843964116036,
+    "ate_20_vs_10": 0.06485688967397207
+  },
+  "optimal_discount_distribution_unconstrained": {
+    "$0": 2992,
+    "$10": 29920,
+    "$20": 7088
+  },
+  "accounting_definitions": {
+    "discount_cost": "Incurred upon customer conversion (discount_amount * purchase)",
+    "revenue": "Net receipts collected (max(0, order_value - discount_cost))",
+    "gross_margin": "order_value * gross_margin_rate * purchase",
+    "net_profit": "gross_margin - discount_cost"
+  }
+}
