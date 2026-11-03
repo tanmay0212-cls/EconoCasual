@@ -21,6 +21,7 @@ import {
   Sparkles,
   SlidersHorizontal,
   Layers,
+  Download,
 } from 'lucide-react';
 import { fetchOptimizationData, DEFAULT_BUDGET } from '../services/optimizationService';
 
@@ -175,6 +176,49 @@ export default function AllocationMatrix({ initialBudget = DEFAULT_BUDGET }) {
 
   const formatPct = (val) =>
     `${(Number(val || 0) * 100).toFixed(1)}%`;
+
+  // Handle Allocation CSV Export
+  const handleExportCSV = () => {
+    if (!records || records.length === 0) return;
+    const headers = [
+      'customer_id',
+      'predicted_purchase_probability_0',
+      'predicted_purchase_probability_10',
+      'predicted_purchase_probability_20',
+      'predicted_effect_10_vs_0',
+      'predicted_effect_20_vs_0',
+      'recommended_discount',
+      'expected_discount_cost',
+      'expected_revenue',
+      'expected_net_profit',
+    ];
+    const csvRows = [headers.join(',')];
+    records.forEach((r) => {
+      csvRows.push(
+        [
+          r.customer_id,
+          r.predicted_purchase_probability_0,
+          r.predicted_purchase_probability_10,
+          r.predicted_purchase_probability_20,
+          r.predicted_effect_10_vs_0,
+          r.predicted_effect_20_vs_0,
+          r.recommended_discount,
+          r.expected_discount_cost,
+          r.expected_revenue,
+          r.expected_net_profit,
+        ].join(',')
+      );
+    });
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `allocation_matrix_budget_${activeBudget}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="allocation-matrix-container">
@@ -543,6 +587,18 @@ export default function AllocationMatrix({ initialBudget = DEFAULT_BUDGET }) {
                     </button>
                   ))}
                 </div>
+
+                {/* Export Allocations CSV Button */}
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm export-btn"
+                  onClick={handleExportCSV}
+                  title="Export customer allocation records to CSV"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginLeft: '0.5rem', padding: '0.35rem 0.75rem', fontSize: '0.8125rem' }}
+                >
+                  <Download size={14} />
+                  <span>Export CSV</span>
+                </button>
               </div>
             </div>
 
