@@ -5,6 +5,12 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
+    modulePreload: {
+      resolveDependencies: (url, deps) => {
+        // Exclude heavy plotly chunk from initial index.html modulepreload
+        return deps.filter((dep) => !dep.includes('plotly'))
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {

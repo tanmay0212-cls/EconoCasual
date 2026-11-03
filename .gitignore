@@ -53,3 +53,4 @@ models/*.pkl
 scratch/
 tmp/
 *.tmp
+models/runs/*.json

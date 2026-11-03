@@ -1,7 +1,7 @@
 {
   "health": {
     "status_code": 200,
-    "latency_ms": 266.07,
+    "latency_ms": 291.32,
     "data": {
       "status": "healthy",
       "app_version": "1.0.0",
@@ -28,103 +28,120 @@
         }
       },
       "reference_data_available": true,
-      "timestamp": "2026-11-03T13:02:13.897512+00:00"
+      "timestamp": "2026-11-03T13:26:58.470781+00:00"
     }
   },
   "security_and_validation": {
-    "approved_val_latency_ms": 83.93,
+    "approved_val_latency_ms": 65.41,
     "path_traversal_blocked": true,
     "unapproved_ref_blocked": true,
     "csv_upload_valid": true
   },
   "predict_benchmarks": {
     "10": {
-      "mean_ms": 52.36,
-      "min_ms": 34.71,
-      "max_ms": 98.41
+      "mean_ms": 38.48,
+      "min_ms": 25.54,
+      "max_ms": 81.15
     },
     "100": {
-      "mean_ms": 46.3,
-      "min_ms": 43.19,
-      "max_ms": 49.98
+      "mean_ms": 35.5,
+      "min_ms": 33.12,
+      "max_ms": 39.98
     },
     "500": {
-      "mean_ms": 93.04,
-      "min_ms": 84.6,
-      "max_ms": 100.4
+      "mean_ms": 54.15,
+      "min_ms": 51.45,
+      "max_ms": 55.65
     },
     "1000": {
-      "mean_ms": 121.29,
-      "min_ms": 95.28,
-      "max_ms": 138.06
+      "mean_ms": 90.51,
+      "min_ms": 83.02,
+      "max_ms": 104.24
     }
   },
   "optimization_benchmarks": {
     "100": {
-      "api_latency_ms": 40.66,
-      "solve_time_seconds": 0.0218,
+      "api_latency_ms": 55.69,
+      "solve_time_seconds": 0.0287,
       "expected_discount_cost": 197.64,
       "expected_net_profit": 1507.53,
       "budget_utilization_pct": 3.95,
       "count_0": 63,
       "count_10": 37,
       "count_20": 0,
-      "run_id": "ce318771-854a-4ac8-a152-9a4bd7e1cfb2"
+      "run_id": "823ad24e-eb4c-4f3f-bbe0-817edd6ebc79"
     },
     "500": {
-      "api_latency_ms": 134.8,
-      "solve_time_seconds": 0.0444,
+      "api_latency_ms": 88.09,
+      "solve_time_seconds": 0.0351,
       "expected_discount_cost": 1002.99,
       "expected_net_profit": 8886.21,
       "budget_utilization_pct": 20.06,
       "count_0": 327,
       "count_10": 170,
       "count_20": 3,
-      "run_id": "9baeeb06-89ec-414a-92f8-f4587b4f05a3"
+      "run_id": "a2bb01f2-012f-4cc8-99c3-553cb2a07c54"
     },
     "1500": {
-      "api_latency_ms": 279.87,
-      "solve_time_seconds": 0.0827,
+      "api_latency_ms": 203.38,
+      "solve_time_seconds": 0.0538,
       "expected_discount_cost": 3073.57,
       "expected_net_profit": 27757.62,
       "budget_utilization_pct": 61.47,
       "count_0": 970,
       "count_10": 517,
       "count_20": 13,
-      "run_id": "b8e9e383-8c10-4f7b-844a-713ff1c88075"
+      "run_id": "d67c6129-247b-4ed7-b5be-21552e6b1cde"
     },
     "3000": {
-      "api_latency_ms": 519.99,
-      "solve_time_seconds": 0.1112,
+      "api_latency_ms": 335.35,
+      "solve_time_seconds": 0.0973,
       "expected_discount_cost": 4997.16,
       "expected_net_profit": 54657.36,
       "budget_utilization_pct": 99.94,
       "count_0": 2135,
       "count_10": 845,
       "count_20": 20,
-      "run_id": "23fcd4f2-9cdb-4602-8b36-f133267b29b3"
+      "run_id": "ebe85232-b365-434b-94fc-da62db560be6"
+    },
+    "15000": {
+      "solve_time_seconds": 0.5403,
+      "solver_status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+      "solver_status_code": 0,
+      "expected_discount_cost": 4999.05,
+      "expected_net_profit": 261421.05,
+      "budget_utilization_pct": 99.98,
+      "tier_counts": {
+        "0": 14087,
+        "10": 910,
+        "20": 3
+      },
+      "total_records_verified": 15000,
+      "single_discount_verified": true
     }
   },
   "allocation_retrieval": {
     "status_code": 200,
-    "latency_ms": 19.76,
+    "latency_ms": 151.78,
     "total_records": 3000
   },
   "drift_detection": {
     "clean_status": "Potential drift detected",
-    "clean_latency_ms": 171.95,
+    "clean_latency_ms": 141.7,
     "shifted_status": "Severe or widespread drift detected",
     "shifted_drifted_count": 7,
     "shifted_severe_count": 6,
-    "shifted_latency_ms": 80.01
+    "shifted_latency_ms": 66.56
   },
   "concurrency": {
     "total_requests": 30,
-    "total_time_ms": 616.16,
+    "total_time_ms": 572.21,
     "success_rate_pct": 100.0
   },
   "security_audit": {
+    "files_scanned_count": 112,
     "sensitive_findings_count": 0,
-    "findings": []
+    "findings": [],
+    "status": "PASSED - Zero Leaks"
   }
 }

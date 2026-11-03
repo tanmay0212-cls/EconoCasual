@@ -1,6 +1,8 @@
-import React, { useMemo } from 'react';
-import Plot from 'react-plotly.js';
+import React, { useMemo, lazy, Suspense } from 'react';
 import { BarChart3, PieChart, Info } from 'lucide-react';
+
+// Dynamically import Plotly wrapper to ensure code splitting and on-demand loading
+const Plot = lazy(() => import('react-plotly.js'));
 
 export default function MarketingTelemetry({ previewRows, metrics, totalRows }) {
   // Aggregate channel distribution for Plotly bar chart
@@ -58,33 +60,41 @@ export default function MarketingTelemetry({ previewRows, metrics, totalRows }) 
             <h3 className="chart-title">Customer Distribution by Campaign Channel</h3>
             <span className="chart-badge">Observational Volume</span>
           </div>
-          <Plot
-            data={[
-              {
-                x: channelData.channels.map((c) => c.toUpperCase()),
-                y: channelData.counts,
-                type: 'bar',
-                marker: {
-                  color: ['#06b6d4', '#10b981', '#f59e0b', '#a855f7'],
-                  opacity: 0.85,
-                  line: { color: '#ffffff', width: 1 },
+          <Suspense
+            fallback={
+              <div style={{ height: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                <span>Loading channel distribution chart...</span>
+              </div>
+            }
+          >
+            <Plot
+              data={[
+                {
+                  x: channelData.channels.map((c) => c.toUpperCase()),
+                  y: channelData.counts,
+                  type: 'bar',
+                  marker: {
+                    color: ['#06b6d4', '#10b981', '#f59e0b', '#a855f7'],
+                    opacity: 0.85,
+                    line: { color: '#ffffff', width: 1 },
+                  },
+                  hoverinfo: 'x+y',
                 },
-                hoverinfo: 'x+y',
-              },
-            ]}
-            layout={{
-              autosize: true,
-              margin: { l: 45, r: 20, t: 20, b: 40 },
-              paper_bgcolor: 'transparent',
-              plot_bgcolor: 'transparent',
-              font: { color: '#94a3b8', family: 'Inter, sans-serif' },
-              xaxis: { gridcolor: '#1e293b' },
-              yaxis: { gridcolor: '#1e293b', title: 'Customers' },
-            }}
-            useResizeHandler
-            style={{ width: '100%', height: '260px' }}
-            config={{ displayModeBar: false, responsive: true }}
-          />
+              ]}
+              layout={{
+                autosize: true,
+                margin: { l: 45, r: 20, t: 20, b: 40 },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                font: { color: '#94a3b8', family: 'Inter, sans-serif' },
+                xaxis: { gridcolor: '#1e293b' },
+                yaxis: { gridcolor: '#1e293b', title: 'Customers' },
+              }}
+              useResizeHandler
+              style={{ width: '100%', height: '260px' }}
+              config={{ displayModeBar: false, responsive: true }}
+            />
+          </Suspense>
         </div>
 
         {/* Chart 2: Confounder Scatter: Engagement vs Prior Spend */}
@@ -93,36 +103,44 @@ export default function MarketingTelemetry({ previewRows, metrics, totalRows }) 
             <h3 className="chart-title">Pre-Treatment Confounder Space (Spend vs. Engagement)</h3>
             <span className="chart-badge">Sample Subset</span>
           </div>
-          <Plot
-            data={[
-              {
-                x: scatterData.x,
-                y: scatterData.y,
-                text: scatterData.text,
-                mode: 'markers',
-                type: 'scatter',
-                marker: {
-                  size: 9,
-                  color: scatterData.colors,
-                  opacity: 0.8,
-                  line: { color: '#ffffff', width: 0.5 },
+          <Suspense
+            fallback={
+              <div style={{ height: '260px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8' }}>
+                <span>Loading confounder scatter plot...</span>
+              </div>
+            }
+          >
+            <Plot
+              data={[
+                {
+                  x: scatterData.x,
+                  y: scatterData.y,
+                  text: scatterData.text,
+                  mode: 'markers',
+                  type: 'scatter',
+                  marker: {
+                    size: 9,
+                    color: scatterData.colors,
+                    opacity: 0.8,
+                    line: { color: '#ffffff', width: 0.5 },
+                  },
+                  hoverinfo: 'text+x+y',
                 },
-                hoverinfo: 'text+x+y',
-              },
-            ]}
-            layout={{
-              autosize: true,
-              margin: { l: 50, r: 20, t: 20, b: 45 },
-              paper_bgcolor: 'transparent',
-              plot_bgcolor: 'transparent',
-              font: { color: '#94a3b8', family: 'Inter, sans-serif' },
-              xaxis: { gridcolor: '#1e293b', title: 'Engagement Score (0-100)' },
-              yaxis: { gridcolor: '#1e293b', title: 'Prior Spend ($)' },
-            }}
-            useResizeHandler
-            style={{ width: '100%', height: '260px' }}
-            config={{ displayModeBar: false, responsive: true }}
-          />
+              ]}
+              layout={{
+                autosize: true,
+                margin: { l: 50, r: 20, t: 20, b: 45 },
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                font: { color: '#94a3b8', family: 'Inter, sans-serif' },
+                xaxis: { gridcolor: '#1e293b', title: 'Engagement Score (0-100)' },
+                yaxis: { gridcolor: '#1e293b', title: 'Prior Spend ($)' },
+              }}
+              useResizeHandler
+              style={{ width: '100%', height: '260px' }}
+              config={{ displayModeBar: false, responsive: true }}
+            />
+          </Suspense>
         </div>
       </div>
 

@@ -6,12 +6,14 @@ import MetricsCards from './components/MetricsCards';
 import DatasetUploader from './components/DatasetUploader';
 import BudgetSettings from './components/BudgetSettings';
 import CausalDAGViewer from './components/CausalDAGViewer';
-import MarketingTelemetry from './components/MarketingTelemetry';
 import FutureDeliverables from './components/FutureDeliverables';
 import AllocationMatrix from './components/AllocationMatrix';
 import DataDriftViewer from './components/DataDriftViewer';
 import BusinessSummaryPanel from './components/BusinessSummaryPanel';
 import { validateDatasetRows } from './utils/csvValidator';
+
+// Lazy-load Plotly-heavy MarketingTelemetry to prevent eager loading on initial page render
+const MarketingTelemetry = React.lazy(() => import('./components/MarketingTelemetry'));
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('summary'); // 'summary' | 'matrix' | 'telemetry' | 'drift'
@@ -251,12 +253,20 @@ export default function App() {
             {/* Causal Directed Acyclic Graph (DAG) Specification */}
             <CausalDAGViewer />
 
-            {/* Exploratory Marketing Telemetry (Plotly Charts) */}
-            <MarketingTelemetry
-              previewRows={previewRows}
-              metrics={metrics}
-              totalRows={totalRows}
-            />
+            {/* Exploratory Marketing Telemetry (Plotly Charts) - Lazy Loaded */}
+            <React.Suspense
+              fallback={
+                <div className="card telemetry-card" style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>
+                  <p>Loading interactive Plotly telemetry visualizations...</p>
+                </div>
+              }
+            >
+              <MarketingTelemetry
+                previewRows={previewRows}
+                metrics={metrics}
+                totalRows={totalRows}
+              />
+            </React.Suspense>
 
             {/* Reserved / Completed Project Deliverables */}
             <FutureDeliverables
