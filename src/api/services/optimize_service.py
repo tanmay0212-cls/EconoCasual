@@ -5,7 +5,7 @@ import json
 import uuid
 import time
 import logging
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Tuple
 import pandas as pd
 import numpy as np
 from fastapi import HTTPException, status

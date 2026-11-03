@@ -63,6 +63,10 @@ class DriftCheckResponse(BaseModel):
     reference_sample_size: int
     current_sample_size: int
     features: List[FeatureDriftDetail]
+    prediction_drift: Optional[List[FeatureDriftDetail]] = Field(
+        default_factory=list,
+        description="Drift assessment for model predictions (P0, P10, P20) under counterfactual treatments."
+    )
     summary_message: str
     recommended_next_action: str = ""
     methodological_notice: str = (
@@ -70,3 +74,21 @@ class DriftCheckResponse(BaseModel):
         "It does NOT automatically imply concept drift (P(Y | X, T)) or invalidity of causal treatment effects. "
         "Do not automatically retrain models without empirical policy verification."
     )
+
+
+class DriftHistoryItem(BaseModel):
+    """Historical drift monitoring run summary item."""
+    timestamp: str
+    run_id: str
+    dataset_name: str
+    overall_status: str
+    drift_detected: bool
+    drifted_features_count: int
+    severe_drift_count: int
+    total_features_evaluated: int
+
+
+class DriftHistoryResponse(BaseModel):
+    """List of historical drift check runs."""
+    history: List[DriftHistoryItem]
+

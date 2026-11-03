@@ -35,3 +35,22 @@ class DatasetValidationResponse(BaseModel):
     warnings: List[str] = Field(default_factory=list, description="Advisory schema warnings")
     summary: DatasetValidationSummary
 
+
+class UploadSummaryResponse(BaseModel):
+    """Upload summary response schema for POST /api/upload."""
+    status: str = Field(..., description="'success' | 'warning' | 'error'")
+    filename: str
+    total_rows: int
+    valid_rows: int
+    invalid_rows: int
+    columns_detected: List[str]
+    missing_values_by_column: Dict[str, int]
+    duplicate_customer_ids: int
+    data_types: Dict[str, str]
+    validation_passed: bool
+    quarantined_columns: List[str] = Field(default_factory=list, description="Ground truth or leakage columns safely quarantined")
+    errors: List[str] = Field(default_factory=list)
+    warnings: List[str] = Field(default_factory=list)
+    preview: List[Dict[str, Any]] = Field(default_factory=list)
+
+
