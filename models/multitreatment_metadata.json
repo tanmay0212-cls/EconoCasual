@@ -1,0 +1,190 @@
+{
+  "model_class": "LinearDRLearner",
+  "estimator_framework": "EconML",
+  "nuisance_treatment_model": "RandomForestClassifier",
+  "nuisance_outcome_model": "RandomForestRegressor",
+  "baseline_outcome_model": "GradientBoostingClassifier",
+  "cv_folds": 5,
+  "random_state": 42,
+  "treatment_col": "discount_level",
+  "outcome_col": "purchase",
+  "treatment_levels": [
+    0,
+    10,
+    20
+  ],
+  "features": [
+    "age",
+    "loyalty_score",
+    "previous_purchases",
+    "customer_segment",
+    "campaign_channel"
+  ],
+  "preprocessed_features": [
+    "age",
+    "loyalty_score",
+    "previous_purchases",
+    "customer_segment_casual_shopper",
+    "customer_segment_regular_buyer",
+    "customer_segment_vip_loyalist",
+    "campaign_channel_push",
+    "campaign_channel_sms",
+    "campaign_channel_social"
+  ],
+  "packages": {
+    "econml": "0.17.0",
+    "scikit-learn": "1.9.1",
+    "joblib": "1.6.0"
+  },
+  "methodological_assumptions": [
+    "Conditional Unconfoundedness: Treatment assignment is conditionally independent of potential outcomes given pre-treatment confounders.",
+    "Positivity (Overlap): 0 < P(T = d | W) < 1 for all d in {0, 10, 20} across all customer strata.",
+    "No Post-Treatment Confounders: Post-treatment economics and outcomes are strictly quarantined.",
+    "Doubly Robust Orthogonality: Estimator is robust to misspecification of either the propensity model or outcome regression."
+  ],
+  "dataset_path": "data/optimization_retail_data.csv",
+  "train_sample_size": 12000,
+  "eval_sample_size": 3000,
+  "split_ratio": "80/20",
+  "stratified_by": "discount_level",
+  "evaluation_metrics": {
+    "eval_sample_size": 3000,
+    "tier_10_vs_0": {
+      "ate_estimate": 0.158007,
+      "ate_estimate_percentage_points": 15.8,
+      "ate_ci_95": [
+        0.138151,
+        0.177863
+      ],
+      "ate_ci_95_percentage_points": [
+        13.82,
+        17.79
+      ],
+      "naive_observational_diff": 0.08063,
+      "naive_diff_percentage_points": 8.06,
+      "cate_distribution": {
+        "mean": 0.158,
+        "std": 0.0639,
+        "min": -0.0811,
+        "q25": 0.1264,
+        "median": 0.1692,
+        "q75": 0.2015,
+        "max": 0.317
+      }
+    },
+    "tier_20_vs_0": {
+      "ate_estimate": 0.211653,
+      "ate_estimate_percentage_points": 21.17,
+      "ate_ci_95": [
+        0.191205,
+        0.232101
+      ],
+      "ate_ci_95_percentage_points": [
+        19.12,
+        23.21
+      ],
+      "naive_observational_diff": 0.152948,
+      "naive_diff_percentage_points": 15.29,
+      "cate_distribution": {
+        "mean": 0.2117,
+        "std": 0.0904,
+        "min": -0.1359,
+        "q25": 0.1738,
+        "median": 0.231,
+        "q75": 0.2738,
+        "max": 0.3944
+      }
+    },
+    "predicted_probabilities_summary": {
+      "mean_p0": 0.3809,
+      "mean_p10": 0.5389,
+      "mean_p20": 0.5925
+    },
+    "ground_truth_benchmarks": {
+      "true_sample_ate_t10": 0.154786,
+      "true_sample_ate_t20": 0.213363,
+      "ate_error_t10": 0.003221,
+      "ate_error_t20": -0.00171,
+      "ci_covers_true_ate_t10": true,
+      "ci_covers_true_ate_t20": true,
+      "confounding_bias_in_naive_t10": -0.074156,
+      "confounding_bias_in_naive_t20": -0.060415,
+      "cate_spearman_rank_corr_t10": 0.821,
+      "cate_spearman_rank_corr_t20": 0.7925,
+      "cate_mae_t10": 0.0313,
+      "cate_mae_t20": 0.0387,
+      "cate_rmse_t10": 0.0394,
+      "cate_rmse_t20": 0.0491,
+      "prob_mae_p0": 0.0423,
+      "prob_mae_p10": 0.0512,
+      "prob_mae_p20": 0.0546
+    }
+  },
+  "overlap_diagnostics": {
+    "sample_size": 3000,
+    "propensity_threshold": 0.05,
+    "min_propensity_observed": 0.1749,
+    "has_unsupported_regions": false,
+    "propensity_distribution": {
+      "T=0": {
+        "min": 0.2296,
+        "q01": 0.245,
+        "q25": 0.2858,
+        "median": 0.3182,
+        "mean": 0.3326,
+        "q75": 0.368,
+        "q99": 0.4828,
+        "max": 0.5584,
+        "unsupported_count": 0,
+        "unsupported_pct": 0.0
+      },
+      "T=10": {
+        "min": 0.208,
+        "q01": 0.267,
+        "q25": 0.3332,
+        "median": 0.3511,
+        "mean": 0.3487,
+        "q75": 0.3686,
+        "q99": 0.4295,
+        "max": 0.4731,
+        "unsupported_count": 0,
+        "unsupported_pct": 0.0
+      },
+      "T=20": {
+        "min": 0.1749,
+        "q01": 0.2306,
+        "q25": 0.2754,
+        "median": 0.3136,
+        "mean": 0.3186,
+        "q75": 0.3578,
+        "q99": 0.4191,
+        "max": 0.4392,
+        "unsupported_count": 0,
+        "unsupported_pct": 0.0
+      }
+    },
+    "segment_empirical_proportions": {
+      "budget_seeker": {
+        "T=20": 0.4417,
+        "T=10": 0.325,
+        "T=0": 0.2333
+      },
+      "vip_loyalist": {
+        "T=0": 0.4559,
+        "T=10": 0.2907,
+        "T=20": 0.2533
+      },
+      "regular_buyer": {
+        "T=0": 0.3659,
+        "T=10": 0.3637,
+        "T=20": 0.2704
+      },
+      "casual_shopper": {
+        "T=10": 0.3886,
+        "T=0": 0.3144,
+        "T=20": 0.297
+      }
+    },
+    "positivity_verdict": "ADEQUATE OVERLAP"
+  }
+}

@@ -18,7 +18,7 @@ export default function Header({
         <div>
           <div className="title-row">
             <h1 className="header-title">EconoCausal</h1>
-            <span className="internship-tag">Infotact Solutions • Week 1</span>
+            <span className="internship-tag">Infotact Solutions • Weeks 1-3 Complete</span>
           </div>
           <p className="header-subtitle">Causal AI for Dynamic Pricing</p>
         </div>

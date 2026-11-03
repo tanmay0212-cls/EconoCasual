@@ -5,10 +5,10 @@
 [![EconML](https://img.shields.io/badge/Causal%20ML-EconML%200.17-blue)](https://econml.azurewebsites.net/)
 [![DoWhy](https://img.shields.io/badge/Causal%20DAG-DoWhy%200.14-orange)](https://py-why.github.io/dowhy/)
 [![React 19](https://img.shields.io/badge/Frontend-React%2019%20%2B%20Vite%208-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Tests Passing](https://img.shields.io/badge/Tests-51%20Passed%20(39%20py%20%2B%2012%20js)-brightgreen)](https://github.com/tanmay0212-cls/EconoCasual)
+[![Tests Passing](https://img.shields.io/badge/Tests-75%20Passed%20(55%20py%20%2B%2020%20js)-brightgreen)](https://github.com/tanmay0212-cls/EconoCasual)
 
 > **Causal Machine Learning for Promotional Pricing Optimization**  
-> Formulate causal DAGs, identify unconfounded adjustment sets, estimate heterogeneous customer price elasticity using Double Machine Learning (DML), and evaluate targeting effectiveness via Qini and uplift curves.
+> Formulate causal DAGs, identify unconfounded adjustment sets, estimate heterogeneous customer price elasticity using Double Machine Learning (DML), optimize personalized discount allocations under marketing budget caps via SciPy MILP, and inspect customer policies in a modern React Allocation Matrix dashboard.
 
 ---
 
@@ -38,10 +38,10 @@ In retail e-commerce, offering promotional discount codes is a high-stakes lever
 ### The EconoCausal Solution
 EconoCausal resolves this problem using modern causal machine learning:
 1. **Structural Causal DAGs (DoWhy):** Formulates domain assumptions, inspects causal pathways, and mathematically identifies the unconfounded back-door adjustment set.
-2. **Double Machine Learning (EconML):** Employs Chernozhukov et al. (2018) orthogonalized cross-fitting to isolate the true causal effect of discounts from confounding covariates.
+2. **Double Machine Learning (EconML):** Employs Chernozhukov et al. (2018) orthogonalized cross-fitting to isolate the true causal effect of discounts from confounding covariates across multiple treatment tiers ($0, $10, $20).
 3. **Customer-Level CATE Estimation:** Estimates Conditional Average Treatment Effects ($\tau(X_i)$) with asymptotic 95% Wald confidence intervals to identify true price-sensitive cohorts.
-4. **Uplift & Qini Evaluation:** Benchmarks causal targeting against random baseline policies using Radcliffe (2007) cumulative incremental gains.
-5. **Interactive Analytics Dashboard:** React 19 + Vite interface with interactive DAG visualizers, drag-and-drop CSV validation, and marketing telemetry.
+4. **Prescriptive Budget Optimization (SciPy MILP):** Solves the Multiple-Choice Knapsack Problem (MCKP) via Binary Integer Linear Programming to maximize expected net profit under a strict marketing budget cap.
+5. **Interactive Allocation Matrix Dashboard (React 19):** Full-featured UI featuring 8 real-time KPI cards, strategy benchmarks (comparing No Discount, Blanket $10, Blanket $20, and Optimized Policy), sortable/searchable 3,000-customer allocation matrix, and counterfactual uplift inspection.
 
 ---
 
@@ -287,7 +287,7 @@ All metrics were evaluated on the **500 held-out evaluation customers** (20% tes
 
 The repository includes a comprehensive, multi-framework automated test suite:
 
-### Backend Pytest Suite (39 Tests)
+### Backend Pytest Suite (55 Tests)
 ```bash
 pytest -v
 ```
@@ -297,21 +297,24 @@ tests/test_data_generation.py   7 passed  (Reproducibility, sample size, schema 
 tests/test_dml.py              10 passed  (DML fit/shapes, anti-leakage, binary domains, serialization, reproducibility, non-finite features)
 tests/test_evaluation.py        8 passed  (Ranking monotonicity, Qini/AUUC, zero-treated/control edge cases, tied effects, empty inputs)
 tests/test_interpreter.py       8 passed  (Row alignment, customer ID quarantine, 95% CIs, non-finite checks, configurable threshold)
-============================= 39 passed in 12.09s =============================
+tests/test_multitreatment.py    8 passed  (Multi-tier DML, probability calibration [0, 1], cross-fitting, overlap, anti-leakage)
+tests/test_optimization.py      8 passed  (SciPy MILP budget adherence, mutually exclusive knapsack, edge cases, benchmarks)
+============================= 55 passed in ~95s =============================
 ```
 
-### Frontend Vitest Suite (12 Tests)
+### Frontend Vitest Suite (20 Tests)
 ```bash
 cd frontend
-npm test -- --run
+npm test
 ```
 ```text
  ✓ src/tests/csvValidator.test.js (5 tests)
  ✓ src/tests/Header.test.jsx (3 tests)
  ✓ src/tests/BudgetSettings.test.jsx (2 tests)
  ✓ src/tests/DatasetUploader.test.jsx (2 tests)
- Test Files  4 passed (4)
-      Tests  12 passed (12)
+ ✓ src/tests/AllocationMatrix.test.jsx (8 tests: budget input, 8 KPI cards, strategy benchmarks, search/tier filters, uplift expander, error state)
+ Test Files  5 passed (5)
+      Tests  20 passed (20)
 ```
 
 ---

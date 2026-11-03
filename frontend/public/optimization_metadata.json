@@ -1,0 +1,79 @@
+{
+  "evaluation_population": 3000,
+  "default_budget": 5000.0,
+  "objective_type": "net_profit",
+  "solver": "scipy.optimize.milp (HiGHS Status 7: Optimal)",
+  "solve_time_seconds": 0.07,
+  "kpis": {
+    "total_customers": 3000,
+    "count_discount_0": 2162,
+    "count_discount_10": 836,
+    "count_discount_20": 2,
+    "expected_revenue": 121447.78,
+    "expected_discount_cost": 4604.2,
+    "expected_net_profit": 53082.35,
+    "remaining_budget": 395.8,
+    "budget_utilization_pct": 92.08,
+    "profit_lift_usd": 2066.6,
+    "profit_lift_pct": 4.05,
+    "expected_conversions": 1308.1
+  },
+  "strategies": [
+    {
+      "name": "No Discount ( Baseline)",
+      "short_name": "No Discount",
+      "discount": "",
+      "cost": 0.0,
+      "revenue": 106473.01,
+      "profit": 51015.75,
+      "conversions": 1152.6,
+      "budget_util_pct": 0.0,
+      "compliant": true,
+      "profit_lift": 0.0,
+      "profit_lift_pct": 0.0,
+      "color": "#64748b"
+    },
+    {
+      "name": "Blanket  Promotion",
+      "short_name": "Blanket ",
+      "discount": " to All",
+      "cost": 16246.6,
+      "revenue": 137756.9,
+      "profit": 47828.63,
+      "conversions": 1624.7,
+      "budget_util_pct": 324.93,
+      "compliant": false,
+      "profit_lift": -3187.12,
+      "profit_lift_pct": -6.25,
+      "color": "#ef4444"
+    },
+    {
+      "name": "Blanket  Promotion",
+      "short_name": "Blanket ",
+      "discount": " to All",
+      "cost": 35705.84,
+      "revenue": 146789.04,
+      "profit": 31841.21,
+      "conversions": 1785.3,
+      "budget_util_pct": 714.12,
+      "compliant": false,
+      "profit_lift": -19174.54,
+      "profit_lift_pct": -37.59,
+      "color": "#f97316"
+    },
+    {
+      "name": "Optimized Personalized (DML + SciPy)",
+      "short_name": "Optimized Policy",
+      "discount": "Personalized",
+      "cost": 4604.2,
+      "revenue": 121447.78,
+      "profit": 53082.35,
+      "conversions": 1308.1,
+      "budget_util_pct": 92.08,
+      "compliant": true,
+      "profit_lift": 2066.6,
+      "profit_lift_pct": 4.05,
+      "color": "#10b981"
+    }
+  ]
+}

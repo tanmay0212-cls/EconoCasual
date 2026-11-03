@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Papa from 'papaparse';
+import { SlidersHorizontal, BarChart3, Database } from 'lucide-react';
 import Header from './components/Header';
 import MetricsCards from './components/MetricsCards';
 import DatasetUploader from './components/DatasetUploader';
@@ -7,9 +8,11 @@ import BudgetSettings from './components/BudgetSettings';
 import CausalDAGViewer from './components/CausalDAGViewer';
 import MarketingTelemetry from './components/MarketingTelemetry';
 import FutureDeliverables from './components/FutureDeliverables';
+import AllocationMatrix from './components/AllocationMatrix';
 import { validateDatasetRows } from './utils/csvValidator';
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState('matrix'); // 'matrix' | 'telemetry'
   const [datasetSource, setDatasetSource] = useState('none'); // 'synthetic' | 'uploaded' | 'none'
   const [datasetName, setDatasetName] = useState('');
   const [validationResult, setValidationResult] = useState(null);
@@ -145,62 +148,97 @@ export default function App() {
         isLoading={isLoading}
       />
 
+      {/* 2. Primary Navigation Bar */}
+      <div className="tab-navigation-container">
+        <nav className="tab-navigation-bar" aria-label="Main Navigation">
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === 'matrix' ? 'active' : ''}`}
+            onClick={() => setActiveTab('matrix')}
+          >
+            <SlidersHorizontal size={17} />
+            <span>Prescriptive Allocation Matrix</span>
+            <span className="tab-badge tab-badge-highlight">Week 3</span>
+          </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === 'telemetry' ? 'active' : ''}`}
+            onClick={() => setActiveTab('telemetry')}
+          >
+            <BarChart3 size={17} />
+            <span>Causal DAG & Telemetry</span>
+            <span className="tab-badge">Week 1 & 2</span>
+          </button>
+        </nav>
+      </div>
+
       <main className="main-content">
-        {/* 2. Top Telemetry Metrics Cards */}
-        <MetricsCards
-          metrics={metrics}
-          budget={budget}
-          currency={currency}
-          isValid={isValid}
-          totalRows={totalRows}
-          validRows={validRows}
-        />
+        {/* TAB 1: WEEK 3 PRESCRIPTIVE ALLOCATION MATRIX */}
+        {activeTab === 'matrix' && (
+          <AllocationMatrix initialBudget={budget} />
+        )}
 
-        {/* 3. Dataset Upload & Causal Schema Preview */}
-        <DatasetUploader
-          validationResult={validationResult}
-          onFileUpload={handleFileUpload}
-          onLoadSynthetic={loadSyntheticData}
-          onDownloadSample={handleDownloadSample}
-          isLoading={isLoading}
-          fileName={datasetName}
-        />
+        {/* TAB 2: WEEK 1 & 2 EXPLORATORY TELEMETRY & CAUSAL DAG */}
+        {activeTab === 'telemetry' && (
+          <>
+            {/* Top Telemetry Metrics Cards */}
+            <MetricsCards
+              metrics={metrics}
+              budget={budget}
+              currency={currency}
+              isValid={isValid}
+              totalRows={totalRows}
+              validRows={validRows}
+            />
 
-        {/* 4. Marketing Budget & Pricing Bounds Settings */}
-        <BudgetSettings
-          budget={budget}
-          onBudgetChange={setBudget}
-          currency={currency}
-          onCurrencyChange={setCurrency}
-          discountTiers={discountTiers}
-          onDiscountTiersChange={setDiscountTiers}
-          totalCustomers={totalRows}
-        />
+            {/* Dataset Upload & Causal Schema Preview */}
+            <DatasetUploader
+              validationResult={validationResult}
+              onFileUpload={handleFileUpload}
+              onLoadSynthetic={loadSyntheticData}
+              onDownloadSample={handleDownloadSample}
+              isLoading={isLoading}
+              fileName={datasetName}
+            />
 
-        {/* 5. Causal Directed Acyclic Graph (DAG) Specification */}
-        <CausalDAGViewer />
+            {/* Marketing Budget & Pricing Bounds Settings */}
+            <BudgetSettings
+              budget={budget}
+              onBudgetChange={setBudget}
+              currency={currency}
+              onCurrencyChange={setCurrency}
+              discountTiers={discountTiers}
+              onDiscountTiersChange={setDiscountTiers}
+              totalCustomers={totalRows}
+            />
 
-        {/* 6. Exploratory Marketing Telemetry (Plotly Charts) */}
-        <MarketingTelemetry
-          previewRows={previewRows}
-          metrics={metrics}
-          totalRows={totalRows}
-        />
+            {/* Causal Directed Acyclic Graph (DAG) Specification */}
+            <CausalDAGViewer />
 
-        {/* 7. Reserved Future Deliverables (Week 2 CATE & Week 3 Policy Optimization) */}
-        <FutureDeliverables />
+            {/* Exploratory Marketing Telemetry (Plotly Charts) */}
+            <MarketingTelemetry
+              previewRows={previewRows}
+              metrics={metrics}
+              totalRows={totalRows}
+            />
+
+            {/* Reserved / Completed Project Deliverables */}
+            <FutureDeliverables onNavigateToMatrix={() => setActiveTab('matrix')} />
+          </>
+        )}
       </main>
 
       {/* Footer with Methodological Disclaimers */}
       <footer className="footer-container">
         <div className="footer-content">
           <p className="footer-title">
-            EconoCausal Platform • Infotact Solutions Internship Project (Week 1 Deliverable)
+            EconoCausal Platform • Infotact Solutions Internship Project (Weeks 1 - 3 Complete)
           </p>
           <p className="footer-disclaimer">
             Methodological Notice: Causal DAGs and back-door adjustment sets formalize structural domain assumptions.
-            Causal treatment effects and uplift metrics are not empirically established in Week 1.
-            Double Machine Learning (DML) estimation and budget-constrained pricing policy optimization are scheduled for Weeks 2 and 3.
+            Causal treatment effects are estimated via Double Machine Learning (EconML LinearDRLearner).
+            Prescriptive discount allocations are optimized via SciPy Mixed-Integer Linear Programming (MILP) under marketing budget constraints.
           </p>
         </div>
       </footer>

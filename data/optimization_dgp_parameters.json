@@ -1,0 +1,155 @@
+{
+  "dataset_name": "optimization_retail_data",
+  "version": "1.0.0",
+  "purpose": "Multi-arm causal estimation dataset for Week 3 budget-constrained discount optimisation in EconoCausal.",
+  "treatment_levels": [
+    0,
+    10,
+    20
+  ],
+  "customer_segments": [
+    "budget_seeker",
+    "casual_shopper",
+    "regular_buyer",
+    "vip_loyalist"
+  ],
+  "campaign_channels": [
+    "email",
+    "push",
+    "sms",
+    "social"
+  ],
+  "features": {
+    "age": {
+      "distribution": "Normal(mu=42, sigma=12) clipped to [18, 75]",
+      "role": "confounder",
+      "note": "Younger customers are more price-sensitive."
+    },
+    "loyalty_score": {
+      "distribution": "Beta(alpha=2, beta=3) \u00d7 100 clipped to [1, 99]",
+      "role": "confounder",
+      "note": "Right-skewed toward lower values; VIP segment boosted +20 pts. High loyalty \u2192 lower price-sensitivity (already converts)."
+    },
+    "previous_purchases": {
+      "distribution": "Poisson(lambda varies by segment [2, 4, 7, 14])",
+      "role": "confounder",
+      "note": "Proxy for brand loyalty; influences both targeting and conversion."
+    },
+    "customer_segment": {
+      "distribution": "Categorical [0.25, 0.30, 0.30, 0.15]",
+      "levels": [
+        "budget_seeker",
+        "casual_shopper",
+        "regular_buyer",
+        "vip_loyalist"
+      ],
+      "note": "Governs baseline conversion, price elasticity, and product tier."
+    },
+    "campaign_channel": {
+      "distribution": "Categorical [0.38, 0.28, 0.20, 0.14]",
+      "levels": [
+        "email",
+        "push",
+        "sms",
+        "social"
+      ],
+      "note": "Email and push channels deliver coupons at higher rates."
+    },
+    "product_price": {
+      "distribution": "LogNormal per segment; means \u2248 [$35, $55, $80, $150]",
+      "role": "context_variable",
+      "note": "Reflects the typical basket value for each customer archetype. Determines absolute dollar impact of discounts."
+    },
+    "gross_margin_rate": {
+      "distribution": "Normal per segment; means \u2248 [0.30, 0.38, 0.45, 0.55] \u00b1 0.04",
+      "role": "context_variable",
+      "note": "Budget-seekers buy commodity items (thin margins); VIPs buy premium goods (thick margins)."
+    },
+    "customer_timestamp": {
+      "distribution": "Uniform draw from ['2026-Q1','2026-Q2','2026-Q3','2026-Q4']",
+      "role": "temporal_batch",
+      "note": "Campaign quarter identifier for drift-detection baseline creation."
+    }
+  },
+  "treatment_assignment": {
+    "mechanism": "Multinomial-logistic propensity with segment bias + Gumbel noise",
+    "description": "Each customer's probability of receiving each discount tier is determined by their customer_segment (marketing selection bias) and idiosyncratic noise. Overlap is guaranteed: no tier has zero probability for any segment.",
+    "segment_logit_biases": {
+      "budget_seeker": [
+        0.0,
+        0.4,
+        0.8
+      ],
+      "casual_shopper": [
+        0.3,
+        0.6,
+        0.3
+      ],
+      "regular_buyer": [
+        0.5,
+        0.5,
+        0.1
+      ],
+      "vip_loyalist": [
+        0.8,
+        0.2,
+        0.0
+      ]
+    },
+    "noise_scale": 1.0,
+    "positivity_note": "After softmax with noise scale=1.0, every tier receives at least ~8% probability across all segments."
+  },
+  "outcome_generation": {
+    "model": "Logistic (Bernoulli) with segment-specific intercepts and HTEs",
+    "baseline_logits": {
+      "budget_seeker": -1.8,
+      "casual_shopper": -0.8,
+      "regular_buyer": -0.45,
+      "vip_loyalist": 0.5
+    },
+    "covariate_effects": {
+      "age_norm": -0.2,
+      "loyalty_norm": 0.55,
+      "prev_purchases_norm": 0.35
+    },
+    "channel_effects": {
+      "email": 0.15,
+      "push": 0.25,
+      "sms": -0.05,
+      "social": -0.15
+    },
+    "treatment_lift_on_logit": {
+      "T10_by_segment": {
+        "budget_seeker": 0.65,
+        "casual_shopper": 0.55,
+        "regular_buyer": 0.45,
+        "vip_loyalist": 0.12
+      },
+      "T20_by_segment": {
+        "budget_seeker": 1.1,
+        "casual_shopper": 0.85,
+        "regular_buyer": 0.62,
+        "vip_loyalist": 0.18
+      },
+      "price_sensitivity_modifier": {
+        "formula": "sensitivity = (1 - loyalty_norm) \u00d7 max(0, 1 - age_norm)",
+        "coefficient": 0.3,
+        "note": "Younger, less-loyal customers receive up to +0.30 additional logit lift from discounts, capturing individual-level HTE heterogeneity."
+      }
+    },
+    "heterogeneity_note": "Treatment effects are non-linear and segment-heterogeneous. The marginal lift of moving from $10 to $20 is smaller than moving from $0 to $10 for every segment (diminishing returns in conversion probability). Combined with thin margins, a $20 discount may generate LESS net profit than $10 for budget_seeker and casual_shopper segments."
+  },
+  "economics": {
+    "discount_incurrence": "redemption_only",
+    "description": "Discount cost is incurred ONLY when (a) the customer receives an offer AND (b) the customer purchases. A customer who receives a coupon but does not purchase incurs zero discount cost.",
+    "accounting": {
+      "gross_revenue": "product_price  \u00d7 purchase",
+      "discount_cost": "discount_amount \u00d7 purchase",
+      "net_revenue": "gross_revenue  - discount_cost",
+      "gross_profit_before_discount": "gross_revenue  \u00d7 gross_margin_rate",
+      "net_profit_after_discount": "gross_profit_before_discount - discount_cost"
+    }
+  },
+  "n_samples": 15000,
+  "random_seed": 42
+}

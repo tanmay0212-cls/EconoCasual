@@ -27,6 +27,13 @@ from .evaluation import (
     plot_effect_distribution,
 )
 
+# Week 3 multi-treatment causal engine
+from .multi_tier_dml import (
+    MultiTierCausalDML,
+    MULTI_TREATMENT_LEVELS,
+    DEFAULT_PRE_TREATMENT_CONFOUNDERS,
+)
+
 __all__ = [
     "CAUSAL_DAG_DOT",
     "build_causal_model",
@@ -46,4 +53,7 @@ __all__ = [
     "plot_uplift_curve",
     "plot_qini_curve",
     "plot_effect_distribution",
+    "MultiTierCausalDML",
+    "MULTI_TREATMENT_LEVELS",
+    "DEFAULT_PRE_TREATMENT_CONFOUNDERS",
 ]
