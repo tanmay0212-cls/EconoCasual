@@ -1,7 +1,10 @@
 """Automated data drift detection service using statistical divergence metrics."""
 
 import os
+import json
+import uuid
 import logging
+from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 import pandas as pd
 from fastapi import HTTPException, status
@@ -17,6 +20,8 @@ from src.api.schemas.drift import (
     DriftCheckRequest,
     DriftCheckResponse,
     FeatureDriftDetail,
+    DriftHistoryItem,
+    DriftHistoryResponse,
 )
 
 logger = logging.getLogger("econocausal.drift_service")
@@ -118,8 +123,50 @@ class DriftService:
                 )
             )
 
+        # 5. Map prediction drift
+        prediction_details: List[FeatureDriftDetail] = []
+        for feat in getattr(report, "prediction_drift", []):
+            ref_sum = feat.reference_summary
+            cur_sum = feat.current_summary
+            prediction_details.append(
+                FeatureDriftDetail(
+                    feature_name=feat.feature_name,
+                    feature_type="prediction",
+                    drift_detected=feat.drift_detected,
+                    drift_severity=feat.severity.value if isinstance(feat.severity, DriftSeverity) else str(feat.severity),
+                    test_name=feat.test_name,
+                    test_statistic=feat.test_statistic,
+                    p_value=feat.p_value,
+                    psi=feat.psi,
+                    wasserstein_distance=feat.wasserstein_distance,
+                    tvd=feat.tvd,
+                    reference_mean=ref_sum.get("mean"),
+                    current_mean=cur_sum.get("mean"),
+                    reference_std=ref_sum.get("std"),
+                    current_std=cur_sum.get("std"),
+                    reference_summary=ref_sum,
+                    current_summary=cur_sum,
+                    new_categories=feat.new_categories,
+                    missing_categories=feat.missing_categories,
+                    recommended_action=feat.recommended_action,
+                )
+            )
+
+        dataset_label = request.dataset_reference or "uploaded_batch"
+        overall_status_val = report.overall_status.value if isinstance(report.overall_status, OverallDriftStatus) else str(report.overall_status)
+
+        # 6. Append to historical drift log
+        cls._append_drift_history(
+            dataset_name=dataset_label,
+            overall_status=overall_status_val,
+            drift_detected=report.drift_detected,
+            drifted_count=report.drifted_features_count,
+            severe_count=report.severe_drift_count,
+            total_features=report.total_features_evaluated,
+        )
+
         return DriftCheckResponse(
-            overall_status=report.overall_status.value if isinstance(report.overall_status, OverallDriftStatus) else str(report.overall_status),
+            overall_status=overall_status_val,
             drift_detected=report.drift_detected,
             total_features_evaluated=report.total_features_evaluated,
             drifted_features_count=report.drifted_features_count,
@@ -127,7 +174,73 @@ class DriftService:
             reference_sample_size=report.reference_sample_size,
             current_sample_size=report.current_sample_size,
             features=feature_details,
+            prediction_drift=prediction_details,
             summary_message=report.summary_message,
             recommended_next_action=report.recommended_next_action,
             methodological_notice=report.methodological_notice,
         )
+
+    @classmethod
+    def _get_history_file_path(cls) -> str:
+        runs_dir = settings.runs_dir
+        os.makedirs(runs_dir, exist_ok=True)
+        return os.path.join(runs_dir, "drift_history.json")
+
+    @classmethod
+    def _append_drift_history(
+        cls,
+        dataset_name: str,
+        overall_status: str,
+        drift_detected: bool,
+        drifted_count: int,
+        severe_count: int,
+        total_features: int,
+    ) -> None:
+        """Persist a drift evaluation record into the historical log."""
+        history_file = cls._get_history_file_path()
+        history_data: List[Dict[str, Any]] = []
+
+        if os.path.exists(history_file):
+            try:
+                with open(history_file, "r", encoding="utf-8") as f:
+                    history_data = json.load(f)
+            except Exception:
+                history_data = []
+
+        new_entry = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "run_id": str(uuid.uuid4()),
+            "dataset_name": dataset_name,
+            "overall_status": overall_status,
+            "drift_detected": drift_detected,
+            "drifted_features_count": drifted_count,
+            "severe_drift_count": severe_count,
+            "total_features_evaluated": total_features,
+        }
+        history_data.append(new_entry)
+
+        # Keep last 50 entries
+        if len(history_data) > 50:
+            history_data = history_data[-50:]
+
+        try:
+            with open(history_file, "w", encoding="utf-8") as f:
+                json.dump(history_data, f, indent=2)
+        except Exception as exc:
+            logger.warning("Could not persist drift history log: %s", exc)
+
+    @classmethod
+    def get_drift_history(cls) -> DriftHistoryResponse:
+        """Retrieve recent historical drift evaluation runs."""
+        history_file = cls._get_history_file_path()
+        if os.path.exists(history_file):
+            try:
+                with open(history_file, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                items = [DriftHistoryItem.model_validate(item) for item in data]
+                return DriftHistoryResponse(history=items)
+            except Exception as exc:
+                logger.error("Failed to read drift history file: %s", exc)
+
+        return DriftHistoryResponse(history=[])
+

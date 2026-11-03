@@ -58,11 +58,18 @@ NUMERICAL_FEATURES: List[str] = [
     "previous_purchases",
     "product_price",
     "gross_margin_rate",
+    "average_previous_order_value",
 ]
 
 CATEGORICAL_FEATURES: List[str] = [
     "customer_segment",
     "campaign_channel",
+]
+
+PREDICTION_FEATURES: List[str] = [
+    "predicted_purchase_probability_0",
+    "predicted_purchase_probability_10",
+    "predicted_purchase_probability_20",
 ]
 
 REQUIRED_MODEL_FEATURES: List[str] = [
@@ -78,6 +85,7 @@ NUMERICAL_BOUNDS: Dict[str, Tuple[float, float]] = {
     "previous_purchases": (0.0, 1000.0),
     "product_price": (0.0, 5000.0),
     "gross_margin_rate": (0.0, 1.0),
+    "average_previous_order_value": (0.0, 50000.0),
 }
 
 
@@ -143,6 +151,7 @@ class DriftReport:
     features: List[FeatureDriftResult]
     summary_message: str
     recommended_next_action: str
+    prediction_drift: List[FeatureDriftResult] = field(default_factory=list)
     methodological_notice: str = (
         "Methodological Notice: Covariate drift (P(X)) measures shift in customer features. "
         "It does NOT automatically imply concept drift (P(Y | X, T)) or invalidity of causal treatment effects. "
@@ -154,6 +163,8 @@ class DriftReport:
         d = asdict(self)
         d["overall_status"] = self.overall_status.value
         for feat in d["features"]:
+            feat["severity"] = feat["severity"].value if isinstance(feat["severity"], DriftSeverity) else str(feat["severity"])
+        for feat in d.get("prediction_drift", []):
             feat["severity"] = feat["severity"].value if isinstance(feat["severity"], DriftSeverity) else str(feat["severity"])
         return d
 
@@ -585,6 +596,9 @@ class EconoCausalDriftDetector:
             summary = f"No significant drift detected across all {total_feats} evaluated features. Distribution is stable."
             next_action = "Continue standard promotional policy deployment. Normal monitoring interval applies."
 
+        # Prediction drift check (if predictions exist in columns)
+        prediction_results = self.evaluate_prediction_drift(current_data)
+
         return DriftReport(
             overall_status=overall_status,
             drift_detected=drifted_count > 0,
@@ -595,7 +609,66 @@ class EconoCausalDriftDetector:
             current_sample_size=len(current_data),
             schema_validation=schema_res,
             features=feature_results,
+            prediction_drift=prediction_results,
             summary_message=summary,
             recommended_next_action=next_action,
         )
+
+    def evaluate_prediction_drift(
+        self,
+        current_data: pd.DataFrame,
+        reference_data: Optional[pd.DataFrame] = None,
+    ) -> List[FeatureDriftResult]:
+        """Run statistical KS and PSI tests on counterfactual purchase probabilities (P0, P10, P20)."""
+        ref_df = reference_data if reference_data is not None else self.reference_data
+        pred_results: List[FeatureDriftResult] = []
+
+        if current_data is None or ref_df is None:
+            return pred_results
+
+        for feat in PREDICTION_FEATURES:
+            if feat in current_data.columns and feat in ref_df.columns:
+                ref_vals = pd.to_numeric(ref_df[feat], errors="coerce").dropna().to_numpy(dtype=float)
+                cur_vals = pd.to_numeric(current_data[feat], errors="coerce").dropna().to_numpy(dtype=float)
+
+                if len(cur_vals) < 5 or len(ref_vals) < 5:
+                    continue
+
+                ks_res = stats.ks_2samp(ref_vals, cur_vals)
+                ks_stat = float(ks_res.statistic)
+                p_val = float(ks_res.pvalue)
+                psi_val = self.calculate_psi(ref_vals, cur_vals)
+                w_dist = float(stats.wasserstein_distance(ref_vals, cur_vals))
+
+                drift_detected = (p_val < self.ks_alpha) or (psi_val >= self.psi_moderate_threshold)
+                if psi_val >= self.psi_high_threshold or (p_val < 0.0001 and psi_val >= 0.15):
+                    severity = DriftSeverity.HIGH
+                    action = f"Significant prediction drift in '{feat}'. Conversion behavior shifted; review pricing elasticity."
+                elif drift_detected:
+                    severity = DriftSeverity.MODERATE
+                    action = f"Moderate prediction shift in '{feat}'. Monitor conversion calibration."
+                else:
+                    severity = DriftSeverity.NONE
+                    action = f"Prediction distribution for '{feat}' is stable relative to baseline reference."
+
+                pred_results.append(
+                    FeatureDriftResult(
+                        feature_name=feat,
+                        feature_type="prediction",
+                        drift_detected=drift_detected,
+                        severity=severity,
+                        test_name="kolmogorov_smirnov",
+                        test_statistic=round(ks_stat, 4),
+                        p_value=round(p_val, 6),
+                        psi=round(psi_val, 4),
+                        wasserstein_distance=round(w_dist, 4),
+                        reference_summary={"mean": round(float(np.mean(ref_vals)), 4), "std": round(float(np.std(ref_vals)), 4)},
+                        current_summary={"mean": round(float(np.mean(cur_vals)), 4), "std": round(float(np.std(cur_vals)), 4)},
+                        thresholds={"ks_alpha": self.ks_alpha, "psi_high": self.psi_high_threshold},
+                        recommended_action=action,
+                    )
+                )
+
+        return pred_results
+
 

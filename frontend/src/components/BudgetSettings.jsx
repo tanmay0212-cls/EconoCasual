@@ -12,6 +12,8 @@ const CURRENCIES = [
 export default function BudgetSettings({
   budget,
   onBudgetChange,
+  budgetType = 'redemption',
+  onBudgetTypeChange,
   currency,
   onCurrencyChange,
   discountTiers,
@@ -139,6 +141,26 @@ export default function BudgetSettings({
             ))}
           </select>
           <span className="field-help">Applied across all budget and pricing metrics.</span>
+        </div>
+
+        {/* Budget Type Selector */}
+        <div className="setting-box">
+          <label className="form-label">
+            <span>Budget Constraint Mode</span>
+          </label>
+          <select
+            className="form-select"
+            value={budgetType}
+            onChange={(e) => onBudgetTypeChange && onBudgetTypeChange(e.target.value)}
+          >
+            <option value="redemption">Redemption Budget (Expected Cost d × P_d)</option>
+            <option value="face_value">Face Value Budget (Issued Coupon Exposure)</option>
+          </select>
+          <span className="field-help">
+            {budgetType === 'redemption'
+              ? 'Enforces constraint on model-expected redeemed promotional expenditure.'
+              : 'Enforces constraint on the gross face-value sum of all distributed discount coupons.'}
+          </span>
         </div>
       </div>
 

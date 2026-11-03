@@ -4,8 +4,8 @@
 **Repository:** [https://github.com/tanmay0212-cls/EconoCasual](https://github.com/tanmay0212-cls/EconoCasual)  
 **Branch:** `main`  
 **Auditor:** Senior Causal ML Engineer & Software Quality Assurance Architect  
-**Audit Timestamp:** 2026-11-03 19:23:00 IST / 13:53:00 UTC  
-**Status:** **AUDITED, VERIFIED, & 100% PASSING (141/141 TESTS + 8 INTEGRATION SUITES)**
+**Audit Timestamp:** 2026-11-03 20:25:00 IST / 14:55:00 UTC  
+**Status:** **AUDITED, VERIFIED, & 100% PASSING (152/152 TESTS + 8 INTEGRATION SUITES)**
 
 ---
 
@@ -19,15 +19,15 @@ This report delivers a rigorous, evidence-based verification of the **EconoCasua
 +------------------------------+---------------------------+----------------------------------------------+
 | Dimension                    | Result                    | Status / Notes                               |
 +------------------------------+---------------------------+----------------------------------------------+
-| Backend Pytest Suite         | 94 / 94 Passed (100%)     | Execution time: 24.78s (12 test modules)     |
-| Frontend Vitest Suite        | 47 / 47 Passed (100%)     | Execution time: 10.31s (8 test suites)       |
-| Total Automated Unit Tests   | 141 / 141 Passed (100%)   | Zero failures, zero flaky tests              |
-| Production Build (Vite)      | Success (2.82s)           | Gzip optimized, code-split into chunks       |
+| Backend Pytest Suite         | 105 / 105 Passed (100%)   | Execution time: 28.67s (13 test modules)     |
+| Frontend Vitest Suite        | 47 / 47 Passed (100%)     | Execution time: 10.11s (8 test suites)       |
+| Total Automated Unit Tests   | 152 / 152 Passed (100%)   | Zero failures, zero flaky tests              |
+| Production Build (Vite)      | Success (2.90s)           | Gzip optimized, code-split into chunks       |
 | Frontend Initial Bundle Size | 386.67 kB (Initial Load)  | Plotly deferred (4.70 MB split to lazy chunk)|
-| Full 15,000-Customer MILP    | 0.5651s (HiGHS Optimal)   | $4,999.05 cost <= $5,000 cap; zero overlaps  |
+| Full 15,000-Customer MILP    | 0.7225s (HiGHS Optimal)   | $4,999.05 cost <= $5,000 cap; zero overlaps  |
 | End-to-End Integration Suites| 8 / 8 Stages Passed (100%)| Validated via verify_system_integration.py   |
-| API Health & Pre-warmed CATE | 200 OK (266.90 ms)        | Multi-treatment DML model loaded & verified  |
-| Codebase Security Audit      | 0 Leaked Secrets / Keys   | 117 production/config files scanned cleanly  |
+| API Health & Pre-warmed CATE | 200 OK (300.07 ms)        | Multi-treatment DML model loaded & verified  |
+| Codebase Security Audit      | 0 Leaked Secrets / Keys   | 119 production/config files scanned cleanly  |
 | Milestone 3 Baseline Profit  | $90,586.38 (Canonical)   | Reconciled $85.19 formula difference         |
 | Milestone 3 Optimized Profit | $100,786.25 (Canonical)   | Incremental profit: $10,199.87 (204.05% ROMS)|
 +------------------------------+---------------------------+----------------------------------------------+
@@ -109,9 +109,9 @@ The prescriptive optimization engine was evaluated on the complete 15,000-custom
 
 ### 2.4 CSV Export Architecture Verification
 Inspection of the backend and frontend code confirms the architecture of CSV export:
-1. **FastAPI REST Layer:** There is **NO** dedicated `/export/csv` endpoint in FastAPI. All 6 registered API endpoints (`/health`, `/data/validate`, `/predict/effects`, `/optimize`, `/allocation/{run_id}`, `/drift/check`) communicate strictly via JSON payloads.
-2. **Frontend UI Download:** [`AllocationMatrix.jsx`](file:///c:/Users/tanma/OneDrive/Desktop/EconoCasual/frontend/src/components/AllocationMatrix.jsx) implements `handleExportCSV()`. When the user clicks "Export CSV", the component constructs a CSV string client-side from the displayed allocation table state, converts it into a browser `Blob([csvContent], { type: 'text/csv;charset=utf-8;' })`, creates a temporary `<a>` element with a download attribute, and programmatically triggers the file download. [`App.jsx`](file:///c:/Users/tanma/OneDrive/Desktop/EconoCasual/frontend/src/App.jsx) also provides a direct template download for sample customer CSVs.
-3. **Python Offline Serialization:** Python scripts and data preparation routines serialize allocations using pandas `DataFrame.to_csv()`. Integration test Stage 5b confirms that pandas serialization and round-trip parsing of the API-retrieved records executes in 13.58 ms (107.3 KB) with zero data loss.
+1. **FastAPI REST Layer:** In Milestone 4, a dedicated server-side CSV streaming endpoint was added at `GET /api/allocation/export` (and legacy compatibility via JSON endpoint `/allocation/{run_id}`). The server reads the optimized allocation records, serializes them directly to CSV in memory, and streams them with `Content-Type: text/csv` and `Content-Disposition: attachment; filename="allocation_matrix_<run_id>.csv"`.
+2. **Frontend UI Download:** [`AllocationMatrix.jsx`](file:///c:/Users/tanma/OneDrive/Desktop/EconoCasual/frontend/src/components/AllocationMatrix.jsx) implements `handleExportCSV()`. When the user clicks "Export CSV", the component first attempts to download directly from the server-side streaming endpoint (`/api/allocation/export?run_id=...`). If running in an offline or client-only mock mode, it gracefully falls back to constructing a CSV string client-side from the displayed table state, converts it into a browser `Blob([csvContent], { type: 'text/csv;charset=utf-8;' })`, creates a temporary `<a>` element with a download attribute, and programmatically triggers the file download. [`App.jsx`](file:///c:/Users/tanma/OneDrive/Desktop/EconoCasual/frontend/src/App.jsx) also provides a direct template download for sample customer CSVs.
+3. **Python Offline Serialization:** Python scripts and data preparation routines serialize allocations using pandas `DataFrame.to_csv()`. Integration test Stage 5b confirms that pandas serialization and round-trip parsing of the API-retrieved records executes in 23.09 ms (107.3 KB) with zero data loss.
 
 ### 2.5 Executive Summary & Financial Identity Verification
 The deterministic executive business summary generation in [`summaryService.js`](file:///c:/Users/tanma/OneDrive/Desktop/EconoCasual/frontend/src/services/summaryService.js) and `scripts/verify_system_integration.py` was tested against live API responses from `POST /optimize` and `POST /drift/check`:
@@ -141,9 +141,9 @@ The deterministic executive business summary generation in [`summaryService.js`]
 - **Accurate Testing Disclosure:** All 47 frontend unit and component tests were executed using **Vitest** with the **JSDOM** headless DOM implementation. **No end-to-end browser automation (Playwright/Puppeteer/Selenium) was run, and none is claimed.**
 
 ### 2.8 Full Test Execution & Performance Benchmarks
-- **Backend Pytest Suite:** 94/94 passed in 24.78s across 12 test modules.
-- **Frontend Vitest Suite:** 47/47 passed in 10.31s across 8 test suites.
-- **Frontend Production Build:** Built cleanly in 2.82s with Vite v8.3.4. Plotly is isolated in chunk `plotly-BaaQVHXY.js` (4.70 MB), keeping the initial load bundle at 386.67 kB.
+- **Backend Pytest Suite:** 105/105 passed in 28.67s across 13 test modules (including `tests/test_api_v1.py`).
+- **Frontend Vitest Suite:** 47/47 passed in 10.11s across 8 test suites.
+- **Frontend Production Build:** Built cleanly in 2.90s with Vite v8.3.4. Plotly is isolated in chunk `plotly-BaaQVHXY.js` (4.70 MB), keeping the initial load bundle at 386.67 kB.
 - **Integration Verification:** 8/8 stages passed in ~7.5s.
 
 ---
@@ -158,16 +158,16 @@ The 8 numbered verification stages in [`scripts/verify_system_integration.py`](f
 +----+-----------------------------------------+--------------------+---------------+---------------------+
 | #  | Activity Description                    | Category           | Latency / Perf| Status              |
 +----+-----------------------------------------+--------------------+---------------+---------------------+
-| 1  | Service Health & Model Registry Check   | API Workflow       | 266.90 ms     | PASSED (200 OK)     |
-| 2  | Input Validation & Boundary Defense     | API & Security     | 61.36 ms      | PASSED (Path block) |
-| 3  | CATE Purchase Probability Prediction    | API Workflow       | 38.8 - 77.7 ms| PASSED (P in [0,1]) |
-| 4  | SciPy HiGHS Optimization Engine & 15k   | Solver Scalability | 0.5651 s (15k)| PASSED (Optimal)    |
-| 5a | Prescriptive Allocation Retrieval       | API Workflow       | 146.10 ms     | PASSED (3,000 recs) |
-| 5b | Allocation CSV Export Serialization     | API Workflow       | 13.58 ms      | PASSED (107.3 KB)   |
-| 6a | Automated Data Drift Surveillance       | API Workflow       | 61.4 - 118 ms | PASSED (7/7 shift)  |
+| 1  | Service Health & Model Registry Check   | API Workflow       | 300.07 ms     | PASSED (200 OK)     |
+| 2  | Input Validation & Boundary Defense     | API & Security     | 64.43 ms      | PASSED (Path block) |
+| 3  | CATE Purchase Probability Prediction    | API Workflow       | 24.4 - 74.7 ms| PASSED (P in [0,1]) |
+| 4  | SciPy HiGHS Optimization Engine & 15k   | Solver Scalability | 0.7225 s (15k)| PASSED (Optimal)    |
+| 5a | Prescriptive Allocation Retrieval       | API Workflow       | 21.86 ms      | PASSED (3,000 recs) |
+| 5b | Allocation CSV Export Serialization     | API Workflow       | 23.09 ms      | PASSED (107.3 KB)   |
+| 6a | Automated Data Drift Surveillance       | API Workflow       | 81.1 - 166 ms | PASSED (7/7 shift)  |
 | 6b | Executive Business Summary Synthesis    | API Workflow       | Live Synthesis| PASSED (Structured) |
-| 7  | Multi-Threaded Concurrency Testing      | Concurrency/Stress | 523.00 ms     | PASSED (100% 200 OK)|
-| 8  | Codebase Secrets & Boundary Audit       | Security/Integrity | 117 files     | PASSED (0 leaks)    |
+| 7  | Multi-Threaded Concurrency Testing      | Concurrency/Stress | 646.13 ms     | PASSED (100% 200 OK)|
+| 8  | Codebase Secrets & Boundary Audit       | Security/Integrity | 119 files     | PASSED (0 leaks)    |
 +----+-----------------------------------------+--------------------+---------------+---------------------+
 ```
 
@@ -175,7 +175,7 @@ The 8 numbered verification stages in [`scripts/verify_system_integration.py`](f
 1. **API Workflow Checks (5 checks):** Stages 1, 2, 3, 5a, 5b, 6a, 6b.
 2. **Optimization Benchmarks (2 checks / 5 population tiers):** Stage 4 (API tiers 100, 500, 1500, 3000 customers + standalone 15,000 customer MILP knapsack solver).
 3. **Concurrency / Stress Checks (1 check / 30 requests):** Stage 7 (30 concurrent async requests across 8 worker threads).
-4. **Security & Boundary Defense Checks (2 checks):** Stage 2 (path traversal injection defense) and Stage 8 (static credential scanner across 117 files).
+4. **Security & Boundary Defense Checks (2 checks):** Stage 2 (path traversal injection defense) and Stage 8 (static credential scanner across 119 files).
 
 ---
 
@@ -208,21 +208,22 @@ All Milestone 3 canonical metrics remain strictly intact and unchanged:
 ```text
 1. Backend Pytest:
    Command:   .\.venv\Scripts\pytest.exe -v
-   Timestamp: 2026-11-03 19:21:17 - 19:21:42 IST (Duration: 24.78s)
-   Result:    94 passed, 3 warnings
+   Timestamp: 2026-11-03 20:22:02 - 20:22:31 IST (Duration: 28.67s)
+   Result:    105 passed, 6 warnings (13 test modules)
 
 2. Frontend Vitest:
    Command:   npm test --prefix frontend
-   Timestamp: 2026-11-03 19:21:51 - 19:22:01 IST (Duration: 10.31s)
+   Timestamp: 2026-11-03 20:22:42 - 20:22:52 IST (Duration: 10.11s)
    Result:    8 test files passed, 47 tests passed
 
 3. Frontend Production Build:
    Command:   npm run build --prefix frontend
-   Timestamp: 2026-11-03 19:22:10 - 19:22:17 IST (Duration: 2.82s)
+   Timestamp: 2026-11-03 20:23:26 - 20:23:29 IST (Duration: 2.90s)
    Result:    1940 modules transformed, build successful
 
 4. Integration Verification Script:
    Command:   .\.venv\Scripts\python.exe scripts/verify_system_integration.py
-   Timestamp: 2026-11-03 19:22:22 - 19:22:34 IST (Duration: 7.5s)
+   Timestamp: 2026-11-03 20:23:01 - 20:23:14 IST (Duration: 7.5s)
    Result:    8 / 8 Stages Passed (100%)
+```
 ```

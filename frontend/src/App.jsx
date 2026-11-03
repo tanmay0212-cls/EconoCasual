@@ -24,6 +24,7 @@ export default function App() {
 
   // Budget settings state
   const [budget, setBudget] = useState(5000);
+  const [budgetType, setBudgetType] = useState('redemption');
   const [currency, setCurrency] = useState('USD');
   const [discountTiers, setDiscountTiers] = useState([10, 20]);
 
@@ -65,7 +66,7 @@ export default function App() {
   }, [loadSyntheticData]);
 
   // Handle user uploaded CSV
-  const handleFileUpload = (file) => {
+  const handleFileUpload = async (file) => {
     if (!file) return;
 
     if (!file.name.toLowerCase().endsWith('.csv')) {
@@ -86,6 +87,40 @@ export default function App() {
     }
 
     setIsLoading(true);
+
+    // 1. Attempt upload to FastAPI backend POST /api/upload
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('http://localhost:8000/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (res.ok) {
+        const uploadData = await res.json();
+        setValidationResult({
+          isValid: uploadData.validation_passed,
+          totalRows: uploadData.total_rows,
+          validRows: uploadData.valid_rows,
+          columns: uploadData.columns_detected,
+          missingValues: uploadData.missing_values_by_column || {},
+          errors: uploadData.errors || [],
+          warnings: uploadData.warnings || [],
+          preview: uploadData.preview || [],
+          metrics: null,
+          quarantinedColumns: uploadData.quarantined_columns || [],
+          isLiveApi: true,
+        });
+        setDatasetSource('uploaded');
+        setDatasetName(file.name);
+        setIsLoading(false);
+        return;
+      }
+    } catch {
+      // Backend unreachable or offline; fall back to client-side validation
+    }
+
+    // 2. Client-side PapaParse fallback
     Papa.parse(file, {
       header: true,
       dynamicTyping: false,
@@ -208,7 +243,7 @@ export default function App() {
 
         {/* TAB 2: WEEK 3 PRESCRIPTIVE ALLOCATION MATRIX */}
         {activeTab === 'matrix' && (
-          <AllocationMatrix initialBudget={budget} />
+          <AllocationMatrix initialBudget={budget} budgetType={budgetType} />
         )}
 
         {/* TAB 3: WEEK 4 AUTOMATED DATA DRIFT & COVARIATE SHIFT MONITORING */}
@@ -243,6 +278,8 @@ export default function App() {
             <BudgetSettings
               budget={budget}
               onBudgetChange={setBudget}
+              budgetType={budgetType}
+              onBudgetTypeChange={setBudgetType}
               currency={currency}
               onCurrencyChange={setCurrency}
               discountTiers={discountTiers}

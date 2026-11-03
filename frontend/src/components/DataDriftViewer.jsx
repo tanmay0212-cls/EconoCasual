@@ -15,11 +15,12 @@ import {
   FileCheck2,
   Sliders,
 } from 'lucide-react';
-import { fetchDriftReport } from '../services/driftService';
+import { fetchDriftReport, fetchDriftHistory } from '../services/driftService';
 
 export default function DataDriftViewer() {
   const [batchType, setBatchType] = useState('shifted'); // 'shifted' | 'clean'
   const [dataPayload, setDataPayload] = useState(null);
+  const [driftHistory, setDriftHistory] = useState([]);
   const [selectedFeature, setSelectedFeature] = useState('age');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,6 +40,13 @@ export default function DataDriftViewer() {
         } else {
           setSelectedFeature(data.report.features[0].feature_name);
         }
+      }
+      // Load historical runs in parallel
+      try {
+        const history = await fetchDriftHistory();
+        setDriftHistory(history);
+      } catch (hErr) {
+        console.warn('Could not load drift history:', hErr);
       }
     } catch (err) {
       setError(err.message || 'Failed to load drift report.');
@@ -554,6 +562,104 @@ export default function DataDriftViewer() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5b. Counterfactual Prediction Drift Table */}
+          {report.prediction_drift && report.prediction_drift.length > 0 && (
+            <div className="card drift-table-card" style={{ marginTop: '1.5rem' }}>
+              <div className="card-header">
+                <div className="title-with-icon">
+                  <div className="icon-badge icon-purple">
+                    <Activity size={18} />
+                  </div>
+                  <div>
+                    <h3 className="card-title">Counterfactual Model Prediction Drift (P0, P10, P20)</h3>
+                    <p className="card-subtitle">
+                      Distributional stability of Double Machine Learning predicted purchase probabilities across discount tiers.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="table-responsive">
+                <table className="custom-table drift-table">
+                  <thead>
+                    <tr>
+                      <th>Treatment Probability Arm</th>
+                      <th>Test Method</th>
+                      <th>KS Statistic (D)</th>
+                      <th>P-Value</th>
+                      <th>PSI</th>
+                      <th>Severity</th>
+                      <th>Operational Assessment</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {report.prediction_drift.map((pDrift) => (
+                      <tr key={pDrift.feature_name}>
+                        <td>
+                          <strong>{pDrift.feature_name.replace('predicted_purchase_probability_', 'Tier $')}</strong>
+                        </td>
+                        <td>{pDrift.test_name}</td>
+                        <td>{pDrift.test_statistic}</td>
+                        <td>{pDrift.p_value}</td>
+                        <td><code>{pDrift.psi?.toFixed(4) || 'N/A'}</code></td>
+                        <td>{getSeverityBadge(pDrift.drift_severity || pDrift.severity)}</td>
+                        <td className="action-cell">
+                          <span className="action-cell-text">{pDrift.recommended_action}</span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* 5c. Historical Surveillance Logs */}
+          {driftHistory && driftHistory.length > 0 && (
+            <div className="card drift-table-card" style={{ marginTop: '1.5rem' }}>
+              <div className="card-header">
+                <div className="title-with-icon">
+                  <div className="icon-badge icon-cyan">
+                    <FileCheck2 size={18} />
+                  </div>
+                  <div>
+                    <h3 className="card-title">Historical Drift Surveillance Logs</h3>
+                    <p className="card-subtitle">
+                      Audit log of recent statistical drift evaluations and population surveillance runs.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="table-responsive">
+                <table className="custom-table drift-table">
+                  <thead>
+                    <tr>
+                      <th>Timestamp (UTC)</th>
+                      <th>Dataset / Reference</th>
+                      <th>Overall Status</th>
+                      <th>Total Features</th>
+                      <th>Drifted Count</th>
+                      <th>Severe Count</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {driftHistory.slice(-5).reverse().map((h) => (
+                      <tr key={h.run_id || h.timestamp}>
+                        <td>{new Date(h.timestamp).toLocaleString()}</td>
+                        <td><code>{h.dataset_name}</code></td>
+                        <td>{getStatusBadge(h.overall_status).label}</td>
+                        <td>{h.total_features_evaluated} evaluated</td>
+                        <td className={h.drifted_features_count > 0 ? 'text-amber font-bold' : ''}>{h.drifted_features_count} drifted</td>
+                        <td className={h.severe_drift_count > 0 ? 'text-red font-bold' : ''}>{h.severe_drift_count} severe</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}

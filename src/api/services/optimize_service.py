@@ -80,6 +80,7 @@ class OptimizeService:
             df["campaign_channel"] = "email"
 
         start_time = time.perf_counter()
+        budget_type_applied = getattr(request, "budget_type", "redemption")
 
         # 2. Execute SciPy MILP optimization
         try:
@@ -87,6 +88,7 @@ class OptimizeService:
                 budget=request.budget,
                 discount_tiers=request.discount_tiers,
                 objective_type=request.objective_type,
+                budget_type=budget_type_applied,
             )
             opt_res = optimizer.optimize(df_customers=df, model=model)
             opt_df = opt_res.allocation_matrix
@@ -122,6 +124,7 @@ class OptimizeService:
 
         # 4. Extract KPI summary
         counts = opt_res.tier_counts
+        avg_conversion = round(float(np.mean([r.predicted_purchase_probability for r in allocation_records])), 4) if allocation_records else 0.0
         kpis = OptimizationKPIs(
             total_customers=len(opt_df),
             count_discount_0=int(counts.get(0, 0)),
@@ -133,12 +136,14 @@ class OptimizeService:
             budget_cap=round(float(opt_res.budget), 2),
             remaining_budget=round(float(max(0.0, opt_res.budget - opt_res.total_cost)), 2),
             budget_utilization_pct=round(float(opt_res.budget_utilization_pct), 2),
+            conversion_rate=avg_conversion,
         )
 
         response = OptimizationResponse(
             run_id=run_id,
             solver_status=str(opt_res.status_message),
             objective_type=request.objective_type,
+            budget_type=budget_type_applied,
             solve_time_seconds=solve_time,
             kpis=kpis,
             allocation=allocation_records,
@@ -187,3 +192,69 @@ class OptimizeService:
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Optimization run '{clean_id}' was not found. Please verify the run_id.",
         )
+
+    @classmethod
+    def get_latest_or_default_run(cls, run_id: Optional[str] = None) -> OptimizationResponse:
+        """Retrieve a specific run by run_id, or the most recent run available in cache or disk."""
+        if run_id:
+            return cls.get_allocation_run(run_id)
+
+        # 1. Check in-memory cache for latest inserted run
+        if cls._runs_cache:
+            latest_id = list(cls._runs_cache.keys())[-1]
+            return OptimizationResponse.model_validate(cls._runs_cache[latest_id])
+
+        # 2. Check disk runs directory for latest modified run file
+        runs_dir = cls._ensure_runs_dir()
+        if os.path.exists(runs_dir):
+            json_files = [
+                os.path.join(runs_dir, f)
+                for f in os.listdir(runs_dir)
+                if f.endswith(".json") and not f.startswith("drift")
+            ]
+            if json_files:
+                json_files.sort(key=os.path.getmtime, reverse=True)
+                for fpath in json_files:
+                    try:
+                        with open(fpath, "r", encoding="utf-8") as f:
+                            data = json.load(f)
+                        if "allocation" in data and "kpis" in data:
+                            run_obj = OptimizationResponse.model_validate(data)
+                            cls._runs_cache[run_obj.run_id] = data
+                            return run_obj
+                    except Exception:
+                        continue
+
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No previous optimization run found. Please execute an optimization run first via POST /api/optimize.",
+        )
+
+    @classmethod
+    def export_allocation_csv(cls, run_id: Optional[str] = None) -> Tuple[str, str]:
+        """Export optimization allocation records as a CSV formatted string and return (csv_content, filename)."""
+        run = cls.get_latest_or_default_run(run_id)
+        records = [r.model_dump() for r in run.allocation]
+        if not records:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Optimization run '{run.run_id}' contains no allocation records to export.",
+            )
+
+        df_export = pd.DataFrame(records)
+        cols_order = [
+            "customer_id",
+            "recommended_discount",
+            "predicted_purchase_probability",
+            "expected_revenue",
+            "expected_discount_cost",
+            "expected_net_profit",
+        ]
+        present_cols = [c for c in cols_order if c in df_export.columns] + [
+            c for c in df_export.columns if c not in cols_order
+        ]
+        df_export = df_export[present_cols]
+        csv_str = df_export.to_csv(index=False)
+        filename = f"optimized_discount_allocation_{run.run_id[:8]}.csv"
+        return csv_str, filename
+

@@ -178,8 +178,31 @@ export default function AllocationMatrix({ initialBudget = DEFAULT_BUDGET }) {
     `${(Number(val || 0) * 100).toFixed(1)}%`;
 
   // Handle Allocation CSV Export
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
     if (!records || records.length === 0) return;
+
+    // 1. Attempt server-side streaming export from GET /api/allocation/export
+    try {
+      const runId = metadata?.run_id;
+      const exportUrl = `http://localhost:8000/api/allocation/export${runId ? `?run_id=${runId}` : ''}`;
+      const response = await fetch(exportUrl);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `allocation_matrix_budget_${activeBudget}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        return;
+      }
+    } catch {
+      // Backend offline; use client-side Blob generation
+    }
+
+    // 2. Client-side Blob fallback
     const headers = [
       'customer_id',
       'predicted_purchase_probability_0',

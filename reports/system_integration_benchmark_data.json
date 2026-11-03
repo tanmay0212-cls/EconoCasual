@@ -1,7 +1,7 @@
 {
   "health": {
     "status_code": 200,
-    "latency_ms": 266.9,
+    "latency_ms": 326.51,
     "data": {
       "status": "healthy",
       "app_version": "1.0.0",
@@ -28,84 +28,84 @@
         }
       },
       "reference_data_available": true,
-      "timestamp": "2026-11-03T13:52:29.833058+00:00"
+      "timestamp": "2026-11-03T14:53:08.615168+00:00"
     }
   },
   "security_and_validation": {
-    "approved_val_latency_ms": 61.36,
+    "approved_val_latency_ms": 70.04,
     "path_traversal_blocked": true,
     "unapproved_ref_blocked": true,
     "csv_upload_valid": true
   },
   "predict_benchmarks": {
     "10": {
-      "mean_ms": 42.84,
-      "min_ms": 32.47,
-      "max_ms": 75.49
+      "mean_ms": 42.71,
+      "min_ms": 29.04,
+      "max_ms": 81.95
     },
     "100": {
-      "mean_ms": 38.84,
-      "min_ms": 36.54,
-      "max_ms": 44.25
+      "mean_ms": 39.14,
+      "min_ms": 37.7,
+      "max_ms": 40.51
     },
     "500": {
-      "mean_ms": 51.8,
-      "min_ms": 48.07,
-      "max_ms": 54.96
+      "mean_ms": 72.02,
+      "min_ms": 67.74,
+      "max_ms": 76.56
     },
     "1000": {
-      "mean_ms": 77.65,
-      "min_ms": 72.06,
-      "max_ms": 88.71
+      "mean_ms": 124.92,
+      "min_ms": 116.21,
+      "max_ms": 132.81
     }
   },
   "optimization_benchmarks": {
     "100": {
-      "api_latency_ms": 60.95,
-      "solve_time_seconds": 0.034,
+      "api_latency_ms": 54.41,
+      "solve_time_seconds": 0.031,
       "expected_discount_cost": 197.64,
       "expected_net_profit": 1507.53,
       "budget_utilization_pct": 3.95,
       "count_0": 63,
       "count_10": 37,
       "count_20": 0,
-      "run_id": "40b65a33-ac7c-4582-afdc-12412b2fc690"
+      "run_id": "7310b381-43c8-495e-a8a0-99a83de1bfd9"
     },
     "500": {
-      "api_latency_ms": 88.09,
-      "solve_time_seconds": 0.0384,
+      "api_latency_ms": 106.58,
+      "solve_time_seconds": 0.0441,
       "expected_discount_cost": 1002.99,
       "expected_net_profit": 8886.21,
       "budget_utilization_pct": 20.06,
       "count_0": 327,
       "count_10": 170,
       "count_20": 3,
-      "run_id": "db836a54-366f-4719-8e8a-9e3253de3b5f"
+      "run_id": "bc96093d-1466-48d1-a080-9f8b7c7e3c09"
     },
     "1500": {
-      "api_latency_ms": 205.99,
-      "solve_time_seconds": 0.049,
+      "api_latency_ms": 238.53,
+      "solve_time_seconds": 0.0659,
       "expected_discount_cost": 3073.57,
       "expected_net_profit": 27757.62,
       "budget_utilization_pct": 61.47,
       "count_0": 970,
       "count_10": 517,
       "count_20": 13,
-      "run_id": "479b811b-1ef5-4897-a836-f23790ed0a83"
+      "run_id": "991f5cab-40a3-49a4-b125-66fc2168467a"
     },
     "3000": {
-      "api_latency_ms": 351.31,
-      "solve_time_seconds": 0.0927,
+      "api_latency_ms": 605.05,
+      "solve_time_seconds": 0.1212,
       "expected_discount_cost": 4997.16,
       "expected_net_profit": 54657.36,
       "budget_utilization_pct": 99.94,
       "count_0": 2135,
       "count_10": 845,
       "count_20": 20,
-      "run_id": "a9374148-ff96-46b3-a6f7-1e451acf4557"
+      "run_id": "6001feb1-3a6f-471c-9062-2147563d9b8a"
     },
     "15000": {
-      "solve_time_seconds": 0.5651,
+      "solve_time_seconds": 0.7225,
       "solver_status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
       "solver_status_code": 0,
       "expected_discount_cost": 4999.05,
@@ -125,42 +125,42 @@
   },
   "allocation_retrieval_and_export": {
     "status_code": 200,
-    "latency_ms": 146.1,
+    "latency_ms": 21.86,
     "total_records": 3000,
     "missing_run_id_status": 404,
     "csv_export_records": 3000,
-    "csv_export_latency_ms": 13.58,
+    "csv_export_latency_ms": 23.09,
     "csv_export_bytes": 109899
   },
   "drift_and_summary": {
     "clean_status": "Potential drift detected",
-    "clean_latency_ms": 118.66,
+    "clean_latency_ms": 166.75,
     "shifted_status": "Severe or widespread drift detected",
     "shifted_drifted_count": 7,
     "shifted_severe_count": 6,
-    "shifted_latency_ms": 61.44,
+    "shifted_latency_ms": 81.13,
     "executive_summary_headline": "Budget-Constrained Prescriptive Optimization generates $54,657.36 expected net profit."
   },
   "concurrency": {
     "total_requests": 30,
-    "total_time_ms": 523.0,
+    "total_time_ms": 646.13,
     "success_rate_pct": 100.0
   },
   "security_audit": {
-    "files_scanned_count": 117,
+    "files_scanned_count": 119,
     "sensitive_findings_count": 0,
     "gitleaks_installed": false,
     "gitleaks_executed": false,
     "findings": [],
     "excluded_directories": [
-      "__pycache__",
-      "runs",
       "reports",
-      "EconoCasual",
-      ".venv",
+      "dist",
       "node_modules",
       ".git",
-      "dist"
+      ".venv",
+      "runs",
+      "__pycache__",
+      "EconoCasual"
     ],
     "status": "PASSED - Zero Leaks"
   },
@@ -186,7 +186,7 @@
         15000
       ],
       "solver": "SciPy optimize.milp (HiGHS)",
-      "benchmark_15k_runtime_s": 0.5651,
+      "benchmark_15k_runtime_s": 0.7225,
       "benchmark_15k_status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
       "status": "PASSED (2/2)"
     },
