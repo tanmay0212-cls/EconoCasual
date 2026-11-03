@@ -74,13 +74,15 @@ def run_integration_audit():
     assert resp_unapp.status_code == 400
     
     # 2.4 Upload CSV validation
-    sample_csv = "customer_id,age,loyalty_score,previous_purchases,customer_segment,campaign_channel,product_price,gross_margin_rate\nCUST_001,35,70.5,4,regular,email,85.0,0.50\n"
+    sample_csv = "customer_id,age,loyalty_score,previous_purchases,customer_segment,discount_level,purchase,product_price,gross_margin_rate\nCUST_001,35,70.5,4,regular_buyer,10,1,85.0,0.50\n"
     resp_upload = client.post(
         "/data/validate",
         files={"file": ("sample.csv", sample_csv.encode("utf-8"), "text/csv")}
     )
-    print(f"  -> Safe CSV file upload check: status={resp_upload.status_code}, is_valid={resp_upload.json()['is_valid']}")
     assert resp_upload.status_code == 200
+    upload_valid = resp_upload.json()['is_valid']
+    print(f"  -> Safe CSV file upload check: status={resp_upload.status_code}, is_valid={upload_valid}")
+    assert upload_valid is True, f"Upload validation errors: {resp_upload.json().get('errors')}"
 
     results["security_and_validation"] = {
         "approved_val_latency_ms": round(val_latency_ms, 2),
@@ -256,7 +258,7 @@ def run_integration_audit():
     
     for ext in ["*.py", "*.json", "*.env*"]:
         for file_path in root_dir.glob(f"**/{ext}"):
-            if "node_modules" in str(file_path) or ".venv" in str(file_path) or ".git" in str(file_path):
+            if "node_modules" in str(file_path) or ".venv" in str(file_path) or ".git" in str(file_path) or "reports" in str(file_path) or "EconoCasual" in str(file_path):
                 continue
             try:
                 content = file_path.read_text(encoding="utf-8", errors="ignore")

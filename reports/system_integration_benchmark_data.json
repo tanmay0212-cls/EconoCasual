@@ -1,7 +1,7 @@
 {
   "health": {
     "status_code": 200,
-    "latency_ms": 229.29,
+    "latency_ms": 266.07,
     "data": {
       "status": "healthy",
       "app_version": "1.0.0",
@@ -28,124 +28,103 @@
         }
       },
       "reference_data_available": true,
-      "timestamp": "2026-11-03T09:57:49.831999+00:00"
+      "timestamp": "2026-11-03T13:02:13.897512+00:00"
     }
   },
   "security_and_validation": {
-    "approved_val_latency_ms": 50.66,
+    "approved_val_latency_ms": 83.93,
     "path_traversal_blocked": true,
     "unapproved_ref_blocked": true,
     "csv_upload_valid": true
   },
   "predict_benchmarks": {
     "10": {
-      "mean_ms": 33.83,
-      "min_ms": 19.55,
-      "max_ms": 67.99
+      "mean_ms": 52.36,
+      "min_ms": 34.71,
+      "max_ms": 98.41
     },
     "100": {
-      "mean_ms": 29.65,
-      "min_ms": 26.69,
-      "max_ms": 34.14
+      "mean_ms": 46.3,
+      "min_ms": 43.19,
+      "max_ms": 49.98
     },
     "500": {
-      "mean_ms": 54.73,
-      "min_ms": 46.72,
-      "max_ms": 61.86
+      "mean_ms": 93.04,
+      "min_ms": 84.6,
+      "max_ms": 100.4
     },
     "1000": {
-      "mean_ms": 87.62,
-      "min_ms": 83.01,
-      "max_ms": 91.73
+      "mean_ms": 121.29,
+      "min_ms": 95.28,
+      "max_ms": 138.06
     }
   },
   "optimization_benchmarks": {
     "100": {
-      "api_latency_ms": 45.41,
-      "solve_time_seconds": 0.0237,
-      "expected_discount_cost": 158.84,
-      "expected_net_profit": 1478.53,
-      "budget_utilization_pct": 3.18,
-      "count_0": 70,
-      "count_10": 30,
+      "api_latency_ms": 40.66,
+      "solve_time_seconds": 0.0218,
+      "expected_discount_cost": 197.64,
+      "expected_net_profit": 1507.53,
+      "budget_utilization_pct": 3.95,
+      "count_0": 63,
+      "count_10": 37,
       "count_20": 0,
-      "run_id": "08ae69fb-197a-4025-a536-2544c74f12d1"
+      "run_id": "ce318771-854a-4ac8-a152-9a4bd7e1cfb2"
     },
     "500": {
-      "api_latency_ms": 77.66,
-      "solve_time_seconds": 0.0356,
-      "expected_discount_cost": 793.7,
-      "expected_net_profit": 8746.5,
-      "budget_utilization_pct": 15.87,
-      "count_0": 358,
-      "count_10": 141,
-      "count_20": 1,
-      "run_id": "597eac41-f10b-4bc8-8c63-1f3ff48763b2"
+      "api_latency_ms": 134.8,
+      "solve_time_seconds": 0.0444,
+      "expected_discount_cost": 1002.99,
+      "expected_net_profit": 8886.21,
+      "budget_utilization_pct": 20.06,
+      "count_0": 327,
+      "count_10": 170,
+      "count_20": 3,
+      "run_id": "9baeeb06-89ec-414a-92f8-f4587b4f05a3"
     },
     "1500": {
-      "api_latency_ms": 163.62,
-      "solve_time_seconds": 0.0517,
-      "expected_discount_cost": 2288.5,
-      "expected_net_profit": 27328.97,
-      "budget_utilization_pct": 45.77,
-      "count_0": 1083,
-      "count_10": 413,
-      "count_20": 4,
-      "run_id": "bb207048-1f4c-4630-917f-1faf62723cc9"
+      "api_latency_ms": 279.87,
+      "solve_time_seconds": 0.0827,
+      "expected_discount_cost": 3073.57,
+      "expected_net_profit": 27757.62,
+      "budget_utilization_pct": 61.47,
+      "count_0": 970,
+      "count_10": 517,
+      "count_20": 13,
+      "run_id": "b8e9e383-8c10-4f7b-844a-713ff1c88075"
     },
     "3000": {
-      "api_latency_ms": 289.8,
-      "solve_time_seconds": 0.0805,
-      "expected_discount_cost": 4327.86,
-      "expected_net_profit": 53855.38,
-      "budget_utilization_pct": 86.56,
-      "count_0": 2213,
-      "count_10": 775,
-      "count_20": 12,
-      "run_id": "6cdab024-45a5-4d61-ad17-1caec17dfad2"
+      "api_latency_ms": 519.99,
+      "solve_time_seconds": 0.1112,
+      "expected_discount_cost": 4997.16,
+      "expected_net_profit": 54657.36,
+      "budget_utilization_pct": 99.94,
+      "count_0": 2135,
+      "count_10": 845,
+      "count_20": 20,
+      "run_id": "23fcd4f2-9cdb-4602-8b36-f133267b29b3"
     }
   },
   "allocation_retrieval": {
     "status_code": 200,
-    "latency_ms": 15.29,
+    "latency_ms": 19.76,
     "total_records": 3000
   },
   "drift_detection": {
     "clean_status": "Potential drift detected",
-    "clean_latency_ms": 91.62,
+    "clean_latency_ms": 171.95,
     "shifted_status": "Severe or widespread drift detected",
     "shifted_drifted_count": 7,
     "shifted_severe_count": 6,
-    "shifted_latency_ms": 42.83
+    "shifted_latency_ms": 80.01
   },
   "concurrency": {
     "total_requests": 30,
-    "total_time_ms": 357.13,
+    "total_time_ms": 616.16,
     "success_rate_pct": 100.0
   },
   "security_audit": {
-    "sensitive_findings_count": 5,
-    "findings": [
-      [
-        "scripts\\verify_system_integration.py",
-        "sensitive_patterns = [\"password\", \"secret_key\", \"api_key\", \""
-      ],
-      [
-        "scripts\\verify_system_integration.py",
-        "sensitive_patterns = [\"password\", \"secret_key\", \"api_key\", \""
-      ],
-      [
-        "scripts\\verify_system_integration.py",
-        "sensitive_patterns = [\"password\", \"secret_key\", \"api_key\", \""
-      ],
-      [
-        "scripts\\verify_system_integration.py",
-        "sensitive_patterns = [\"password\", \"secret_key\", \"api_key\", \""
-      ],
-      [
-        "scripts\\verify_system_integration.py",
-        "sensitive_patterns = [\"password\", \"secret_key\", \"api_key\", \""
-      ]
-    ]
+    "sensitive_findings_count": 0,
+    "findings": []
   }
 }

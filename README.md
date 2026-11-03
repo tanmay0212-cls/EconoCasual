@@ -5,7 +5,7 @@
 [![EconML](https://img.shields.io/badge/Causal%20ML-EconML%200.17-blue)](https://econml.azurewebsites.net/)
 [![DoWhy](https://img.shields.io/badge/Causal%20DAG-DoWhy%200.14-orange)](https://py-why.github.io/dowhy/)
 [![React 19](https://img.shields.io/badge/Frontend-React%2019%20%2B%20Vite%208-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Tests Passing](https://img.shields.io/badge/Tests-129%20Passed%20(82%20py%20%2B%2047%20js)-brightgreen)](https://github.com/tanmay0212-cls/EconoCasual)
+[![Tests Passing](https://img.shields.io/badge/Tests-141%20Passed%20(94%20py%20%2B%2047%20js)-brightgreen)](https://github.com/tanmay0212-cls/EconoCasual)
 [![FastAPI](https://img.shields.io/badge/API-FastAPI%200.115-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 
 > **Causal Machine Learning for Promotional Pricing Optimization**  
@@ -123,13 +123,33 @@ EconoCasual/
 │       └── tests.yml               # Automated GitHub Actions CI workflow
 ├── .gitignore                      # Git exclusion rules (models/*.joblib, caches, .env)
 ├── .env.example                    # Environment configuration template
-├── pytest.ini                      # Pytest test discovery & execution settings
+├── pytest.ini                      # Pytest discovery & configuration settings
 ├── requirements.txt                # Pinned Python causal dependencies
 ├── README.md                       # Master project documentation
+├── milestone_3_final_reconciliation.md # Milestone 3 technical audit & reconciliation report
+├── milestone_3_independent_review.md   # Milestone 3 independent review & mathematical proofs
+├── milestone_3_issue_log.md            # Audit issue log tracking ISSUE-01 through ISSUE-08
+├── milestone_3_recalculated_metrics.json # Reconciled metrics JSON artifact
+├── milestone_3_validation_results.csv  # Independent validation summary table
 ├── data/
-│   └── README.md                   # Data guide: schemas, custom placement, & generator instructions
+│   ├── README.md                   # Data guide: schemas, custom placement, & generator instructions
+│   ├── optimization_retail_data.csv# 15,000-customer multi-treatment optimization dataset ($0, $10, $20)
+│   ├── drift_reference.csv         # 5,000-customer reference baseline dataset
+│   ├── drift_current.csv           # 1,200-customer simulated drifted cohort
+│   ├── optimization/
+│   │   ├── customer_allocation.csv # 6,005 test customers allocated by SciPy HiGHS MILP
+│   │   ├── oracle_evaluation.csv   # Multi-policy benchmark & Oracle evaluation table
+│   │   └── budget_sensitivity.csv  # 10-tier budget sensitivity sweep ($500 to $25k)
+│   ├── synthetic_retail/
+│   │   ├── synthetic_retail_train.csv # 27,998 training records
+│   │   ├── synthetic_retail_test.csv  # 6,005 held-out test records
+│   │   ├── synthetic_retail_ground_truth.csv # Isolated potential outcomes (No Leakage)
+│   │   └── synthetic_counterfactual_predictions.csv # Calibrated probabilities (Brier: 0.2072)
+│   └── hillstrom/
+│       ├── raw/                    # Downloaded MineThatData benchmark dataset
+│       └── processed/              # Cleaned, standardized Hillstrom experiment partitions
 ├── sample_data/
-│   ├── synthetic_retail_campaign.csv # 2,500-customer reproducible benchmark dataset
+│   ├── synthetic_retail_campaign.csv # 2,500-customer reproducible binary benchmark dataset
 │   ├── DATASET_METADATA.md         # Technical DGP specification & logit parameters
 │   └── README.md                   # Sample data directory overview
 ├── docs/
@@ -140,68 +160,115 @@ EconoCasual/
 │   ├── CAUSAL_MODELING_SPEC.md     # Methodological DAG specification & backdoor identification
 │   └── DML_ESTIMATION_SPEC.md      # Week 2 DML estimation specification
 ├── models/
-│   ├── dml_metadata.json           # Week 2 binary DML metadata
+│   ├── multitreatment_model.joblib # Production multi-tier DML weights (4.84 MB)
+│   ├── multitreatment_metadata.json# Multi-tier feature mappings & calibration metadata
 │   ├── dml_model.joblib            # Week 2 binary DML weights
-│   ├── multitreatment_metadata.json# Week 3 multi-tier model metadata
-│   ├── multitreatment_model.joblib # Week 3 multi-tier DML weights (4.84 MB)
+│   ├── dml_metadata.json           # Week 2 binary DML metadata
+│   ├── synthetic_retail/           # Serialized synthetic CausalForestDML models
+│   ├── hillstrom/                  # Serialized Hillstrom causal models
 │   └── runs/                       # Persisted optimization run JSON artifacts
 ├── reports/
+│   ├── final_error_audit.md        # Comprehensive system error audit & verification report
 │   ├── final_project_report.md     # Master final integration & validation report (Weeks 1-4)
 │   ├── natural_language_summary_report.md # Week 4 natural-language synthesis report
 │   ├── data_drift_report.md        # Week 4 data drift statistical surveillance report
 │   ├── api_implementation_report.md # Week 4 REST API implementation report
-│   ├── optimization_summary.md     # Week 3 SciPy MILP knapsack optimization report
-│   ├── dml_training_report.md      # DML training & cross-fitting execution diagnostics
-│   ├── customer_treatment_effects.csv # Evaluated CATE point estimates & 95% CIs
-│   └── figures/                    # Standalone interactive Plotly HTML figures
-│       ├── uplift_curve.html
-│       ├── qini_curve.html
-│       └── effect_distribution.html
+│   ├── optimization_report.md      # Week 3 SciPy MILP knapsack optimization report
+│   ├── causal_model_evaluation.md  # Multi-treatment causal model evaluation report
+│   ├── causal_feature_audit.md     # Causal feature audit & anti-leakage quarantine report
+│   ├── dataset_validation_report.md# Dataset integrity & schema compliance report
+│   ├── propensity_overlap_report.md# Propensity score overlap & positivity diagnostic report
+│   ├── system_integration_benchmark_data.json # Measured API latencies & performance benchmarks
+│   └── figures/                    # Visualization plots and evaluation charts
 ├── scripts/
 │   ├── run_causal_pipeline.py      # Week 1: Data validation & DoWhy DAG backdoor identification
 │   ├── train_dml.py                # Week 2: Stratified split, DML training, & artifact export
-│   ├── estimate_customer_effects.py# Week 2: Model reload, customer CATE inference, & CSV export
-│   └── evaluate_uplift_qini.py     # Week 2: Uplift/Qini evaluation & Plotly HTML export
+│   ├── train_multitreatment_model.py # Week 3: Multi-tier DML training on 15,000 customers
+│   ├── generate_synthetic_retail.py  # Synthesize 40,000-customer multi-treatment dataset
+│   ├── train_synthetic_causal.py   # Train CausalForestDML on synthetic retail cohort
+│   ├── train_hillstrom_causal.py   # Train causal model on Hillstrom benchmark
+│   ├── generate_counterfactual_predictions.py # Generate counterfactual probabilities
+│   ├── run_budget_optimization.py  # SciPy HiGHS MILP knapsack allocation script
+│   ├── run_budget_sensitivity.py   # Budget sensitivity analysis script
+│   ├── run_policy_comparison.py    # Baseline comparison & Oracle benchmark script
+│   ├── generate_drift_datasets.py  # Generate drift reference and current datasets
+│   └── verify_system_integration.py# Comprehensive end-to-end integration benchmark script
 ├── src/
 │   ├── __init__.py
-│   ├── causal/
-│   │   ├── __init__.py             # Exposes EconoCausalDML, interpreter, & evaluation utilities
-│   │   ├── dml.py                  # EconML LinearDML estimator & cross-fitting pipeline
-│   │   ├── evaluation.py           # Ranking engine, Qini curves, AUUC, & Plotly charts
+│   ├── api/                        # FastAPI REST Application Layer (Week 4)
+│   │   ├── config.py               # API settings, paths, CORS configuration
+│   │   ├── main.py                 # FastAPI application factory & lifecycle manager
+│   │   ├── routes/                 # Route handlers (health, data, predict, optimize, drift)
+│   │   ├── schemas/                # Pydantic v2 request/response schemas
+│   │   └── services/               # Model loader, data validator, optimizer, drift service
+│   ├── causal/                     # Causal ML Estimation Layer
+│   │   ├── multi_tier_dml.py       # MultiTierCausalDML LinearDRLearner wrapper
+│   │   ├── synthetic_multitreatment.py # SyntheticMultiTreatmentDML engine
+│   │   ├── hillstrom_causal.py     # Hillstrom MineThatData causal engine
+│   │   ├── counterfactual_prediction.py # Counterfactual outcome prediction & calibration
+│   │   ├── evaluation.py           # Ranking, uplift curves, Qini curves, AUUC
 │   │   ├── graph.py                # Graphviz DOT DAG & DoWhy identification
-│   │   └── interpreter.py          # Customer CATE interpreter, 95% CIs, & categorization
+│   │   ├── interpreter.py          # Customer CATE interpreter, 95% CIs, & categorization
+│   │   └── propensity.py           # Propensity score estimation & overlap diagnostics
+│   ├── optimization/               # Prescriptive Optimization Layer (Week 3)
+│   │   ├── budget_optimizer.py     # SciPy HiGHS MILP knapsack solver
+│   │   ├── profit_calculator.py    # Economic revenue, margin, discount cost, & net profit
+│   │   ├── allocation_validator.py # Allocation matrix integrity & constraint validator
+│   │   ├── policy_evaluator.py     # Multi-policy benchmark evaluation
+│   │   └── sensitivity_analysis.py # Multi-budget sensitivity sweep
+│   ├── monitoring/                 # Continuous Statistical Monitoring Layer (Week 4)
+│   │   └── drift_detector.py       # Kolmogorov-Smirnov, PSI, Wasserstein, Chi2, TVD tests
 │   └── data/
-│       ├── __init__.py
 │       ├── generator.py            # Parameterized non-linear synthetic DGP
 │       └── schema.py               # Schema definitions, binary domains, & data validation
 ├── tests/
-│   ├── test_causal_dag.py          # Tests for DAG acyclicity & backdoor identification
-│   ├── test_data_generation.py     # Tests for DGP domains, null checks, & schema rules
-│   ├── test_dml.py                 # Tests for DML fitting, anti-leakage, seed reproducibility, & reload
-│   ├── test_evaluation.py          # Tests for ranking, Qini curves, AUUC, ties, & edge cases
-│   └── test_interpreter.py         # Tests for customer CATE alignment, 95% CIs, & non-finite inputs
+│   ├── test_allocation_validator.py# 5 tests: Allocation matrix schema & constraint validation
+│   ├── test_api.py                 # 17 tests: FastAPI endpoints, OpenAPI, validation, CORS
+│   ├── test_budget_optimizer.py    # 4 tests: Toy knapsack, objectives, monotonicity, face value
+│   ├── test_causal_dag.py          # 6 tests: DAG acyclicity, DoWhy backdoor identification
+│   ├── test_data_generation.py     # 7 tests: Reproducibility, sample size, schema domains
+│   ├── test_dml.py                 # 10 tests: DML fit/shapes, anti-leakage, serialization
+│   ├── test_drift.py               # 10 tests: Statistical drift detection, KS, PSI, Chi2, TVD
+│   ├── test_evaluation.py          # 8 tests: Ranking monotonicity, Qini/AUUC, edge cases
+│   ├── test_interpreter.py         # 8 tests: Customer CATE alignment, 95% CIs, non-finite checks
+│   ├── test_multitreatment.py      # 8 tests: Multi-tier DML, probability calibration, overlap
+│   ├── test_optimization.py        # 8 tests: SciPy MILP budget adherence, mutually exclusive actions
+│   └── test_profit_calculator.py   # 3 tests: Margin estimation, zero-cost, accounting identity
 └── frontend/                       # React 19 + Vite Analytics Dashboard
     ├── package.json                # Frontend package configuration & npm scripts
     ├── vite.config.js              # Vite bundler, code-splitting & Vitest configuration
     ├── index.html                  # HTML5 application shell
     ├── public/
+    │   ├── allocation_matrix.csv   # Client-accessible allocation dataset
     │   └── sample_retail_campaign.csv # Bundled static asset for client-side demo
     ├── src/
     │   ├── index.css               # Design system & dark-mode styling
-    │   ├── App.jsx                 # Dashboard root coordinating DAG viewer & telemetry
+    │   ├── App.jsx                 # Dashboard root coordinating all dashboard tabs
     │   ├── components/             # Reusable React components
-    │   │   ├── Header.jsx          # Header with dataset status badge
+    │   │   ├── Header.jsx          # Header with dataset status badge & API health indicator
     │   │   ├── MetricsCards.jsx    # KPI telemetry summary cards
     │   │   ├── DatasetUploader.jsx # Drag-and-drop CSV upload & preview table
     │   │   ├── BudgetSettings.jsx  # Budget constraints & discount tier simulator
-    │   │   ├── CausalDAGViewer.jsx # Interactive SVG Causal DAG visualizer & node inspector
-    │   │   ├── MarketingTelemetry.jsx # Plotly charts for channel distribution & confounders
-    │   │   └── FutureDeliverables.jsx # Wireframe placeholders for Week 2 and Week 3
-    │   └── tests/                  # Frontend Vitest Suite (12 unit tests)
+    │   │   ├── AllocationMatrix.jsx# SciPy MILP allocation matrix & KPI cards
+    │   │   ├── DataDriftViewer.jsx # Continuous statistical drift monitoring panel
+    │   │   ├── BusinessSummaryPanel.jsx # Natural-language executive decision briefing
+    │   │   ├── CausalDAGViewer.jsx # Interactive SVG Causal DAG visualizer
+    │   │   └── MarketingTelemetry.jsx # Channel distribution & confounder telemetry
+    │   ├── services/
+    │   │   ├── api.js              # Centralized Axios/fetch client for FastAPI backend
+    │   │   ├── optimizationService.js # Optimization and allocation matrix data provider
+    │   │   ├── summaryService.js   # Deterministic natural-language summary generator
+    │   │   └── driftService.js     # Data drift API service connector
+    │   └── tests/                  # Frontend Vitest Suite (47 unit tests)
+    │       ├── AllocationMatrix.test.jsx
     │       ├── BudgetSettings.test.jsx
+    │       ├── BusinessSummaryPanel.test.jsx
+    │       ├── csvValidator.test.js
+    │       ├── DataDriftViewer.test.jsx
     │       ├── DatasetUploader.test.jsx
     │       ├── Header.test.jsx
-    │       └── csvValidator.test.js
+    │       └── summaryService.test.js
+    └── dist/                       # Optimized production build artifacts
 ```
 
 ---
@@ -246,38 +313,69 @@ cd ..
 
 ## 6. Pipeline Execution Guide
 
-Run the pipeline sequentially using the documented scripts:
-
-### Step 1: Validate Dataset & Causal DAG Backdoor Identification
-```bash
-python scripts/run_causal_pipeline.py
+### 6.1 Backend Setup & FastAPI Service Launch
+Activate the virtual environment and start the high-performance FastAPI backend server:
+```powershell
+# On Windows PowerShell:
+.\.venv\Scripts\Activate.ps1
+uvicorn src.api.main:app --host 127.0.0.1 --port 8000 --reload
 ```
-*Validates the 2,500-record dataset schema, builds the Causal DAG, initializes DoWhy `CausalModel`, and identifies the minimal backdoor adjustment set.*
-
-### Step 2: Train the EconML Double Machine Learning Estimator
+On Linux/macOS:
 ```bash
-python scripts/train_dml.py
+source .venv/bin/activate
+uvicorn src.api.main:app --host 127.0.0.1 --port 8000 --reload
 ```
-*Performs stratified 80/20 train/eval split, fits `LinearDML` with 5-fold cross-fitting, serializes `models/dml_model.joblib` and `models/dml_metadata.json`, and outputs the ATE evaluation report.*
 
-### Step 3: Estimate Customer-Level Treatment Effects (CATE)
-```bash
-python scripts/estimate_customer_effects.py
-```
-*Reloads the trained model, estimates CATE and 95% Wald confidence intervals for the 500 held-out customers, and exports `reports/customer_treatment_effects.csv`.*
+### 6.2 Interactive Swagger & OpenAPI Documentation
+Once the backend is running, explore and interact with all endpoints via:
+* **Interactive Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+* **ReDoc Documentation:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+* **OpenAPI JSON Schema:** [http://127.0.0.1:8000/openapi.json](http://127.0.0.1:8000/openapi.json)
 
-### Step 4: Evaluate Uplift & Qini Curves
-```bash
-python scripts/evaluate_uplift_qini.py
-```
-*Computes the Radcliffe Qini score, AUUC, and decile targeting breakdown, exporting interactive Plotly visualizations to `reports/figures/`.*
-
-### Step 5: Launch the React Analytics Dashboard
+### 6.3 React Frontend Dashboard Launch
+In a separate terminal, start the React 19 development server:
 ```bash
 cd frontend
+npm install
 npm run dev
 ```
-*Opens the interactive dashboard at `http://localhost:5173`.*
+* **Frontend Application URL:** [http://localhost:5173](http://localhost:5173)
+
+### 6.4 Backend/Frontend Connection & CORS Configuration
+The React frontend communicates directly with the FastAPI backend at `http://127.0.0.1:8000`. Cross-Origin Resource Sharing (CORS) is configured to permit `http://localhost:5173`, `http://127.0.0.1:5173`, and standard local development ports with full header and preflight support.
+
+### 6.5 End-to-End Operational Workflow
+The integrated platform executes a complete 6-stage causal decision lifecycle:
+1. **CSV Upload & Schema Quarantine (`POST /data/validate`):**  
+   Accepts multipart CSV uploads or approved server-side dataset references (`optimization_retail_data`). Strictly validates schema domains, required columns, and prevents path traversal attacks (`status 400`).
+2. **CATE & Purchase Probability Prediction (`POST /predict/effects`):**  
+   Loads the trained multi-tier DML model and estimates customer-specific Conditional Average Treatment Effects ($\hat{\tau}_{10}, \hat{\tau}_{20}$) and counterfactual purchase probabilities ($\hat{P}_0, \hat{P}_{10}, \hat{P}_{20} \in [0, 1]$).
+3. **Prescriptive SciPy MILP Budget Optimization (`POST /optimize`):**  
+   Solves the Multiple-Choice Knapsack Problem using SciPy's HiGHS solver to maximize expected net profit under a user-configured marketing budget ceiling (e.g. $5,000.00). Guarantees zero budget violation.
+4. **Allocation Matrix Inspection & CSV Export (`GET /allocation/{run_id}`):**  
+   Renders the personalized allocation matrix with search, tier filters ($0, $10, $20), counterfactual probability projections, and allows one-click CSV export of the optimal policy.
+5. **Continuous Data Drift Surveillance (`POST /drift/check`):**  
+   Statistically compares incoming customer batches against the approved reference distribution (`data/drift_reference.csv` vs `data/drift_current.csv`) using Kolmogorov-Smirnov tests, Population Stability Index (PSI), Wasserstein distance, Pearson Chi-Square, and Total Variation Distance.
+6. **Automated Executive Decision Briefing:**  
+   Synthesizes optimization outcomes, financial lifts, budget utilization, and drift warnings into a natural-language executive summary without external LLM dependencies (`frontend/src/services/summaryService.js`).
+
+### 6.6 Clarification of Datasets & Scale Limits
+To prevent confusion across development milestones and production interfaces, the repository clearly distinguishes three data scales:
+* **2,500-Customer Sample Dataset (`sample_data/synthetic_retail_campaign.csv`):**  
+  Used in Week 1 & 2 for rapid local smoke tests, DAG backdoor identification, and binary treatment CATE benchmarking.
+* **15,000-Customer Optimization Dataset (`data/optimization_retail_data.csv`):**  
+  The full multi-treatment retail dataset ($0, $10, $20) with non-linear confounding, baseline order values, and gross margin rates. Serves as the primary reference baseline for multi-tier DML training and backend optimization benchmarks.
+* **3,000-Customer Dashboard Display Limit:**  
+  While the backend FastAPI server and SciPy optimizer process full cohorts (e.g. 6,005 test customers or 15,000 records in <0.5s), the React frontend table virtualizes and displays the first 3,000 customers for smooth 60fps rendering, memory efficiency, and instant client-side filtering.
+
+### 6.7 Sequential Offline Pipeline Scripts (Optional Development Execution)
+Alternatively, run the causal inference pipeline sequentially using standalone scripts:
+1. `python scripts/run_causal_pipeline.py` — Week 1 DAG validation & backdoor identification
+2. `python scripts/train_dml.py` — Week 2 binary DML training & ATE validation
+3. `python scripts/train_multitreatment_model.py` — Week 3 multi-tier DML training on 15,000 customers
+4. `python scripts/run_budget_optimization.py` — Week 3 SciPy MILP budget knapsack optimization
+5. `python scripts/run_policy_comparison.py` — Multi-policy strategy comparison & Oracle benchmark
+6. `python scripts/verify_system_integration.py` — Automated end-to-end integration benchmark audit
 
 ---
 
@@ -304,23 +402,26 @@ All metrics were evaluated on the **500 held-out evaluation customers** (20% tes
 
 ## 8. Automated Testing Suite
 
-The repository includes a comprehensive, multi-framework automated test suite:
+The repository includes a comprehensive, multi-framework automated test suite with **141 tests passing (100% pass rate)**:
 
-### Backend Pytest Suite (82 Tests)
+### Backend Pytest Suite (94 Tests)
 ```bash
 pytest -v
 ```
 ```text
-tests/test_api.py              17 passed  (Health, OpenAPI, upload/reference validation, CATE inference, MILP optimization, drift KS/PSI, CORS)
-tests/test_causal_dag.py        6 passed  (DAG acyclicity, DoWhy backdoor identification, input corruption)
-tests/test_data_generation.py   7 passed  (Reproducibility, sample size, schema domains, business logic)
-tests/test_dml.py              10 passed  (DML fit/shapes, anti-leakage, binary domains, serialization, reproducibility, non-finite features)
-tests/test_drift.py            10 passed  (Identical/shifted distributions, categorical shift, missing columns, new categories, small N, schema integrity, bounds, notice)
-tests/test_evaluation.py        8 passed  (Ranking monotonicity, Qini/AUUC, zero-treated/control edge cases, tied effects, empty inputs)
-tests/test_interpreter.py       8 passed  (Row alignment, customer ID quarantine, 95% CIs, non-finite checks, configurable threshold)
-tests/test_multitreatment.py    8 passed  (Multi-tier DML, probability calibration [0, 1], cross-fitting, overlap, anti-leakage)
-tests/test_optimization.py      8 passed  (SciPy MILP budget adherence, mutually exclusive knapsack, edge cases, benchmarks)
-============================= 82 passed in ~18s =============================
+tests/test_allocation_validator.py  5 passed  (Allocation matrix schema, budget compliance, integrity rules)
+tests/test_api.py                  17 passed  (Health, OpenAPI, upload validation, CATE inference, MILP optimization, drift, CORS)
+tests/test_budget_optimizer.py      4 passed  (Toy knapsack inspection, objective consistency, budget monotonicity, face-value mode)
+tests/test_causal_dag.py            6 passed  (DAG acyclicity, DoWhy backdoor identification, input corruption)
+tests/test_data_generation.py       7 passed  (Reproducibility, sample size, schema domains, business logic)
+tests/test_dml.py                  10 passed  (DML fit/shapes, anti-leakage, binary domains, serialization, reproducibility)
+tests/test_drift.py                10 passed  (Identical/shifted distributions, categorical shift, missing columns, new categories)
+tests/test_evaluation.py            8 passed  (Ranking monotonicity, Qini/AUUC, edge cases, tied effects, empty inputs)
+tests/test_interpreter.py           8 passed  (Row alignment, customer ID quarantine, 95% CIs, non-finite checks)
+tests/test_multitreatment.py        8 passed  (Multi-tier DML, probability calibration [0, 1], cross-fitting, overlap)
+tests/test_optimization.py          8 passed  (SciPy MILP budget adherence, knapsack integrity, edge cases, benchmarks)
+tests/test_profit_calculator.py     3 passed  (Margin rate estimation, zero-discount cost, profit accounting identities)
+============================= 94 passed, 3 warnings in ~26s =============================
 ```
 
 ### Frontend Vitest Suite (47 Tests)
@@ -329,14 +430,14 @@ cd frontend
 npm test
 ```
 ```text
- ✓ src/tests/summaryService.test.js (15 tests: currency/count/pct formatting, 6 section templates, zero-budget, clean drift, missing/inconsistent metrics)
- ✓ src/tests/csvValidator.test.js (5 tests)
- ✓ src/tests/Header.test.jsx (3 tests)
- ✓ src/tests/BudgetSettings.test.jsx (2 tests)
- ✓ src/tests/DatasetUploader.test.jsx (2 tests)
- ✓ src/tests/BusinessSummaryPanel.test.jsx (6 tests: title/run ID, 6 dashboard sections, narrative accuracy, metrics drawer inspection, missing data fallback)
- ✓ src/tests/DataDriftViewer.test.jsx (6 tests: title/badges, KPI cards, KS/Chi-Square metrics, cohort toggle, distribution chart, causal guidance)
- ✓ src/tests/AllocationMatrix.test.jsx (8 tests: budget input, 8 KPI cards, strategy benchmarks, search/tier filters, uplift expander, error state)
+ ✓ src/tests/summaryService.test.js (15 tests: currency/count/pct formatting, 6 section templates, zero-budget, clean drift)
+ ✓ src/tests/csvValidator.test.js (5 tests: file validation, delimiter checks, column verification)
+ ✓ src/tests/Header.test.jsx (3 tests: health badges, title, navigation)
+ ✓ src/tests/BudgetSettings.test.jsx (2 tests: budget slider, tier constraints)
+ ✓ src/tests/DatasetUploader.test.jsx (2 tests: drag-and-drop, file parsing)
+ ✓ src/tests/BusinessSummaryPanel.test.jsx (6 tests: title/run ID, 6 dashboard sections, narrative accuracy, drawer inspection)
+ ✓ src/tests/DataDriftViewer.test.jsx (6 tests: title/badges, KPI cards, KS/Chi-Square metrics, cohort toggle, distribution chart)
+ ✓ src/tests/AllocationMatrix.test.jsx (8 tests: budget input, 8 KPI cards, strategy benchmarks, search/tier filters, uplift expander)
  Test Files  8 passed (8)
       Tests  47 passed (47)
 ```
