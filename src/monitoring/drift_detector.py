@@ -101,6 +101,8 @@ class OverallDriftStatus(str, enum.Enum):
     NO_DRIFT = "No significant drift detected"
     POTENTIAL_DRIFT = "Potential drift detected"
     SEVERE_DRIFT = "Severe or widespread drift detected"
+    SCHEMA_ERROR = "Schema validation failed"
+    INSUFFICIENT_DATA = "Insufficient data for statistical tests"
 
 
 @dataclass
@@ -152,6 +154,7 @@ class DriftReport:
     summary_message: str
     recommended_next_action: str
     prediction_drift: List[FeatureDriftResult] = field(default_factory=list)
+    prediction_drift_status: str = "available"  # 'available' | 'unavailable' | 'not_evaluated'
     methodological_notice: str = (
         "Methodological Notice: Covariate drift (P(X)) measures shift in customer features. "
         "It does NOT automatically imply concept drift (P(Y | X, T)) or invalidity of causal treatment effects. "
@@ -193,6 +196,22 @@ class EconoCausalDriftDetector:
         """
         if reference_data is None or len(reference_data) == 0:
             raise ValueError("Reference dataset is empty or None.")
+
+        # Validate reference dataset contains required causal model features
+        missing_ref_cols = [c for c in REQUIRED_MODEL_FEATURES if c not in reference_data.columns]
+        if missing_ref_cols:
+            raise ValueError(f"Reference dataset is missing required model features: {missing_ref_cols}")
+
+        if not (0.0 < float(ks_alpha) < 1.0):
+            raise ValueError(f"ks_alpha must be strictly between 0 and 1, got {ks_alpha}")
+        if float(psi_moderate_threshold) <= 0.0:
+            raise ValueError(f"psi_moderate_threshold must be strictly positive, got {psi_moderate_threshold}")
+        if float(psi_high_threshold) <= float(psi_moderate_threshold):
+            raise ValueError(
+                f"psi_high_threshold ({psi_high_threshold}) must be greater than psi_moderate_threshold ({psi_moderate_threshold})"
+            )
+        if int(min_sample_size) < 1:
+            raise ValueError(f"min_sample_size must be >= 1, got {min_sample_size}")
 
         self.reference_data = reference_data.copy()
         self.ks_alpha = float(ks_alpha)
@@ -351,8 +370,17 @@ class EconoCausalDriftDetector:
         self,
         feature_name: str,
         current_data: pd.DataFrame,
+        ks_alpha: Optional[float] = None,
+        psi_moderate_threshold: Optional[float] = None,
+        psi_high_threshold: Optional[float] = None,
+        min_sample_size: Optional[int] = None,
     ) -> FeatureDriftResult:
         """Run two-sample Kolmogorov-Smirnov test, PSI, and Wasserstein distance on numerical feature."""
+        eff_alpha = float(ks_alpha) if ks_alpha is not None else self.ks_alpha
+        eff_psi_mod = float(psi_moderate_threshold) if psi_moderate_threshold is not None else self.psi_moderate_threshold
+        eff_psi_high = float(psi_high_threshold) if psi_high_threshold is not None else self.psi_high_threshold
+        eff_min_n = int(min_sample_size) if min_sample_size is not None else self.min_sample_size
+
         ref_vals = pd.to_numeric(self.reference_data[feature_name], errors="coerce").dropna().to_numpy(dtype=float)
         cur_vals = pd.to_numeric(current_data[feature_name], errors="coerce").dropna().to_numpy(dtype=float)
 
@@ -368,8 +396,8 @@ class EconoCausalDriftDetector:
         }
         ref_summary = self.ref_numeric_summaries.get(feature_name, {})
 
-        # Handle small sample sizes or identical data
-        if len(cur_vals) < 5 or len(ref_vals) < 5:
+        # Handle small sample sizes explicitly
+        if len(cur_vals) < eff_min_n or len(ref_vals) < eff_min_n:
             return FeatureDriftResult(
                 feature_name=feature_name,
                 feature_type="numeric",
@@ -382,8 +410,11 @@ class EconoCausalDriftDetector:
                 wasserstein_distance=0.0,
                 reference_summary=ref_summary,
                 current_summary=cur_summary,
-                thresholds={"ks_alpha": self.ks_alpha, "psi_high": self.psi_high_threshold},
-                recommended_action="Sample size too small for statistical testing; collect more observations.",
+                thresholds={"ks_alpha": eff_alpha, "psi_high": eff_psi_high},
+                recommended_action=(
+                    f"Sample size ({len(cur_vals)}) is below required minimum threshold ({eff_min_n}); "
+                    "statistical test results are inconclusive."
+                ),
             )
 
         # 1. Kolmogorov-Smirnov Two-Sample Test
@@ -400,9 +431,9 @@ class EconoCausalDriftDetector:
 
         # Determine drift detection & severity:
         # A feature is flagged as drifted if KS p-value < alpha OR PSI >= moderate threshold
-        drift_detected = (p_val < self.ks_alpha) or (psi_val >= self.psi_moderate_threshold)
+        drift_detected = (p_val < eff_alpha) or (psi_val >= eff_psi_mod)
 
-        if psi_val >= self.psi_high_threshold or (p_val < 0.0001 and psi_val >= 0.15):
+        if psi_val >= eff_psi_high or (p_val < 0.0001 and psi_val >= 0.15):
             severity = DriftSeverity.HIGH
             action = f"Significant distributional divergence in '{feature_name}'. Investigate acquisition shift and re-calibrate propensity models."
         elif drift_detected:
@@ -424,7 +455,7 @@ class EconoCausalDriftDetector:
             wasserstein_distance=round(w_dist, 4),
             reference_summary=ref_summary,
             current_summary=cur_summary,
-            thresholds={"ks_alpha": self.ks_alpha, "psi_moderate": self.psi_moderate_threshold, "psi_high": self.psi_high_threshold},
+            thresholds={"ks_alpha": eff_alpha, "psi_moderate": eff_psi_mod, "psi_high": eff_psi_high},
             recommended_action=action,
         )
 
@@ -432,8 +463,13 @@ class EconoCausalDriftDetector:
         self,
         feature_name: str,
         current_data: pd.DataFrame,
+        alpha: Optional[float] = None,
+        min_sample_size: Optional[int] = None,
     ) -> FeatureDriftResult:
         """Run Chi-Square test, Total Variation Distance, and category emergence checks on categorical feature."""
+        eff_alpha = float(alpha) if alpha is not None else self.ks_alpha
+        eff_min_n = int(min_sample_size) if min_sample_size is not None else self.min_sample_size
+
         ref_series = self.reference_data[feature_name].dropna().astype(str)
         cur_series = current_data[feature_name].dropna().astype(str)
 
@@ -454,8 +490,8 @@ class EconoCausalDriftDetector:
         # Total Variation Distance (TVD)
         tvd = 0.5 * sum(abs(cur_props.get(c, 0.0) - ref_props.get(c, 0.0)) for c in all_unique)
 
-        # Chi-Square Goodness-of-Fit
-        if len(cur_series) < 10:
+        # Chi-Square Goodness-of-Fit sample size guard
+        if len(cur_series) < eff_min_n:
             return FeatureDriftResult(
                 feature_name=feature_name,
                 feature_type="categorical",
@@ -469,8 +505,11 @@ class EconoCausalDriftDetector:
                 current_summary={"proportions": cur_props},
                 new_categories=new_categories,
                 missing_categories=missing_categories,
-                thresholds={"alpha": self.ks_alpha, "tvd_threshold": 0.15},
-                recommended_action="Sample size too small for Chi-Square test; collect more customer records.",
+                thresholds={"alpha": eff_alpha, "tvd_threshold": 0.15},
+                recommended_action=(
+                    f"Sample size ({len(cur_series)}) is below required minimum threshold ({eff_min_n}); "
+                    "Chi-Square test is inconclusive."
+                ),
             )
 
         cur_freq_aligned = np.array([cur_counts.get(c, 0) for c in all_unique], dtype=float)
@@ -488,7 +527,7 @@ class EconoCausalDriftDetector:
             p_val = 1.0
 
         # Drift conditions: Chi2 p-val < alpha OR TVD >= 0.15 OR new categories appeared
-        drift_detected = (p_val < self.ks_alpha) or (tvd >= 0.15) or (len(new_categories) > 0)
+        drift_detected = (p_val < eff_alpha) or (tvd >= 0.15) or (len(new_categories) > 0)
 
         if len(new_categories) > 0 or p_val < 0.001 or tvd >= 0.25:
             severity = DriftSeverity.HIGH
@@ -513,26 +552,157 @@ class EconoCausalDriftDetector:
             current_summary={"proportions": cur_props},
             new_categories=new_categories,
             missing_categories=missing_categories,
-            thresholds={"alpha": self.ks_alpha, "tvd_threshold": 0.15},
+            thresholds={"alpha": eff_alpha, "tvd_threshold": 0.15},
             recommended_action=action,
         )
 
-    def detect_drift(self, current_data: pd.DataFrame) -> DriftReport:
-        """Execute full data drift detection workflow across schema, numerical, and categorical features.
-
-        Args:
-            current_data: Current evaluation DataFrame.
+    def evaluate_prediction_drift(
+        self,
+        current_data: pd.DataFrame,
+        reference_data: Optional[pd.DataFrame] = None,
+        ks_alpha: Optional[float] = None,
+        psi_moderate_threshold: Optional[float] = None,
+        psi_high_threshold: Optional[float] = None,
+        min_sample_size: Optional[int] = None,
+        model = None,
+    ) -> Tuple[List[FeatureDriftResult], str]:
+        """Run statistical KS and PSI tests on counterfactual purchase probabilities (P0, P10, P20).
 
         Returns:
-            Comprehensive DriftReport.
+            Tuple of (prediction_drift_results_list, status_string) where status is
+            'available' or 'unavailable'.
         """
+        eff_alpha = float(ks_alpha) if ks_alpha is not None else self.ks_alpha
+        eff_psi_mod = float(psi_moderate_threshold) if psi_moderate_threshold is not None else self.psi_moderate_threshold
+        eff_psi_high = float(psi_high_threshold) if psi_high_threshold is not None else self.psi_high_threshold
+        eff_min_n = int(min_sample_size) if min_sample_size is not None else self.min_sample_size
+
+        ref_df = reference_data if reference_data is not None else self.reference_data
+        pred_results: List[FeatureDriftResult] = []
+
+        if current_data is None or ref_df is None:
+            return ([], "unavailable")
+
+        # If predictions are absent from current_data but causal model is available, score them safely
+        df_cur = current_data
+        missing_preds = [feat for feat in PREDICTION_FEATURES if feat not in df_cur.columns]
+        if missing_preds and model is not None and getattr(model, "is_fitted_", False):
+            try:
+                # Check required features for model scoring
+                reqs = getattr(model, "features_", REQUIRED_MODEL_FEATURES)
+                if all(c in df_cur.columns for c in reqs):
+                    probs = model.predict_counterfactual_probabilities(df_cur)
+                    df_cur = df_cur.copy()
+                    df_cur["predicted_purchase_probability_0"] = probs[0]
+                    df_cur["predicted_purchase_probability_10"] = probs[10]
+                    df_cur["predicted_purchase_probability_20"] = probs[20]
+            except Exception:
+                pass
+
+        # Check availability of prediction columns across both reference and current data
+        has_all_preds = all(feat in df_cur.columns and feat in ref_df.columns for feat in PREDICTION_FEATURES)
+        if not has_all_preds:
+            return ([], "unavailable")
+
+        for feat in PREDICTION_FEATURES:
+            ref_vals = pd.to_numeric(ref_df[feat], errors="coerce").dropna().to_numpy(dtype=float)
+            cur_vals = pd.to_numeric(df_cur[feat], errors="coerce").dropna().to_numpy(dtype=float)
+
+            if len(cur_vals) < eff_min_n or len(ref_vals) < eff_min_n:
+                pred_results.append(
+                    FeatureDriftResult(
+                        feature_name=feat,
+                        feature_type="prediction",
+                        drift_detected=False,
+                        severity=DriftSeverity.NONE,
+                        test_name="kolmogorov_smirnov",
+                        test_statistic=0.0,
+                        p_value=1.0,
+                        psi=0.0,
+                        wasserstein_distance=0.0,
+                        reference_summary={"mean": round(float(np.mean(ref_vals)), 4), "std": round(float(np.std(ref_vals)), 4)} if len(ref_vals) > 0 else {},
+                        current_summary={"mean": round(float(np.mean(cur_vals)), 4), "std": round(float(np.std(cur_vals)), 4)} if len(cur_vals) > 0 else {},
+                        thresholds={"ks_alpha": eff_alpha, "psi_high": eff_psi_high},
+                        recommended_action=(
+                            f"Sample size ({len(cur_vals)}) is below required threshold ({eff_min_n}); "
+                            "prediction drift test is inconclusive."
+                        ),
+                    )
+                )
+                continue
+
+            ks_res = stats.ks_2samp(ref_vals, cur_vals)
+            ks_stat = float(ks_res.statistic)
+            p_val = float(ks_res.pvalue)
+            psi_val = self.calculate_psi(ref_vals, cur_vals)
+            w_dist = float(stats.wasserstein_distance(ref_vals, cur_vals))
+
+            drift_detected = (p_val < eff_alpha) or (psi_val >= eff_psi_mod)
+            if psi_val >= eff_psi_high or (p_val < 0.0001 and psi_val >= 0.15):
+                severity = DriftSeverity.HIGH
+                action = f"Significant prediction drift in '{feat}'. Conversion behavior shifted; review pricing elasticity."
+            elif drift_detected:
+                severity = DriftSeverity.MODERATE
+                action = f"Moderate prediction shift in '{feat}'. Monitor conversion calibration."
+            else:
+                severity = DriftSeverity.NONE
+                action = f"Prediction distribution for '{feat}' is stable relative to baseline reference."
+
+            pred_results.append(
+                FeatureDriftResult(
+                    feature_name=feat,
+                    feature_type="prediction",
+                    drift_detected=drift_detected,
+                    severity=severity,
+                    test_name="kolmogorov_smirnov",
+                    test_statistic=round(ks_stat, 4),
+                    p_value=round(p_val, 6),
+                    psi=round(psi_val, 4),
+                    wasserstein_distance=round(w_dist, 4),
+                    reference_summary={"mean": round(float(np.mean(ref_vals)), 4), "std": round(float(np.std(ref_vals)), 4)},
+                    current_summary={"mean": round(float(np.mean(cur_vals)), 4), "std": round(float(np.std(cur_vals)), 4)},
+                    thresholds={"ks_alpha": eff_alpha, "psi_high": eff_psi_high},
+                    recommended_action=action,
+                )
+            )
+
+        return (pred_results, "available")
+
+    def detect_drift(
+        self,
+        current_data: pd.DataFrame,
+        ks_alpha: Optional[float] = None,
+        psi_moderate_threshold: Optional[float] = None,
+        psi_high_threshold: Optional[float] = None,
+        min_sample_size: Optional[int] = None,
+        model = None,
+    ) -> DriftReport:
+        """Execute full data drift detection workflow across schema, numerical, and categorical features.
+
+        Thresholds can be supplied per call without mutating the detector instance.
+        """
+        eff_ks_alpha = float(ks_alpha) if ks_alpha is not None else self.ks_alpha
+        eff_psi_mod = float(psi_moderate_threshold) if psi_moderate_threshold is not None else self.psi_moderate_threshold
+        eff_psi_high = float(psi_high_threshold) if psi_high_threshold is not None else self.psi_high_threshold
+        eff_min_n = int(min_sample_size) if min_sample_size is not None else self.min_sample_size
+
+        if not (0.0 < eff_ks_alpha < 1.0):
+            raise ValueError(f"ks_alpha must be strictly between 0 and 1, got {eff_ks_alpha}")
+        if eff_psi_mod <= 0.0:
+            raise ValueError(f"psi_moderate_threshold must be strictly positive, got {eff_psi_mod}")
+        if eff_psi_high <= eff_psi_mod:
+            raise ValueError(f"psi_high_threshold ({eff_psi_high}) must be > psi_moderate_threshold ({eff_psi_mod})")
+        if eff_min_n < 1:
+            raise ValueError(f"min_sample_size must be >= 1, got {eff_min_n}")
+
         # 1. Model-input & schema integrity check
         schema_res = self.validate_schema(current_data)
 
+        # STRICT SEPARATION: Schema failure is NOT severe statistical drift
         if not schema_res.is_valid:
             return DriftReport(
-                overall_status=OverallDriftStatus.SEVERE_DRIFT,
-                drift_detected=True,
+                overall_status=OverallDriftStatus.SCHEMA_ERROR,
+                drift_detected=False,
                 total_features_evaluated=0,
                 drifted_features_count=0,
                 severe_drift_count=0,
@@ -541,10 +711,65 @@ class EconoCausalDriftDetector:
                 schema_validation=schema_res,
                 features=[],
                 summary_message=f"Model input schema validation failed: {schema_res.errors}",
-                recommended_next_action="Resolve schema errors (missing columns or invalid types) before performing statistical drift tests.",
+                recommended_next_action="Resolve schema integrity errors (missing columns, type errors, or out-of-range bounds) before statistical testing.",
+                prediction_drift=[],
+                prediction_drift_status="not_evaluated",
             )
 
-        # 2. Evaluate all features
+        # 2. Check for insufficient sample size
+        n_current = len(current_data) if current_data is not None else 0
+        if n_current < eff_min_n:
+            feature_results: List[FeatureDriftResult] = []
+            for feat in NUMERICAL_FEATURES:
+                if feat in current_data.columns and feat in self.reference_data.columns:
+                    feature_results.append(
+                        self.evaluate_numerical_feature(
+                            feat, current_data,
+                            ks_alpha=eff_ks_alpha,
+                            psi_moderate_threshold=eff_psi_mod,
+                            psi_high_threshold=eff_psi_high,
+                            min_sample_size=eff_min_n,
+                        )
+                    )
+            for feat in CATEGORICAL_FEATURES:
+                if feat in current_data.columns and feat in self.reference_data.columns:
+                    feature_results.append(
+                        self.evaluate_categorical_feature(
+                            feat, current_data,
+                            alpha=eff_ks_alpha,
+                            min_sample_size=eff_min_n,
+                        )
+                    )
+
+            pred_results, pred_status = self.evaluate_prediction_drift(
+                current_data,
+                ks_alpha=eff_ks_alpha,
+                psi_moderate_threshold=eff_psi_mod,
+                psi_high_threshold=eff_psi_high,
+                min_sample_size=eff_min_n,
+                model=model,
+            )
+
+            return DriftReport(
+                overall_status=OverallDriftStatus.INSUFFICIENT_DATA,
+                drift_detected=False,
+                total_features_evaluated=len(feature_results),
+                drifted_features_count=0,
+                severe_drift_count=0,
+                reference_sample_size=len(self.reference_data),
+                current_sample_size=n_current,
+                schema_validation=schema_res,
+                features=feature_results,
+                summary_message=(
+                    f"Evaluation batch size ({n_current}) is below the required minimum sample threshold ({eff_min_n}). "
+                    "Statistical tests are inconclusive."
+                ),
+                recommended_next_action="Accumulate additional customer observations before running statistical drift surveillance.",
+                prediction_drift=pred_results,
+                prediction_drift_status=pred_status,
+            )
+
+        # 3. Evaluate all features under sufficient sample size
         feature_results: List[FeatureDriftResult] = []
         drifted_count = 0
         severe_count = 0
@@ -552,7 +777,13 @@ class EconoCausalDriftDetector:
         # Numerical features
         for feat in NUMERICAL_FEATURES:
             if feat in current_data.columns and feat in self.reference_data.columns:
-                res = self.evaluate_numerical_feature(feat, current_data)
+                res = self.evaluate_numerical_feature(
+                    feat, current_data,
+                    ks_alpha=eff_ks_alpha,
+                    psi_moderate_threshold=eff_psi_mod,
+                    psi_high_threshold=eff_psi_high,
+                    min_sample_size=eff_min_n,
+                )
                 feature_results.append(res)
                 if res.drift_detected:
                     drifted_count += 1
@@ -562,14 +793,18 @@ class EconoCausalDriftDetector:
         # Categorical features
         for feat in CATEGORICAL_FEATURES:
             if feat in current_data.columns and feat in self.reference_data.columns:
-                res = self.evaluate_categorical_feature(feat, current_data)
+                res = self.evaluate_categorical_feature(
+                    feat, current_data,
+                    alpha=eff_ks_alpha,
+                    min_sample_size=eff_min_n,
+                )
                 feature_results.append(res)
                 if res.drift_detected:
                     drifted_count += 1
                 if res.severity == DriftSeverity.HIGH:
                     severe_count += 1
 
-        # 3. Formulate Overall Drift Status
+        # 4. Formulate Overall Drift Status
         total_feats = len(feature_results)
         if severe_count >= 2 or (total_feats > 0 and drifted_count / total_feats >= 0.5):
             overall_status = OverallDriftStatus.SEVERE_DRIFT
@@ -596,8 +831,15 @@ class EconoCausalDriftDetector:
             summary = f"No significant drift detected across all {total_feats} evaluated features. Distribution is stable."
             next_action = "Continue standard promotional policy deployment. Normal monitoring interval applies."
 
-        # Prediction drift check (if predictions exist in columns)
-        prediction_results = self.evaluate_prediction_drift(current_data)
+        # 5. Prediction drift check
+        prediction_results, pred_status = self.evaluate_prediction_drift(
+            current_data,
+            ks_alpha=eff_ks_alpha,
+            psi_moderate_threshold=eff_psi_mod,
+            psi_high_threshold=eff_psi_high,
+            min_sample_size=eff_min_n,
+            model=model,
+        )
 
         return DriftReport(
             overall_status=overall_status,
@@ -610,65 +852,9 @@ class EconoCausalDriftDetector:
             schema_validation=schema_res,
             features=feature_results,
             prediction_drift=prediction_results,
+            prediction_drift_status=pred_status,
             summary_message=summary,
             recommended_next_action=next_action,
         )
-
-    def evaluate_prediction_drift(
-        self,
-        current_data: pd.DataFrame,
-        reference_data: Optional[pd.DataFrame] = None,
-    ) -> List[FeatureDriftResult]:
-        """Run statistical KS and PSI tests on counterfactual purchase probabilities (P0, P10, P20)."""
-        ref_df = reference_data if reference_data is not None else self.reference_data
-        pred_results: List[FeatureDriftResult] = []
-
-        if current_data is None or ref_df is None:
-            return pred_results
-
-        for feat in PREDICTION_FEATURES:
-            if feat in current_data.columns and feat in ref_df.columns:
-                ref_vals = pd.to_numeric(ref_df[feat], errors="coerce").dropna().to_numpy(dtype=float)
-                cur_vals = pd.to_numeric(current_data[feat], errors="coerce").dropna().to_numpy(dtype=float)
-
-                if len(cur_vals) < 5 or len(ref_vals) < 5:
-                    continue
-
-                ks_res = stats.ks_2samp(ref_vals, cur_vals)
-                ks_stat = float(ks_res.statistic)
-                p_val = float(ks_res.pvalue)
-                psi_val = self.calculate_psi(ref_vals, cur_vals)
-                w_dist = float(stats.wasserstein_distance(ref_vals, cur_vals))
-
-                drift_detected = (p_val < self.ks_alpha) or (psi_val >= self.psi_moderate_threshold)
-                if psi_val >= self.psi_high_threshold or (p_val < 0.0001 and psi_val >= 0.15):
-                    severity = DriftSeverity.HIGH
-                    action = f"Significant prediction drift in '{feat}'. Conversion behavior shifted; review pricing elasticity."
-                elif drift_detected:
-                    severity = DriftSeverity.MODERATE
-                    action = f"Moderate prediction shift in '{feat}'. Monitor conversion calibration."
-                else:
-                    severity = DriftSeverity.NONE
-                    action = f"Prediction distribution for '{feat}' is stable relative to baseline reference."
-
-                pred_results.append(
-                    FeatureDriftResult(
-                        feature_name=feat,
-                        feature_type="prediction",
-                        drift_detected=drift_detected,
-                        severity=severity,
-                        test_name="kolmogorov_smirnov",
-                        test_statistic=round(ks_stat, 4),
-                        p_value=round(p_val, 6),
-                        psi=round(psi_val, 4),
-                        wasserstein_distance=round(w_dist, 4),
-                        reference_summary={"mean": round(float(np.mean(ref_vals)), 4), "std": round(float(np.std(ref_vals)), 4)},
-                        current_summary={"mean": round(float(np.mean(cur_vals)), 4), "std": round(float(np.std(cur_vals)), 4)},
-                        thresholds={"ks_alpha": self.ks_alpha, "psi_high": self.psi_high_threshold},
-                        recommended_action=action,
-                    )
-                )
-
-        return pred_results
 
 

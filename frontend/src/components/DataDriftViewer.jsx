@@ -142,6 +142,22 @@ export default function DataDriftViewer() {
         bannerClass: 'drift-banner-success',
       };
     }
+    if (status === 'Schema validation failed') {
+      return {
+        label: 'Schema Validation Failed',
+        className: 'badge-danger',
+        icon: <XCircle size={16} className="text-red" />,
+        bannerClass: 'drift-banner-danger',
+      };
+    }
+    if (status === 'Insufficient data for statistical tests' || status === 'inconclusive') {
+      return {
+        label: 'Insufficient Sample Data',
+        className: 'badge-warning',
+        icon: <HelpCircle size={16} className="text-amber" />,
+        bannerClass: 'drift-banner-warning',
+      };
+    }
     // Dedicated unknown / unrecognized state
     return {
       label: status ? `Unknown Status: ${status}` : 'Status Unknown',
@@ -237,6 +253,21 @@ export default function DataDriftViewer() {
             <div className="status-banner-action">
               <span className="action-tag">Recommended Operational Protocol:</span>
               <p className="action-text">{report.recommended_next_action}</p>
+            </div>
+          </div>
+        )}
+
+        {/* 2b. Schema Validation Error Details Banner */}
+        {report?.schema_validation?.is_valid === false && report.schema_validation.errors?.length > 0 && (
+          <div className="alert alert-danger" style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginTop: '1rem' }}>
+            <XCircle size={18} style={{ marginTop: '0.2rem', flexShrink: 0 }} />
+            <div>
+              <strong>Model-Input Schema Integrity Violations:</strong>
+              <ul style={{ margin: '0.35rem 0 0 1.25rem', padding: 0 }}>
+                {report.schema_validation.errors.map((err, i) => (
+                  <li key={i}>{err}</li>
+                ))}
+              </ul>
             </div>
           </div>
         )}

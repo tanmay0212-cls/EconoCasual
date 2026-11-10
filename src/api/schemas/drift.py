@@ -28,6 +28,12 @@ class DriftCheckRequest(BaseModel):
         le=0.50,
         description="Population Stability Index (PSI) threshold for significant drift"
     )
+    min_sample_size: Optional[int] = Field(
+        default=20,
+        ge=5,
+        le=5000,
+        description="Minimum sample size required to perform conclusive statistical drift tests."
+    )
     run_type: Optional[str] = Field(
         default="operational",
         description="'test' | 'operational' to distinguish controlled test executions from genuine operational surveillance"
@@ -70,6 +76,14 @@ class DriftCheckResponse(BaseModel):
     prediction_drift: Optional[List[FeatureDriftDetail]] = Field(
         default_factory=list,
         description="Drift assessment for model predictions (P0, P10, P20) under counterfactual treatments."
+    )
+    prediction_drift_status: str = Field(
+        default="available",
+        description="'available' | 'unavailable' | 'not_evaluated'"
+    )
+    schema_validation_passed: bool = Field(
+        default=True,
+        description="True if incoming batch passed all model input and schema integrity checks"
     )
     distributions: Optional[Dict[str, Dict[str, Any]]] = Field(
         default_factory=dict,

@@ -69,6 +69,7 @@ The EconoCasual drift surveillance engine continuously tests incoming customer o
 [ Stage 1: Schema Integrity Validation ]
    ├── Missing Required Features Check (e.g. 'age', 'customer_segment')
    ├── Unexpected Column Quarantine
+   ├── Type Integrity Check (numeric vs string coercion)
    ├── Null Rate Check (nulls must be 0)
    └── Boundary Checks:
          - age in [18, 100]
@@ -76,32 +77,79 @@ The EconoCasual drift surveillance engine continuously tests incoming customer o
          - product_price > 0
          - gross_margin_rate in (0, 1]
             │
-       [Is Valid?] ──► NO ──► Return Schema Error (Pipeline corrupt; Halt)
+       [Is Valid?] ──► NO ──► Return Schema Error (OverallDriftStatus.SCHEMA_ERROR, drift_detected=False)
             │
            YES
             ▼
-[ Stage 2: Statistical Drift Testing ]
-   ├── KS Test, PSI, Wasserstein Distance (Numeric)
-   └── Chi-Square, TVD, New Categories (Categorical)
+[ Stage 2: Sample Size Policy Gate ]
+   ├── N < min_sample_size (default: 20) ──► Return Inconclusive (OverallDriftStatus.INSUFFICIENT_DATA, drift_detected=False)
+   └── N >= min_sample_size ──► Proceed to Two-Sample Hypothesis Tests
             │
             ▼
-[ Stage 3: Severity Synthesis ]
-   ├── "No significant drift detected"
-   ├── "Potential drift detected"
-   └── "Severe or widespread drift detected"
+[ Stage 3: Statistical Hypothesis Testing ]
+   ├── KS Test, PSI, Wasserstein Distance (Numeric Features)
+   ├── Chi-Square, TVD, Emerging/Missing Categories (Categorical Features)
+   └── Counterfactual Prediction Probability Drift (P(d=0), P(d=10), P(d=20))
+            │
+            ▼
+[ Stage 4: Severity & Status Synthesis ]
+   ├── "No significant drift detected" (All features stable)
+   ├── "Potential drift detected" (1-2 moderate features, PSI 0.10-0.25)
+   └── "Severe or widespread drift detected" (>= 3 moderate or >= 1 high severity feature)
 ```
+
+### 3.1 Strict Separation of Ingestion Failures from Statistical Drift
+Historically, schema validation defects (e.g., missing columns or corrupted types) were occasionally conflated with severe demographic drift. In EconoCasual, schema violations are strictly decoupled:
+- Schema violations represent **pipeline / data contract defects**, returning `overall_status: "Schema validation failed"` and `drift_detected: false`.
+- The dashboard displays schema violations in a high-priority red alert banner listing the exact violated constraints.
+- Statistical two-sample tests are skipped to prevent arithmetic errors or skewed statistics on malformed inputs.
+
+### 3.2 Configurable Minimum Sample Size Policy
+Statistical two-sample tests (KS test, Chi-square, PSI) suffer from high variance and severe under-power when evaluated on tiny sample sizes ($N < 20$).
+- The system enforces a configurable `min_sample_size` parameter (default: 20 records).
+- Batches with $N < \text{min\_sample\_size}$ return `overall_status: "Insufficient data for statistical tests"` with `drift_detected: false`.
+- Crucially, descriptive statistics (mean, median, standard deviation, category frequencies) are preserved and returned to allow operators to inspect the limited sample without asserting false stability or false alarm drift.
 
 ---
 
-## 4. Causal Methodological Governance: Covariate Shift vs. Concept Drift
+## 4. Multi-Tenant Detector Isolation & Threshold Integrity
+
+In production API environments, client requests can specify custom sensitivity thresholds (such as `ks_p_value_threshold` or `psi_high_threshold`).
+- **Immutable Singleton Instance:** The cached detector singleton (`get_detector()`) maintains immutable default baseline configurations.
+- **Dynamic Parameter Injection:** Per-request threshold overrides are passed explicitly into `detect_drift(data, ks_alpha=..., psi_high_threshold=..., min_sample_size=...)` and downstream calculation methods without mutating singleton instance attributes.
+- **Parameter Validation:** Thresholds are strictly validated at the API boundary ($0 < \alpha < 1$, $\text{PSI} > 0$, $\text{min\_sample\_size} \ge 1$) to ensure numerical stability.
+
+---
+
+## 5. Causal Methodological Governance: Covariate Shift vs. Prediction Drift vs. Concept Drift
 
 A foundational tenet of the EconoCasual platform is that **covariate drift ($P(X)$) does NOT automatically invalidate causal treatment effect estimates ($\tau(X)$)**:
 
 1. **Covariate Shift ($P_{\text{curr}}(X) \ne P_{\text{ref}}(X)$):**
    - Customer demographics or acquisition channels have shifted (e.g. an older demographic arriving via social ads).
    - Under Pearl's unconfoundedness assumption $(Y(d) \perp T \mid X)$, the Conditional Average Treatment Effect $\tau(X)$ remains mathematically unbiased on the overlapping support.
-2. **Concept Drift ($P_{\text{curr}}(Y \mid X, T) \ne P_{\text{ref}}(Y \mid X, T)$):**
-   - The underlying behavioral price elasticity has changed (e.g. macro inflation or brand crisis). This requires randomized holdout verification to detect.
-3. **Prohibition of Automated Retraining:**
+   - Recommended response: Recalibrate propensity scores $e(X)$ and budget constraints; do not retrain causal trees.
+
+2. **Prediction Drift ($P_{\text{curr}}(P_d) \ne P_{\text{ref}}(P_d)$):**
+   - Evaluates whether the distribution of counterfactual conversion probabilities ($P_0, P_{10}, P_{20}$) produced by the causal policy differs across populations.
+   - If counterfactual probabilities are not present or computable, the API returns `prediction_drift_status: "unavailable"` without fabricating placeholder numbers.
+
+3. **Concept Drift ($P_{\text{curr}}(Y \mid X, T) \ne P_{\text{ref}}(Y \mid X, T)$):**
+   - The underlying behavioral price elasticity has changed (e.g. macroeconomic shifts or competitor pricing changes).
+   - Concept drift cannot be confirmed from observational feature logs alone; it strictly requires randomized holdout verification (A/B testing).
+
+4. **Prohibition of Automated Retraining:**
    - Automated model retraining without human review and empirical validation is strictly prohibited. Uncontrolled retraining on drifted, non-randomly targeted customer data risks feedback loops and severe policy destabilization.
+
+---
+
+## 6. Surveillance History & Storage Concurrency
+
+1. **Thread-Safe History Persistence:**
+   - Surveillance run metrics are persisted to `reports/drift_monitoring_history.json`.
+   - Write operations are protected by a process-level `threading.Lock()` to prevent race conditions during concurrent API invocations.
+
+2. **Corruption & Failure Handling:**
+   - If the persistence file is corrupted or unparseable, the service raises an explicit `HTTPException(500)` rather than masking the fault by returning an empty history `[]`.
+   - The frontend dashboard cleanly distinguishes between a genuinely empty run history (`[]`) and a server/storage outage.
 

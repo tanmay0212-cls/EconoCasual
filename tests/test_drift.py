@@ -106,7 +106,7 @@ def test_changed_categorical_distribution(reference_dataset: pd.DataFrame):
 # ── Requirement 4: Missing Required Columns ───────────────────────────────────
 
 def test_missing_required_columns(reference_dataset: pd.DataFrame):
-    """Missing required model feature ('loyalty_score') must fail schema validation."""
+    """Missing required model feature ('loyalty_score') must fail schema validation distinctly without flagging drift."""
     detector = EconoCausalDriftDetector(reference_data=reference_dataset)
     bad_current = reference_dataset.drop(columns=["loyalty_score"])
 
@@ -114,7 +114,8 @@ def test_missing_required_columns(reference_dataset: pd.DataFrame):
 
     assert report.schema_validation.is_valid is False
     assert "loyalty_score" in report.schema_validation.missing_required_features
-    assert report.overall_status == OverallDriftStatus.SEVERE_DRIFT
+    assert report.drift_detected is False
+    assert report.overall_status == OverallDriftStatus.SCHEMA_ERROR
     assert "schema validation failed" in report.summary_message.lower()
 
 
@@ -139,20 +140,36 @@ def test_new_and_disappearing_categorical_values(reference_dataset: pd.DataFrame
     assert seg_feat.severity == DriftSeverity.HIGH
 
 
-# ── Requirement 6: Small Sample Sizes ─────────────────────────────────────────
+# ── Requirement 6: Small and Insufficient Sample Sizes ────────────────────────
 
 def test_small_sample_size_handling(reference_dataset: pd.DataFrame):
-    """Small sample sizes (N=8) must degrade gracefully with informational messages."""
+    """Sample sizes below min_sample_size (N=8 < 20) must return INSUFFICIENT_DATA with preserved stats."""
     detector = EconoCausalDriftDetector(reference_data=reference_dataset)
     tiny_current = reference_dataset.head(8).copy()
 
-    report = detector.detect_drift(tiny_current)
+    report = detector.detect_drift(tiny_current, min_sample_size=20)
 
     assert report.current_sample_size == 8
-    # Should not crash or throw unhandled exceptions
+    assert report.drift_detected is False
+    assert report.overall_status == OverallDriftStatus.INSUFFICIENT_DATA
+    assert "below minimum required sample size" in report.summary_message.lower()
     assert isinstance(report, DriftReport)
-    for feat in report.features:
-        assert isinstance(feat.recommended_action, str)
+    # Check that summary stats were still computed and preserved
+    age_feat = next(f for f in report.features if f.feature_name == "age")
+    assert age_feat.current_summary.mean > 0
+    assert age_feat.drift_detected is False
+
+
+def test_empty_current_dataset(reference_dataset: pd.DataFrame):
+    """An empty current dataset (N=0) must return INSUFFICIENT_DATA without crashing."""
+    detector = EconoCausalDriftDetector(reference_data=reference_dataset)
+    empty_current = reference_dataset.head(0).copy()
+
+    report = detector.detect_drift(empty_current, min_sample_size=20)
+
+    assert report.current_sample_size == 0
+    assert report.drift_detected is False
+    assert report.overall_status == OverallDriftStatus.INSUFFICIENT_DATA
 
 
 # ── Requirement 7: Missing Values and Invalid Data (Schema vs Drift) ──────────
@@ -170,6 +187,22 @@ def test_missing_values_and_type_integrity(reference_dataset: pd.DataFrame):
     assert report.schema_validation.is_valid is False
     assert "age" in report.schema_validation.missing_value_rates
     assert report.schema_validation.missing_value_rates["age"] >= 0.10
+    assert report.drift_detected is False
+    assert report.overall_status == OverallDriftStatus.SCHEMA_ERROR
+
+
+def test_invalid_numerical_types(reference_dataset: pd.DataFrame):
+    """Non-numeric strings in numeric feature columns must fail schema validation distinctly."""
+    detector = EconoCausalDriftDetector(reference_data=reference_dataset)
+    bad_type_data = reference_dataset.copy()
+    bad_type_data["age"] = ["invalid_str"] * len(bad_type_data)
+
+    report = detector.detect_drift(bad_type_data)
+
+    assert report.schema_validation.is_valid is False
+    assert "age" in report.schema_validation.invalid_type_features
+    assert report.drift_detected is False
+    assert report.overall_status == OverallDriftStatus.SCHEMA_ERROR
 
 
 def test_out_of_range_numerical_values(reference_dataset: pd.DataFrame):
@@ -184,6 +217,107 @@ def test_out_of_range_numerical_values(reference_dataset: pd.DataFrame):
 
     assert "age" in schema_res.out_of_range_features
     assert "loyalty_score" in schema_res.out_of_range_features
+
+
+# ── Requirement 8: Shared Detector Threshold Mutation Isolation ──────────────
+
+def test_shared_detector_threshold_isolation(reference_dataset: pd.DataFrame):
+    """Passing custom thresholds for one request must not mutate the detector instance attributes."""
+    detector = EconoCausalDriftDetector(reference_data=reference_dataset, ks_alpha=0.05, psi_high_threshold=0.25)
+    orig_alpha = detector.ks_alpha
+    orig_psi = detector.psi_high_threshold
+
+    # Request A passes aggressive thresholds
+    report_a = detector.detect_drift(reference_dataset, ks_alpha=0.001, psi_high_threshold=0.50)
+    assert detector.ks_alpha == orig_alpha
+    assert detector.psi_high_threshold == orig_psi
+
+    # Request B passes standard/default parameters
+    report_b = detector.detect_drift(reference_dataset)
+    assert detector.ks_alpha == 0.05
+    assert detector.psi_high_threshold == 0.25
+
+
+# ── Requirement 9: Prediction Drift Handling ──────────────────────────────────
+
+def test_prediction_drift_availability(reference_dataset: pd.DataFrame):
+    """Prediction drift returns 'unavailable' when probability columns are missing, and scores when present."""
+    detector = EconoCausalDriftDetector(reference_data=reference_dataset)
+
+    # 1. Missing prediction probabilities: returns unavailable
+    report = detector.detect_drift(reference_dataset)
+    assert report.prediction_drift_status == "unavailable"
+
+    # 2. Provided counterfactual probabilities
+    ref_preds = reference_dataset.copy()
+    ref_preds["predicted_prob_d0"] = 0.35
+    ref_preds["predicted_prob_d10"] = 0.50
+    ref_preds["predicted_prob_d20"] = 0.65
+
+    curr_preds = reference_dataset.copy()
+    curr_preds["predicted_prob_d0"] = 0.35
+    curr_preds["predicted_prob_d10"] = 0.50
+    curr_preds["predicted_prob_d20"] = 0.65
+
+    detector_with_preds = EconoCausalDriftDetector(reference_data=ref_preds)
+    report_with_preds = detector_with_preds.detect_drift(curr_preds)
+    assert report_with_preds.prediction_drift_status == "available"
+
+
+# ── Requirement 10: Reference Dataset Validation ─────────────────────────────
+
+def test_reference_dataset_validation():
+    """Initializing detector with empty dataset or missing required features must raise ValueError."""
+    with pytest.raises(ValueError, match="cannot be empty"):
+        EconoCausalDriftDetector(reference_data=pd.DataFrame())
+
+    bad_df = pd.DataFrame({"some_random_column": [1, 2, 3]})
+    with pytest.raises(ValueError, match="missing required model features"):
+        EconoCausalDriftDetector(reference_data=bad_df)
+
+    valid_df = pd.DataFrame({
+        "age": [30.0, 40.0],
+        "loyalty_score": [50.0, 60.0],
+        "previous_purchases": [2, 3],
+        "customer_segment": ["budget", "premium"]
+    })
+    with pytest.raises(ValueError, match="ks_alpha must be in"):
+        EconoCausalDriftDetector(reference_data=valid_df, ks_alpha=1.5)
+
+
+# ── Requirement 11: Drift Service Distribution & History Integrity ────────────
+
+def test_history_corruption_error_handling(tmp_path):
+    """Corrupted JSON in surveillance history must raise HTTP 500, never silently returning empty list."""
+    from fastapi import HTTPException
+    from src.api.services.drift_service import DriftService
+
+    corrupt_file = tmp_path / "corrupt_history.json"
+    corrupt_file.write_text("{ broken json content : ...", encoding="utf-8")
+
+    service = DriftService()
+    service._history_file = corrupt_file
+
+    with pytest.raises(HTTPException) as exc_info:
+        service.get_drift_history()
+    assert exc_info.value.status_code == 500
+    assert "Corrupted drift history storage" in exc_info.value.detail
+
+
+def test_distribution_calculation_robustness(reference_dataset: pd.DataFrame):
+    """Distribution calculations must handle numeric strings and per-feature error isolation."""
+    from src.api.services.drift_service import DriftService
+    service = DriftService()
+
+    ref = reference_dataset.copy()
+    curr = reference_dataset.copy()
+    # Age as string
+    curr["age"] = curr["age"].astype(str)
+
+    dist = service._calculate_distributions(ref, curr)
+    assert "age" in dist
+    assert len(dist["age"]["labels"]) > 0
+    assert sum(dist["age"]["ref_pct"]) > 95.0
 
 
 # ── Additional: Methodological Principles & Thresholds ────────────────────────

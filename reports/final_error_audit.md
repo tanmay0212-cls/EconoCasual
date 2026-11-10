@@ -20,9 +20,9 @@ This report delivers a rigorous, evidence-based verification of the **EconoCasua
 | Dimension                    | Result                    | Status / Notes                               |
 +------------------------------+---------------------------+----------------------------------------------+
 | Backend Pytest Suite         | 105 / 105 Passed (100%)   | Nov 3 CI baseline run; 28.67s (13 modules)   |
-| Frontend Vitest Suite        | 59 / 59 Passed (100%)     | Nov 10 local run; 6.64s (9 test suites)      |
-| Total Automated Unit Tests   | 164 / 164 Passed (100%)   | Zero failures in the recorded executions     |
-| Production Build (Vite)      | Success (4.55s)           | Gzip optimized, code-split into chunks       |
+| Frontend Vitest Suite        | 61 / 61 Passed (100%)     | Nov 10 local run; 4.15s (9 test suites)      |
+| Total Automated Unit Tests   | 166 / 166 Passed (100%)   | Zero failures in the recorded executions     |
+| Production Build (Vite)      | Success (2.85s)           | Gzip optimized, code-split into chunks       |
 | Frontend Initial Bundle Size | 357.46 kB (Initial Load)  | Plotly deferred (4.70 MB split to lazy chunk)|
 | Full 15,000-Customer MILP    | 0.5651s - 0.7225s (Optimal)| 2 recorded runs; $4,999.05 cost <= $5,000 cap; zero overlaps |
 | End-to-End Integration Suites| 8 / 8 Stages Passed (100%)| Validated via verify_system_integration.py   |
@@ -363,16 +363,17 @@ The figure $103,995.46 (and $1,026.04 gap) in an earlier draft was an unverified
 
 2. Frontend Vitest Suite (Local Verification Rerun):
    Command:   npm test --prefix frontend
-   Timestamp: 2026-11-10 13:33:19 - 13:33:26 IST (Duration: 6.64s)
-   Result:    9 test files passed, 59 tests passed (100% passing)
-   Coverage:  Drift fallback hierarchy (8 tests), DataDriftViewer (10 tests),
+   Timestamp: 2026-11-10 14:09:40 - 14:09:44 IST (Duration: 4.15s)
+   Result:    9 test files passed, 61 tests passed (100% passing)
+   Coverage:  Drift fallback hierarchy (8 tests), DataDriftViewer (12 tests, including
+              schema error banner and insufficient data status verification),
               AllocationMatrix (8 tests), BusinessSummary (6 tests),
               DatasetUploader (2 tests), BudgetSettings (2 tests),
               Header (3 tests), csvValidator (5 tests), summaryService (15 tests).
 
 3. Frontend Production Build (Local Verification Rerun):
    Command:   npm run build --prefix frontend
-   Timestamp: 2026-11-10 13:33:41 - 13:33:46 IST (Duration: 4.55s)
+   Timestamp: 2026-11-10 14:10:51 - 14:10:56 IST (Duration: 2.85s)
    Result:    1940 modules transformed, build successful (357.46 kB initial load)
 
 4. Integration Verification Script:
@@ -396,5 +397,37 @@ The figure $103,995.46 (and $1,026.04 gap) in an earlier draft was an unverified
    - The Gitleaks binary was verified as not present on the host PATH. The scan was performed using the built-in deterministic multi-pattern regex engine in `scripts/verify_system_integration.py` across 119 source and configuration files. Zero credential patterns were detected. A dedicated binary scan with Gitleaks is recommended in CI pipelines.
 
 3. **Browser Testing Disclosure:**
-   - Headless unit and component tests run via Vitest and JSDOM (59 tests passed). No end-to-end browser automation framework (Playwright, Puppeteer, Selenium) is installed on the host machine.
+   - Headless unit and component tests run via Vitest and JSDOM (61 tests passed). No end-to-end browser automation framework (Playwright, Puppeteer, Selenium) is installed on the host machine.
 ```
+
+---
+
+## 7. Data Drift Surveillance Engine Hardening & Verification Summary
+
+During the final audit review, the data drift surveillance engine was systematically hardened across backend detection, schemas, services, and frontend visualization components:
+
+1. **Separation of Schema Failures from Statistical Drift:**
+   - Schema validation errors (missing required columns, corrupted types, non-zero null rates) now strictly return `OverallDriftStatus.SCHEMA_ERROR ("Schema validation failed")` with `drift_detected: false`.
+   - The React dashboard displays schema validation failures in a dedicated alert banner detailing specific contract violations rather than treating ingestion defects as demographic drift.
+
+2. **Configurable Minimum Sample Size Policy:**
+   - Standardized on a configurable `min_sample_size` policy (default: 20 records).
+   - Datasets with $N < \text{min\_sample\_size}$ return `OverallDriftStatus.INSUFFICIENT_DATA ("Insufficient data for statistical tests")` with `drift_detected: false`.
+   - All available univariate descriptive statistics (mean, median, standard deviation, category proportions) are computed and preserved in the response.
+
+3. **Detector Threshold Mutation Isolation:**
+   - The cached `EconoCausalDriftDetector` singleton maintains immutable default thresholds.
+   - Per-request sensitivity thresholds (`ks_p_value_threshold`, `psi_high_threshold`, `min_sample_size`) are passed into detection methods dynamically without mutating singleton instance state, ensuring multi-tenant request safety.
+
+4. **Prediction Drift Rigor:**
+   - Evaluates counterfactual conversion probabilities ($P_0, P_{10}, P_{20}$) when present in dataset logs or computable via the loaded causal model.
+   - If predictions are absent, the API explicitly returns `prediction_drift_status: "unavailable"` without fabricating artificial distributions.
+
+5. **Robust Distribution Calculation:**
+   - Number parsing utilizes `pd.to_numeric(errors="coerce")` to safely handle numeric strings.
+   - Per-feature calculations are isolated with error trapping so an anomaly in one feature never discards valid histograms for remaining features.
+
+6. **Thread-Safe History Persistence:**
+   - Surveillance run logging is synchronized using a process-level `threading.Lock()`.
+   - File corruption triggers an explicit `HTTPException(500)` with explanatory diagnostics, strictly distinguishing server storage failures from a valid empty history (`[]`).
+

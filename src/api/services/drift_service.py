@@ -4,6 +4,7 @@ import os
 import json
 import uuid
 import logging
+import threading
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 import numpy as np
@@ -32,6 +33,7 @@ class DriftService:
     """Service to execute statistical drift tests between incoming batches and reference data."""
 
     _detector: Optional[EconoCausalDriftDetector] = None
+    _history_lock: threading.Lock = threading.Lock()
 
     @classmethod
     def get_detector(cls) -> EconoCausalDriftDetector:
@@ -40,20 +42,27 @@ class DriftService:
             ref_path = settings.reference_data_path
 
             if not os.path.exists(ref_path):
+                logger.error("Approved reference dataset not found at configured path: %s", ref_path)
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"Approved reference dataset not found at: {ref_path}",
+                    detail="Approved baseline reference dataset is not available on server.",
                 )
 
             try:
                 ref_df = pd.read_csv(ref_path)
-                logger.info("Initializing EconoCausalDriftDetector with %d baseline rows from %s", len(ref_df), ref_path)
+                logger.info("Initializing EconoCausalDriftDetector with %d baseline rows", len(ref_df))
                 cls._detector = EconoCausalDriftDetector(reference_data=ref_df)
+            except ValueError as val_err:
+                logger.error("Reference dataset validation error: %s", val_err)
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Baseline reference dataset validation failed: {str(val_err)}",
+                )
             except Exception as exc:
                 logger.error("Failed to load reference dataset: %s", exc)
                 raise HTTPException(
                     status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"Could not load baseline reference dataset: {str(exc)}",
+                    detail="Could not load baseline reference dataset due to an internal server error.",
                 )
         return cls._detector
 
@@ -82,18 +91,22 @@ class DriftService:
                 detail="Either 'records' or an approved 'dataset_reference' must be provided.",
             )
 
-        if len(current_df) < 5:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Incoming batch size ({len(current_df)}) is too small for statistical drift tests (minimum 5).",
-            )
+        # 2. Retrieve causal model if available for prediction drift scoring
+        loaded_model = None
+        try:
+            from src.api.services.model_loader import model_registry
+            loaded_model = model_registry.multi_tier_model
+        except Exception:
+            pass
 
-        # 2. Configure thresholds if overridden in request
-        detector.ks_alpha = request.ks_p_value_threshold
-        detector.psi_high_threshold = request.psi_threshold
-
-        # 3. Execute drift detection
-        report: DriftReport = detector.detect_drift(current_df)
+        # 3. Execute drift detection with isolated request thresholds (no singleton mutation)
+        report: DriftReport = detector.detect_drift(
+            current_data=current_df,
+            ks_alpha=request.ks_p_value_threshold,
+            psi_high_threshold=request.psi_threshold,
+            min_sample_size=request.min_sample_size,
+            model=loaded_model,
+        )
 
         # 4. Map report to API schema
         feature_details: List[FeatureDriftDetail] = []
@@ -153,22 +166,17 @@ class DriftService:
                 )
             )
 
-        dataset_label = request.dataset_reference or "uploaded_batch"
-        overall_status_val = report.overall_status.value if isinstance(report.overall_status, OverallDriftStatus) else str(report.overall_status)
-        feature_summary_map = {feat.feature_name: feat.drift_severity for feat in feature_details}
-        run_type_val = getattr(request, "run_type", None) or "operational"
-
-        # 6. Compute empirical distribution comparisons for features
+        # 6. Compute empirical distribution comparisons per feature (isolated per-feature failure)
         distributions_map: Dict[str, Dict[str, Any]] = {}
-        try:
-            ref_df = detector.reference_data
-            for feat in report.features:
-                fname = feat.feature_name
+        ref_df = detector.reference_data
+        for feat in report.features:
+            fname = feat.feature_name
+            try:
                 if fname in ref_df.columns and fname in current_df.columns:
-                    ref_series = ref_df[fname].dropna()
-                    curr_series = current_df[fname].dropna()
-                    if len(ref_series) > 0 and len(curr_series) > 0:
-                        if feat.feature_type == "numeric":
+                    if feat.feature_type == "numeric":
+                        ref_series = pd.to_numeric(ref_df[fname], errors="coerce").dropna()
+                        curr_series = pd.to_numeric(current_df[fname], errors="coerce").dropna()
+                        if len(ref_series) > 0 and len(curr_series) > 0:
                             combined = pd.concat([ref_series, curr_series])
                             min_val, max_val = float(combined.min()), float(combined.max())
                             if min_val == max_val:
@@ -185,7 +193,17 @@ class DriftService:
                                 "ref_pct": ref_pct,
                                 "curr_pct": curr_pct,
                             }
-                        elif feat.feature_type == "categorical":
+                        else:
+                            distributions_map[fname] = {
+                                "labels": [],
+                                "ref_pct": [],
+                                "curr_pct": [],
+                                "error": "Insufficient valid numeric observations.",
+                            }
+                    elif feat.feature_type == "categorical":
+                        ref_series = ref_df[fname].dropna().astype(str)
+                        curr_series = current_df[fname].dropna().astype(str)
+                        if len(ref_series) > 0 and len(curr_series) > 0:
                             categories = sorted(list(set(ref_series.unique()) | set(curr_series.unique())))
                             ref_counts = ref_series.value_counts(normalize=True) * 100
                             curr_counts = curr_series.value_counts(normalize=True) * 100
@@ -194,11 +212,28 @@ class DriftService:
                                 "ref_pct": [round(float(ref_counts.get(cat, 0.0)), 2) for cat in categories],
                                 "curr_pct": [round(float(curr_counts.get(cat, 0.0)), 2) for cat in categories],
                             }
-        except Exception as exc:
-            logger.warning("Could not compute distribution histograms: %s", exc)
-            distributions_map = {}
+                        else:
+                            distributions_map[fname] = {
+                                "labels": [],
+                                "ref_pct": [],
+                                "curr_pct": [],
+                                "error": "Insufficient valid categorical observations.",
+                            }
+            except Exception as exc:
+                logger.warning("Could not compute distribution for feature '%s': %s", fname, exc)
+                distributions_map[fname] = {
+                    "labels": [],
+                    "ref_pct": [],
+                    "curr_pct": [],
+                    "error": f"Distribution calculation failed: {str(exc)}",
+                }
 
-        # 7. Append to historical drift log
+        dataset_label = request.dataset_reference or "uploaded_batch"
+        overall_status_val = report.overall_status.value if isinstance(report.overall_status, OverallDriftStatus) else str(report.overall_status)
+        feature_summary_map = {feat.feature_name: feat.drift_severity for feat in feature_details}
+        run_type_val = getattr(request, "run_type", None) or "operational"
+
+        # 7. Append to historical drift log under lock
         cls._append_drift_history(
             dataset_name=dataset_label,
             overall_status=overall_status_val,
@@ -220,6 +255,8 @@ class DriftService:
             current_sample_size=report.current_sample_size,
             features=feature_details,
             prediction_drift=prediction_details,
+            prediction_drift_status=getattr(report, "prediction_drift_status", "available"),
+            schema_validation_passed=report.schema_validation.is_valid,
             distributions=distributions_map,
             summary_message=report.summary_message,
             recommended_next_action=report.recommended_next_action,
@@ -244,72 +281,81 @@ class DriftService:
         run_type: str = "operational",
         feature_summary: Optional[Dict[str, str]] = None,
     ) -> None:
-        """Persist a drift evaluation record into the historical log with retry deduplication."""
-        history_file = cls._get_history_file_path()
-        history_data: List[Dict[str, Any]] = []
+        """Persist a drift evaluation record into the historical log with retry deduplication and thread safety."""
+        with cls._history_lock:
+            history_file = cls._get_history_file_path()
+            history_data: List[Dict[str, Any]] = []
 
-        if os.path.exists(history_file):
+            if os.path.exists(history_file):
+                try:
+                    with open(history_file, "r", encoding="utf-8") as f:
+                        history_data = json.load(f)
+                    if not isinstance(history_data, list):
+                        history_data = []
+                except Exception:
+                    history_data = []
+
+            now_utc = datetime.now(timezone.utc)
+
+            # Retry Deduplication: Skip recording if identical run was appended within the last 5 seconds
+            if history_data:
+                last_entry = history_data[-1]
+                try:
+                    last_ts = datetime.fromisoformat(last_entry.get("timestamp", ""))
+                    diff_sec = abs((now_utc - last_ts).total_seconds())
+                    if (
+                        diff_sec < 5.0
+                        and last_entry.get("dataset_name") == dataset_name
+                        and last_entry.get("overall_status") == overall_status
+                        and last_entry.get("drifted_features_count") == drifted_count
+                    ):
+                        logger.info("Skipping duplicate drift history log within 5s window (deduplication applied).")
+                        return
+                except Exception:
+                    pass
+
+            new_entry = {
+                "timestamp": now_utc.isoformat(),
+                "run_id": str(uuid.uuid4()),
+                "dataset_name": dataset_name,
+                "overall_status": overall_status,
+                "drift_detected": drift_detected,
+                "drifted_features_count": drifted_count,
+                "severe_drift_count": severe_count,
+                "total_features_evaluated": total_features,
+                "run_type": run_type,
+                "feature_summary": feature_summary or {},
+            }
+            history_data.append(new_entry)
+
+            # Keep last 50 entries
+            if len(history_data) > 50:
+                history_data = history_data[-50:]
+
             try:
-                with open(history_file, "r", encoding="utf-8") as f:
-                    history_data = json.load(f)
-            except Exception:
-                history_data = []
-
-        now_utc = datetime.now(timezone.utc)
-
-        # Retry Deduplication: Skip recording if identical run was appended within the last 5 seconds
-        if history_data:
-            last_entry = history_data[-1]
-            try:
-                last_ts = datetime.fromisoformat(last_entry.get("timestamp", ""))
-                diff_sec = abs((now_utc - last_ts).total_seconds())
-                if (
-                    diff_sec < 5.0
-                    and last_entry.get("dataset_name") == dataset_name
-                    and last_entry.get("overall_status") == overall_status
-                    and last_entry.get("drifted_features_count") == drifted_count
-                ):
-                    logger.info("Skipping duplicate drift history log within 5s window (deduplication applied).")
-                    return
-            except Exception:
-                pass
-
-        new_entry = {
-            "timestamp": now_utc.isoformat(),
-            "run_id": str(uuid.uuid4()),
-            "dataset_name": dataset_name,
-            "overall_status": overall_status,
-            "drift_detected": drift_detected,
-            "drifted_features_count": drifted_count,
-            "severe_drift_count": severe_count,
-            "total_features_evaluated": total_features,
-            "run_type": run_type,
-            "feature_summary": feature_summary or {},
-        }
-        history_data.append(new_entry)
-
-        # Keep last 50 entries
-        if len(history_data) > 50:
-            history_data = history_data[-50:]
-
-        try:
-            with open(history_file, "w", encoding="utf-8") as f:
-                json.dump(history_data, f, indent=2)
-        except Exception as exc:
-            logger.warning("Could not persist drift history log: %s", exc)
+                with open(history_file, "w", encoding="utf-8") as f:
+                    json.dump(history_data, f, indent=2)
+            except Exception as exc:
+                logger.warning("Could not persist drift history log: %s", exc)
 
     @classmethod
     def get_drift_history(cls) -> DriftHistoryResponse:
-        """Retrieve recent historical drift evaluation runs."""
-        history_file = cls._get_history_file_path()
-        if os.path.exists(history_file):
-            try:
-                with open(history_file, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                items = [DriftHistoryItem.model_validate(item) for item in data]
-                return DriftHistoryResponse(history=items)
-            except Exception as exc:
-                logger.error("Failed to read drift history file: %s", exc)
+        """Retrieve recent historical drift evaluation runs with corruption detection."""
+        with cls._history_lock:
+            history_file = cls._get_history_file_path()
+            if os.path.exists(history_file):
+                try:
+                    with open(history_file, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                    if not isinstance(data, list):
+                        raise ValueError("Corrupted drift history format: expected a JSON list.")
+                    items = [DriftHistoryItem.model_validate(item) for item in data]
+                    return DriftHistoryResponse(history=items)
+                except Exception as exc:
+                    logger.error("Failed to read drift history file: %s", exc)
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Historical drift surveillance logs are corrupted or unreadable.",
+                    )
 
-        return DriftHistoryResponse(history=[])
-
+            return DriftHistoryResponse(history=[])

@@ -304,4 +304,91 @@ describe('DataDriftViewer Component', () => {
       expect(screen.getByText(/HTTP 500: Database unavailable/i)).toBeDefined();
     });
   });
+
+  it('renders dedicated schema validation error banner and badge when schema validation fails', async () => {
+    const schemaErrorPayload = {
+      report: {
+        overall_status: 'Schema validation failed',
+        drifted_features_count: 0,
+        total_features_evaluated: 7,
+        high_severity_count: 0,
+        reference_sample_size: 5000,
+        current_sample_size: 1000,
+        summary_message: 'Dataset rejected: schema validation failed.',
+        recommended_next_action: 'Resolve schema and ingestion errors before evaluating statistical drift.',
+        methodological_notice: 'Schema failures reflect pipeline/data contract defects.',
+        schema_validation: {
+          is_valid: false,
+          missing_required_features: ['loyalty_score'],
+          invalid_type_features: ['age'],
+          out_of_range_features: [],
+          missing_value_rates: { age: 0.15 },
+          errors: ["Missing required features: ['loyalty_score']", "Invalid numeric types: ['age']"],
+          warnings: [],
+        },
+        features: [],
+      },
+      distributions: {},
+      metadata: { reference_size: 5000 },
+      isLiveApi: true,
+    };
+    vi.spyOn(driftService, 'fetchDriftReport').mockResolvedValue(schemaErrorPayload);
+
+    render(<DataDriftViewer />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Model-Input Schema Integrity Violations:')).toBeDefined();
+      expect(screen.getByText(/Missing required features: \['loyalty_score'\]/i)).toBeDefined();
+      expect(screen.getByText(/Invalid numeric types: \['age'\]/i)).toBeDefined();
+      expect(screen.getAllByText('Schema Validation Failed').length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  it('renders insufficient data badge and status message when sample size is inadequate', async () => {
+    const insufficientDataPayload = {
+      report: {
+        overall_status: 'Insufficient data for statistical tests',
+        drifted_features_count: 0,
+        total_features_evaluated: 7,
+        high_severity_count: 0,
+        reference_sample_size: 5000,
+        current_sample_size: 12,
+        summary_message: 'Current batch size (N=12) is below minimum required sample size (20). Statistical drift tests are inconclusive.',
+        recommended_next_action: 'Accumulate more customer records before running statistical hypothesis tests.',
+        methodological_notice: 'Statistical hypothesis testing requires adequate statistical power.',
+        schema_validation: {
+          is_valid: true,
+          errors: [],
+          warnings: [],
+        },
+        features: [
+          {
+            feature_name: 'age',
+            feature_type: 'numeric',
+            drift_detected: false,
+            severity: 'none',
+            test_name: 'kolmogorov_smirnov',
+            test_statistic: 0.0,
+            p_value: 1.0,
+            psi: 0.0,
+            wasserstein_distance: 0.0,
+            reference_summary: { mean: 40.0, std: 10.0 },
+            current_summary: { mean: 41.0, std: 9.0 },
+            recommended_action: 'Batch too small for statistical power (N=12 < 20).',
+          },
+        ],
+      },
+      distributions: {},
+      metadata: { reference_size: 5000 },
+      isLiveApi: true,
+    };
+    vi.spyOn(driftService, 'fetchDriftReport').mockResolvedValue(insufficientDataPayload);
+
+    render(<DataDriftViewer />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Insufficient Sample Data')).toBeDefined();
+      expect(screen.getByText(/Current batch size \(N=12\) is below minimum required sample size \(20\)/i)).toBeDefined();
+    });
+  });
 });
