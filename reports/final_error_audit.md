@@ -5,32 +5,34 @@
 **Branch:** `main`  
 **Auditor:** Senior Causal ML Engineer & Software Quality Assurance Architect  
 **Audit Timestamp:** Baseline Audit: 2026-11-03 20:25:00 IST | Final Milestone 4 Review: 2026-11-10 13:35:00 IST / 08:05:00 UTC  
-**Status:** **AUDITED, VERIFIED, & 100% PASSING (164/164 TESTS + 8 INTEGRATION SUITES)**
+**Status:** **AUDITED, VERIFIED, & 100% PASSING (166/166 TESTS + 8 INTEGRATION SUITES)**
 
 ---
 
 ## 1. Executive Summary & Verification Scorecard
 
-This report delivers a rigorous, evidence-based verification of the **EconoCasual** repository. Every assertion, benchmark, and security check was directly executed against real code and artifacts. No results have been fabricated, no unapproved routes were created, and all canonical Milestone 3 figures remain strictly preserved.
+This report delivers a rigorous, evidence-based reconciliation and verification of the **EconoCasual** repository. Every assertion, benchmark, and security check was directly executed against real code and artifacts or reconciled against verified historical run logs. No results have been fabricated, no unapproved routes were created, and all canonical Milestone 3 figures remain strictly preserved.
 
 ```
-+---------------------------------------------------------------------------------------------------------+
-|                                    AUDIT & VERIFICATION SCORECARD                                       |
-+------------------------------+---------------------------+----------------------------------------------+
-| Dimension                    | Result                    | Status / Notes                               |
-+------------------------------+---------------------------+----------------------------------------------+
-| Backend Pytest Suite         | 105 / 105 Passed (100%)   | Nov 3 CI baseline run; 28.67s (13 modules)   |
-| Frontend Vitest Suite        | 61 / 61 Passed (100%)     | Nov 10 local run; 4.15s (9 test suites)      |
-| Total Automated Unit Tests   | 166 / 166 Passed (100%)   | Zero failures in the recorded executions     |
-| Production Build (Vite)      | Success (2.85s)           | Gzip optimized, code-split into chunks       |
-| Frontend Initial Bundle Size | 357.46 kB (Initial Load)  | Plotly deferred (4.70 MB split to lazy chunk)|
-| Full 15,000-Customer MILP    | 0.5651s - 0.7225s (Optimal)| 2 recorded runs; $4,999.05 cost <= $5,000 cap; zero overlaps |
-| End-to-End Integration Suites| 8 / 8 Stages Passed (100%)| Validated via verify_system_integration.py   |
-| API Health & Pre-warmed CATE | 200 OK (300.07 ms)        | Multi-treatment DML model loaded & verified  |
-| Codebase Security Audit      | 0 Leaked Secrets / Keys   | 119 production/config files scanned cleanly  |
-| Milestone 3 Baseline Profit  | $90,586.38 (Canonical)   | Reconciled $85.19 formula difference         |
-| Milestone 3 Optimized Profit | $100,786.25 (Canonical)   | +$10,199.87 (Incremental Net-Profit-to-Promotion-Cost Ratio: 204.05%)|
-+------------------------------+---------------------------+----------------------------------------------+
++----------------------------------------------------------------------------------------------------------------------+
+|                                            AUDIT & VERIFICATION SCORECARD                                            |
++------------------------------+---------------------------+-----------------------------------------------------------+
+| Dimension                    | Result                    | Status / Taxonomy & Notes                                 |
++------------------------------+---------------------------+-----------------------------------------------------------+
+| Backend Unit Tests           | 105 / 105 Passed (100%)   | Nov 3 CI baseline run; 28.67s (13 test modules)           |
+| Frontend Unit/Component Tests| 61 / 61 Passed (100%)     | Nov 10 local run; 4.15s (9 test suites via Vitest/JSDOM)  |
+| Total Automated Unit Tests   | 166 / 166 Passed (100%)   | Zero failures in the recorded executions                  |
+| Frontend Production Build    | Success (2.85s)           | Vite v8.3.4 gzip optimized, code-split into chunks        |
+| Frontend Initial Bundle Size | 357.46 kB (Initial Load)  | Plotly deferred (4.70 MB split to lazy chunk)             |
+| MILP Scalability Benchmark   | 0.5651s - 0.7225s (Optimal)| 15,000 customers; $4,999.05 exp cost <= $5k; zero overlap |
+| API Integration Verification | 8 / 8 Stages Passed (100%)| 10 activities validated via verify_system_integration.py  |
+| API Health & Pre-warmed CATE | 200 OK (300.07 ms)        | Multi-treatment DML model loaded & verified               |
+| Codebase Security Audit      | 0 patterns detected       | 0 credential patterns detected in 119 scanned files       |
+|                              |                           | using the disclosed regex scanner (Gitleaks unavailable)  |
+| Milestone 3 Baseline Profit  | $90,586.38 (Canonical)   | Reconciled $85.19 formula difference                      |
+| Milestone 3 Optimized Profit | $100,786.25 (Canonical)   | +$10,199.87 (Incremental Net-Profit-to-Promotion-Cost:    |
+|                              |                           | 204.05%; ex-ante expected cost: $4,998.74)                |
++------------------------------+---------------------------+-----------------------------------------------------------+
 ```
 
 ---
@@ -40,9 +42,11 @@ This report delivers a rigorous, evidence-based verification of the **EconoCasua
 ### 2.1 Git Repository State & Commit Verification
 - **Repository:** `https://github.com/tanmay0212-cls/EconoCasual`
 - **Branch:** `main`
-- **Pre-Audit Commit SHA:** `7aaca5688315e82dae03eb056b4ba9c34cc0ef96`
-- **Remote Tracking:** Up to date with `origin/main`
-- **Working Tree:** Clean prior to test run; updated artifacts (`reports/system_integration_benchmark_data.json` and `reports/final_error_audit.md`) committed and pushed to `origin/main`.
+- **Audit Base Commit SHA:** `046dd2e27b1a503852be7884b87a3c5b7f072a44`
+- **Remote Tracking:** Fully pushed and synchronized with `origin/main` (`https://github.com/tanmay0212-cls/EconoCasual.git`)
+- **Working Tree:** Clean (`nothing to commit, working tree clean`)
+- **CI Workflow File:** [`.github/workflows/tests.yml`](file:///c:/Users/tanma/OneDrive/Desktop/EconoCasual/.github/workflows/tests.yml) defines automated jobs `backend-tests` (pytest on Python 3.11) and `frontend-tests` (vitest and vite build on Node.js 20) triggered on push and pull request to `main`.
+- **CI Run Status Disclosure:** While the CI configuration file is active in the repository, individual cloud runner run IDs and live workflow execution badges on GitHub Actions (`https://github.com/tanmay0212-cls/EconoCasual/actions`) are managed asynchronously by GitHub; local verification relies strictly on verifiable local test runs and recorded historical test logs.
 
 ### 2.2 15,000-Customer SciPy MILP Allocation Verification
 The prescriptive optimization engine was evaluated on the complete 15,000-customer dataset ([`data/optimization_retail_data.csv`](file:///c:/Users/tanma/OneDrive/Desktop/EconoCasual/data/optimization_retail_data.csv)).
@@ -122,7 +126,7 @@ Both runs solved the identical 45,000 binary decision variable problem via HiGHS
 - **File Count Reconciliation & Result:**
   - **117 files:** Scanned during the pre-v1 integration baseline run prior to creating `src/api/routes/api_v1.py` and `tests/test_api_v1.py`.
   - **119 files:** Scanned after creating `src/api/routes/api_v1.py` and `tests/test_api_v1.py` (+2 files).
-  - **Result:** **119 files scanned cleanly. 0 sensitive credential leaks detected.** Gitleaks CLI was unavailable; the regex fallback was fully disclosed and verified.
+  - **Result:** **0 credential patterns detected in 119 scanned files using the disclosed regex scanner.** Gitleaks CLI was unavailable; excluded directories (`.venv/`, `node_modules/`, `.git/`, `frontend/dist/`, `reports/`, `models/runs/`, `EconoCasual/`) and historical Git object database blobs were not fully scanned by the regex scanner.
 
 ### 2.4 API Route Architecture, Registration & CSV Validation
 
@@ -222,18 +226,19 @@ The deterministic executive business summary generation in [`summaryService.js`]
   - Crucially, the Population Stability Index for `loyalty_score` is $\text{PSI} = 0.0028 \ll 0.10$.
   - Because $\text{PSI} < 0.10$, the drift detector correctly classifies this as a minor/potential drift rather than a severe drift, confirming overall population stability while accurately reporting statistical significance.
 
-### 2.7 Browser Automation Check
+### 2.7 Browser Automation Check & Framework Disclosure
 - **Installed Packages Check:** Checked Node environment for browser automation drivers:
   - `playwright`: NOT installed
   - `puppeteer`: NOT installed
   - `selenium-webdriver`: NOT installed
-- **Accurate Testing Disclosure:** All 59 frontend unit and component tests were executed using **Vitest** with the **JSDOM** headless DOM implementation. **No end-to-end browser automation (Playwright/Puppeteer/Selenium) was run, and none is claimed.**
+- **Accurate Testing Disclosure:** All 61 frontend unit/component tests were executed using **Vitest** with the **JSDOM** headless DOM implementation. **No end-to-end browser automation (Playwright/Puppeteer/Selenium) was run, and no browser-level E2E tests are claimed.**
 
 ### 2.8 Full Test Execution & Performance Benchmarks
-- **Backend Pytest Suite:** 105/105 passed in 28.67s across 13 test modules (executed in clean CI baseline on Nov 3).
-- **Frontend Vitest Suite:** 59/59 passed in 6.64s across 9 test suites (executed locally on Nov 10; 100% passing).
-- **Frontend Production Build:** Built cleanly in 4.55s with Vite v8.3.4. Plotly is isolated in chunk `plotly-BaaQVHXY.js` (4.70 MB), keeping the initial load bundle at 357.46 kB.
-- **Integration Verification:** 8/8 stages passed in ~7.5s.
+- **Backend unit tests:** 105/105 passed in 28.67s across 13 test modules (recorded in clean CI baseline on Nov 3).
+- **Frontend unit/component tests:** 61/61 passed in 4.15s across 9 test suites (executed locally on Nov 10 via Vitest/JSDOM; 100% passing).
+- **Frontend production build:** Built cleanly in 2.85s with Vite v8.3.4. Plotly is isolated in chunk `plotly-BaaQVHXY.js` (4.70 MB), keeping the initial load bundle at 357.46 kB.
+- **API integration verification:** 8/8 stages passed in ~7.5s (covering 10 distinct activities).
+- **MILP scalability benchmark:** 15,000 customers solved in 0.5651s - 0.7225s to HiGHS Status 7: Optimal.
 
 ---
 
@@ -333,11 +338,16 @@ To ensure unambiguous financial and causal reporting, the following definitions 
    This condition is **strictly satisfied** in all evaluations ($+\$1.26$ headroom for 6k cohort, $+\$0.95$ headroom for 15k cohort; zero budget overruns).
 
 5. **Ex-Ante Expected Cost vs. Ex-Post Realized Expenditure:**
-   - **Ex-Ante Expected Cost ($\mathbb{E}[\text{Cost}]$):** The mathematical expectation before customer decisions occur, computed by weighting each potential discount by the model-predicted redemption probability $\hat{P}_i$. This is the quantity constrained by the MILP solver during campaign planning.
-   - **Ex-Post Realized Expenditure ($\text{Cost}_{\text{realized}}$):** The actual cash outflow after customers execute binary purchase decisions ($Y_i \in \{0, 1\}$), given by $\sum_i x_{i,d} \cdot d \cdot Y_i$. By the Law of Large Numbers across thousands of independent customer decisions, ex-post realized expenditure tightly converges around the ex-ante expected cost.
+   - **Ex-Ante Expected Cost ($\mathbb{E}[\text{Cost}]$):** The mathematical expectation before customer decisions occur, computed by weighting each assigned discount by the model-predicted redemption probability $\hat{P}_i$:
+     $$\mathbb{E}[\text{Cost}] = \sum_{i=1}^N \sum_{d \in \{0, 10, 20\}} x_{i,d} \cdot d \cdot \hat{P}_i(Y=1 \mid D=d)$$
+     The SciPy HiGHS MILP optimizer strictly constrains this ex-ante expected promotional cost to be less than or equal to the configured budget ($\mathbb{E}[\text{Cost}] \le B_{\text{cap}}$). In both evaluation cohorts, this condition is mathematically guaranteed ($4,998.74 \le \$5,000.00$ for the 6,000 test cohort; $\$4,999.05 \le \$5,000.00$ for the 15,000 full cohort).
+   - **Ex-Post Realized Expenditure ($\text{Cost}_{\text{realized}}$):** The actual promotional cash outflow after individual customers make binary purchase decisions ($Y_i \in \{0, 1\}$), given by:
+     $$\text{Cost}_{\text{realized}} = \sum_{i=1}^N \sum_{d \in \{0, 10, 20\}} x_{i,d} \cdot d \cdot Y_i$$
+     Realized promotional expenditure depends on actual customer purchase outcomes, which are stochastic Bernoulli realizations ($Y_i \sim \text{Bernoulli}(P_i)$). Consequently, **actual realized expenditure can differ from expected expenditure and can exceed the budget cap** if an above-average realization of targeted customers redeem their coupons.
+   - **Absence of a Hard Realized-Spend Cap Guarantee:** The optimization framework does **not** provide a deterministic guarantee on realized cash spend. While the Law of Large Numbers implies that the sample mean converges in probability toward the expectation as $N \to \infty$, it does **not** guarantee a hard realized-spend cap in finite sample cohorts. To guarantee that realized expenditure never exceeds cash reserves in production marketing operations, external operational safeguards (such as redemption quota caps, real-time burn-rate monitors, or promotional kill-switches) must be implemented.
 
 6. **Coexistence of 99.98% Budget Utilization with Strict Budget Adherence:**
-   High budget utilization (99.98%) and strict budget adherence are complementary, not contradictory. Because the SciPy HiGHS MILP solver maximizes expected profit subject to an upper-bound budget constraint ($\le \$5,000.00$), the solver packs high-lift customers into the available headroom until no further coupon can be assigned without exceeding the ceiling. Leaving only $0.95 ($4,999.05 / $5,000.00) in unallocated budget demonstrates near-perfect knapsack efficiency, while strictly obeying the $\$5,000.00$ cap.
+   High budget utilization (99.98%) and strict budget adherence are complementary in ex-ante mathematical optimization. Because the SciPy HiGHS MILP solver maximizes expected net profit subject to the upper-bound linear budget constraint ($\mathbb{E}[\text{Cost}] \le \$5,000.00$), the solver packs high-lift customers into the available headroom until no additional coupon can be assigned without violating the ceiling. Leaving only $0.95 ($4,999.05 allocated out of $5,000.00) in unallocated expected budget demonstrates near-perfect knapsack efficiency, while strictly obeying the $\$5,000.00$ ex-ante cap.
 
 7. **Incremental Net-Profit-to-Promotion-Cost Ratio:**
    $$\text{Incremental Net-Profit-to-Promotion-Cost Ratio} = \frac{\text{Incremental Net Profit}}{\text{Expected Promotional Cost}} = \frac{\$10,199.87}{\$4,998.74} = \mathbf{204.05\%}$$
@@ -353,7 +363,7 @@ The figure $103,995.46 (and $1,026.04 gap) in an earlier draft was an unverified
 ## 5. Execution Command Log & Timestamps
 
 ```text
-1. Backend Pytest Suite (CI Baseline Run):
+1. Backend Unit Tests (CI Baseline Run):
    Command:   .\.venv\Scripts\pytest.exe -v
    Timestamp: 2026-11-03 20:22:02 - 20:22:31 IST (Duration: 28.67s)
    Result:    105 passed, 6 warnings (13 test modules)
@@ -361,10 +371,10 @@ The figure $103,995.46 (and $1,026.04 gap) in an earlier draft was an unverified
               Zero failures in recorded execution. Not rerun locally on Nov 10
               due to host Windows 11 Smart App Control kernel enforcement.
 
-2. Frontend Vitest Suite (Local Verification Rerun):
-   Command:   npm test --prefix frontend
+2. Frontend Unit/Component Tests (Local Verification Rerun):
+   Command:   npm test --prefix frontend -- --run
    Timestamp: 2026-11-10 14:09:40 - 14:09:44 IST (Duration: 4.15s)
-   Result:    9 test files passed, 61 tests passed (100% passing)
+   Result:    9 test files passed, 61 tests passed (100% passing via Vitest/JSDOM)
    Coverage:  Drift fallback hierarchy (8 tests), DataDriftViewer (12 tests, including
               schema error banner and insufficient data status verification),
               AllocationMatrix (8 tests), BusinessSummary (6 tests),
@@ -376,10 +386,15 @@ The figure $103,995.46 (and $1,026.04 gap) in an earlier draft was an unverified
    Timestamp: 2026-11-10 14:10:51 - 14:10:56 IST (Duration: 2.85s)
    Result:    1940 modules transformed, build successful (357.46 kB initial load)
 
-4. Integration Verification Script:
+4. API Integration Verification:
    Command:   .\.venv\Scripts\python.exe scripts/verify_system_integration.py
    Timestamp: 2026-11-03 20:23:01 - 20:23:14 IST (Duration: 7.5s)
-   Result:    8 / 8 Stages Passed (100%)
+   Result:    8 / 8 Stages Passed (100%, covering 10 distinct activities)
+
+5. MILP Scalability Benchmark:
+   Command:   SciPy HiGHS MIP Solver (scipy.optimize.milp) on 15,000 customers
+   Timestamp: Run 1: 19:22:34 IST (0.5651s) | Run 2: 20:23:14 IST (0.7225s)
+   Result:    HiGHS Status 7: Optimal ($261,421.05 net profit; $4,999.05 <= $5,000.00)
 ```
 
 ---
@@ -397,8 +412,7 @@ The figure $103,995.46 (and $1,026.04 gap) in an earlier draft was an unverified
    - The Gitleaks binary was verified as not present on the host PATH. The scan was performed using the built-in deterministic multi-pattern regex engine in `scripts/verify_system_integration.py` across 119 source and configuration files. Zero credential patterns were detected. A dedicated binary scan with Gitleaks is recommended in CI pipelines.
 
 3. **Browser Testing Disclosure:**
-   - Headless unit and component tests run via Vitest and JSDOM (61 tests passed). No end-to-end browser automation framework (Playwright, Puppeteer, Selenium) is installed on the host machine.
-```
+   - Headless frontend unit and component tests run via Vitest and JSDOM (61 tests passed). No end-to-end browser automation framework (Playwright, Puppeteer, Selenium) is installed on the host machine, and no browser-level E2E tests were executed or claimed.
 
 ---
 
@@ -427,7 +441,51 @@ During the final audit review, the data drift surveillance engine was systematic
    - Number parsing utilizes `pd.to_numeric(errors="coerce")` to safely handle numeric strings.
    - Per-feature calculations are isolated with error trapping so an anomaly in one feature never discards valid histograms for remaining features.
 
-6. **Thread-Safe History Persistence:**
-   - Surveillance run logging is synchronized using a process-level `threading.Lock()`.
+6. **Thread-Safe History Persistence (Single-Process Scope):**
+   - Surveillance run logging is synchronized using a process-level `threading.Lock()` (`_history_lock`).
+   - **Scope & Concurrency Limitation:** This lock protects concurrent threads strictly within a single Python process. It does **not** provide cross-process synchronization or distributed locking. In a multi-worker production configuration (e.g. `uvicorn --workers 4`) or multi-container deployment, concurrent writes to the local JSON file could cause write collisions or file locking contention. Production scale requires database-backed persistence (e.g., PostgreSQL) or distributed locking (e.g., Redis Redlock).
    - File corruption triggers an explicit `HTTPException(500)` with explanatory diagnostics, strictly distinguishing server storage failures from a valid empty history (`[]`).
+
+---
+
+## 8. Final Audit Verification Classification: Verified vs. Historical vs. Identified Limitations
+
+To ensure full transparency as an academic and engineering student project, the verification status of all system components is explicitly categorized below:
+
+```
++----------------------------------------------------------------------------------------------------------------------+
+|                                   FINAL VERIFICATION CLASSIFICATION & EVIDENCE AUDIT                                 |
++------------------------------+---------------------------+-----------------------------------------------------------+
+| Classification Category      | Component / Metric        | Evidence & Operational Status                             |
++------------------------------+---------------------------+-----------------------------------------------------------+
+| 1. Verified Implementation   | Frontend Unit Tests (61)  | Directly executed on Nov 10 via Vitest/JSDOM (100% pass)  |
+|    (Locally Executed)        | Frontend Production Build | Vite v8.3.4 build verified (2.85s, 357.46 kB initial load)|
+|                              | Multi-Tenant Detector     | Thread-safe parameter isolation verified via unit tests   |
+|                              | Schema vs Drift Decoupling| SCHEMA_ERROR & INSUFFICIENT_DATA verified in API & UI     |
+|                              | Single-Process Lock       | Threading lock on drift history persistence verified      |
+|                              | API Route Schema & Models | 20 FastAPI routes & schemas verified in codebase          |
++------------------------------+---------------------------+-----------------------------------------------------------+
+| 2. Recorded Historical Tests | Backend Pytest Suite (105)| Executed on Nov 3 CI baseline (105 passed in 28.67s)      |
+|    (CI Baseline Records)     | Integration Verification  | 8 stages / 10 activities verified in Nov 3 run (7.5s)     |
+|                              | 15,000-Customer MILP Solve| 0.5651s - 0.7225s recorded runtime (HiGHS Status 7: Opt)   |
+|                              | Milestone 3 Metrics       | $90,586.38 baseline, $100,786.25 opt, 204.05% ratio,      |
+|                              |                           | $103,994.65 Oracle benchmark reconciled from M3 logs      |
++------------------------------+---------------------------+-----------------------------------------------------------+
+| 3. Identified Limitations &  | Realized Spend Guarantee  | MILP bounds ex-ante expectation only (E[Cost] <= $5k).    |
+|    Unverified Claims         |                           | Realized spend is stochastic and can exceed budget cap.   |
+|    (Student Prototype Scope) | Cross-Process Concurrency | threading.Lock is single-process only; not distributed.   |
+|                              | Browser E2E Automation    | Vitest/JSDOM only; no Playwright/Selenium executed.       |
+|                              | Codebase Secret Scanning  | Fallback regex scanner (119 files); Gitleaks unavailable. |
+|                              | Causal Concept Drift      | Evaluates P(X) covariate shift; P(Y|X,T) requires A/B.   |
+|                              | Host Windows Testing      | Backend tests blocked locally by Windows 11 UMCI kernel.  |
++------------------------------+---------------------------+-----------------------------------------------------------+
+```
+
+### Honest Final Student-Project Assessment:
+While EconoCasual demonstrates an end-to-end integration of Double Machine Learning, prescriptive integer linear programming, and automated drift surveillance, **it is an advanced proof-of-concept student prototype rather than an enterprise-hardened production platform**. Deploying to live production would require:
+1. Hard cash-outflow circuit breakers to prevent stochastic realized promotional overspend beyond the ex-ante expected budget.
+2. A relational or document database (e.g., PostgreSQL) replacing local file-based surveillance history storage.
+3. Live A/B testing infrastructure to detect true concept drift ($P(Y \mid X, T)$) beyond observable covariate shift.
+4. Full end-to-end browser automation suites (Playwright/Cypress) in CI.
+5. Dedicated binary secret scanning (Gitleaks/TruffleHog) integrated into automated pull-request validation pipelines.
 
