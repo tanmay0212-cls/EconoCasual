@@ -157,3 +157,4 @@ The statistical validity of these intervals relies on the following standard cau
 ### 5.3 Finite-Sample vs Asymptotic Behavior
 1. **Normal Approximation:** Asymptotic Wald intervals assume that tree leaf sizes and customer cohorts are sufficiently large for the central limit theorem to apply. For extreme boundary customers with $<15$ nearest neighbors, bootstrap percentile intervals provide a more robust finite-sample approximation.
 2. **Double Machine Learning Convergence:** Neyman-orthogonal scores eliminate first-order regularization bias from the nuisance estimators ($Y$ and $T$), ensuring that CATE standard errors achieve the parametric $\sqrt{N}$ convergence rate even when using non-parametric tree estimators.
+

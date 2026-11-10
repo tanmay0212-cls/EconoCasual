@@ -312,3 +312,4 @@ def test_segment_and_support_breakdown(synthetic_toy_cohort):
     for supp_key, metrics in supp_diag.items():
         assert "mean_interval_width" in metrics
         assert "mean_propensity" in metrics
+

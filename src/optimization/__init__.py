@@ -10,11 +10,19 @@ from .budget_optimizer import (
     DEFAULT_BUDGET,
     OptimizationResult,
 )
+from .advanced_optimizer import (
+    AdvancedMILPOptimizer,
+    AdvancedOptimizationResult,
+    SegmentFairnessDiagnostic,
+)
 
 __all__ = [
     "SciPyBudgetOptimizer",
     "DISCOUNT_TIERS",
     "DEFAULT_BUDGET",
     "OptimizationResult",
+    "AdvancedMILPOptimizer",
+    "AdvancedOptimizationResult",
+    "SegmentFairnessDiagnostic",
 ]
 
