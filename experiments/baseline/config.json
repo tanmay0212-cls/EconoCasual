@@ -1,0 +1,155 @@
+{
+  "project": "EconoCasual 2.0",
+  "phase": "Phase 0 - Baseline Audit & Preservation",
+  "created_at": "2026-11-10T15:52:00+05:30",
+  "git_commit_sha": "f9e0e57aeb11cc21695e591aa749c5489e9df01e",
+  "random_seed": 42,
+  "environment": {
+    "python_version": "3.11.9",
+    "scipy_version": "1.15.3",
+    "econml_version": "0.17.0",
+    "dowhy_version": "0.14",
+    "scikit_learn_version": "1.9.1",
+    "numpy_version": "2.4.6",
+    "pandas_version": "3.0.6",
+    "lightgbm_version": "4.7.0",
+    "fastapi_version": "0.162.0",
+    "uvicorn_version": "0.54.0",
+    "pydantic_version": "2.14.2",
+    "node_version": "v20.x",
+    "vite_version": "8.3.4",
+    "vitest_version": "5.0.5",
+    "react_version": "19.2.8"
+  },
+  "causal_model": {
+    "framework": "EconML",
+    "primary_multi_treatment_estimator": "CausalForestDML",
+    "alternative_api_runtime_estimator": "LinearDRLearner",
+    "discrete_treatment": true,
+    "treatment_classes": [0, 10, 20],
+    "treatment_col": "discount_amount",
+    "outcome_col": "purchase",
+    "hyperparameters": {
+      "n_estimators": 120,
+      "subforest_size": 4,
+      "min_samples_leaf": 15,
+      "max_depth": 8,
+      "cv": 3,
+      "random_state": 42,
+      "n_jobs": -1
+    },
+    "first_stage_nuisance_models": {
+      "outcome_model_y": {
+        "class": "LGBMRegressor",
+        "n_estimators": 60,
+        "max_depth": 5,
+        "learning_rate": 0.08,
+        "random_state": 42
+      },
+      "treatment_propensity_model_t": {
+        "class": "LogisticRegression",
+        "solver": "lbfgs",
+        "max_iter": 500,
+        "random_state": 42
+      }
+    },
+    "baseline_outcome_model_mu0": {
+      "class": "CalibratedClassifierCV(LGBMClassifier)",
+      "base_estimator": {
+        "n_estimators": 75,
+        "max_depth": 5,
+        "learning_rate": 0.05,
+        "random_state": 42
+      },
+      "method": "sigmoid",
+      "cv": 3
+    },
+    "covariates": {
+      "numerical": [
+        "age",
+        "loyalty_score",
+        "previous_purchases",
+        "average_previous_order_value",
+        "customer_activity_score"
+      ],
+      "categorical": [
+        "customer_segment"
+      ],
+      "quarantined_post_treatment": [
+        "order_value",
+        "gross_margin",
+        "discount_cost",
+        "revenue",
+        "net_profit"
+      ]
+    }
+  },
+  "datasets": {
+    "synthetic_retail_40k": {
+      "path": "data/synthetic_retail/synthetic_retail_ground_truth.csv",
+      "total_observations": 40000,
+      "random_seed": 42,
+      "splits": {
+        "train": {
+          "rows": 27998,
+          "pct": 70.0,
+          "file": "synthetic_retail_train.csv"
+        },
+        "validation": {
+          "rows": 5997,
+          "pct": 15.0,
+          "file": "synthetic_retail_validation.csv"
+        },
+        "test": {
+          "rows": 6005,
+          "pct": 15.0,
+          "file": "synthetic_retail_test.csv"
+        }
+      },
+      "treatment_counts": {
+        "0": 13024,
+        "10": 15873,
+        "20": 11103
+      }
+    },
+    "optimization_retail_15k": {
+      "path": "data/optimization_retail_data.csv",
+      "total_observations": 15000,
+      "train_sample_size": 12000,
+      "eval_sample_size": 3000,
+      "split_ratio": "80/20",
+      "stratified_by": "discount_level"
+    }
+  },
+  "optimization": {
+    "solver": "scipy.optimize.milp (HiGHS)",
+    "problem_type": "Multiple-Choice Knapsack Problem (MCKP)",
+    "default_budget": 5000.0,
+    "budget_type": "redemption",
+    "discount_tiers": [0, 10, 20],
+    "objective_type": "net_profit",
+    "constraints": [
+      "Exact assignment: sum_{d in {0,10,20}} x_{i,d} = 1 for all customers i",
+      "Budget adherence: sum_i sum_{d in {10,20}} d * P(Y=1|X_i,d) * x_{i,d} <= Budget",
+      "Integrality: x_{i,d} in {0, 1}"
+    ]
+  },
+  "economic_assumptions": {
+    "base_margin_rate": 0.52,
+    "high_aov_threshold": 120.0,
+    "high_aov_margin_bonus": 0.04,
+    "budget_segment_margin_penalty": 0.03,
+    "margin_rate_clip_bounds": [0.35, 0.70],
+    "basket_expansion": {
+      "0": 1.00,
+      "10": 1.03,
+      "20": 1.06
+    },
+    "accounting_definitions": {
+      "order_value_d": "AOV_i * basket_expansion_d",
+      "gross_margin_before_discount": "order_value_d * margin_rate_i",
+      "expected_discount_cost": "d * P(purchase = 1 | X_i, d)",
+      "expected_net_profit": "P(purchase = 1 | X_i, d) * [gross_margin_before_discount - d]"
+    }
+  }
+}

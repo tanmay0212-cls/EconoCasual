@@ -1,0 +1,144 @@
+{
+  "project": "EconoCasual 2.0",
+  "phase": "Phase 0 - Baseline Audit & Preservation",
+  "created_at": "2026-11-10T15:52:00+05:30",
+  "git_commit_sha": "f9e0e57aeb11cc21695e591aa749c5489e9df01e",
+  "causal_effect_recovery_n6005": {
+    "evaluation_cohort_size": 6005,
+    "model": "CausalForestDML (discrete_treatment=True)",
+    "tier_10_vs_0": {
+      "true_ground_truth_ate": 0.1950,
+      "true_ground_truth_ate_pp": "+19.50 pp",
+      "estimated_ate": 0.1983,
+      "estimated_ate_pp": "+19.83 pp",
+      "estimation_bias": 0.0033,
+      "estimation_bias_pp": "+0.33 pp",
+      "relative_error_pct": 1.7,
+      "cate_pearson_r": 0.826,
+      "cate_spearman_rho": 0.813,
+      "ite_mae": 0.0252,
+      "ite_rmse": 0.0332
+    },
+    "tier_20_vs_0": {
+      "true_ground_truth_ate": 0.2602,
+      "true_ground_truth_ate_pp": "+26.02 pp",
+      "estimated_ate": 0.2599,
+      "estimated_ate_pp": "+25.99 pp",
+      "estimation_bias": -0.0003,
+      "estimation_bias_pp": "-0.03 pp",
+      "relative_error_pct": 0.1,
+      "cate_pearson_r": 0.683,
+      "cate_spearman_rho": 0.645,
+      "ite_mae": 0.0381,
+      "ite_rmse": 0.0479
+    },
+    "calibration": {
+      "brier_score": 0.2012,
+      "mean_predicted_conversion": {
+        "0": 0.253,
+        "10": 0.491,
+        "20": 0.582
+      },
+      "mean_realized_conversion": {
+        "0": 0.251,
+        "10": 0.490,
+        "20": 0.584
+      }
+    }
+  },
+  "prescriptive_optimization_baseline_n6005": {
+    "customer_cohort_size": 6005,
+    "budget_cap": 5000.0,
+    "blanket_0_organic_control": {
+      "status": "FEASIBLE",
+      "expected_profit": 90586.38,
+      "profit_per_customer": 15.09,
+      "expected_promotional_cost": 0.0,
+      "conversion_rate_pct": 28.71
+    },
+    "personalized_dml_scipy_milp": {
+      "status": "FEASIBLE",
+      "expected_profit": 100786.25,
+      "profit_per_customer": 16.78,
+      "expected_promotional_cost": 4998.74,
+      "budget_utilization_pct": 99.97,
+      "issued_face_value_exposure": 12100.0,
+      "conversion_rate_pct": 32.56,
+      "incremental_profit_vs_baseline": 10199.87,
+      "incremental_profit_lift_pct": 11.26,
+      "incremental_net_profit_to_promotion_cost_ratio_pct": 204.05,
+      "tier_distribution": {
+        "0": { "count": 4816, "pct": 80.2 },
+        "10": { "count": 1168, "pct": 19.5 },
+        "20": { "count": 21, "pct": 0.3 }
+      }
+    },
+    "synthetic_dgp_ground_truth": {
+      "ground_truth_expected_profit": 102969.42,
+      "ground_truth_expected_promotional_cost": 4976.96
+    },
+    "budget_constrained_oracle_benchmark": {
+      "status": "THEORETICAL UPPER BOUND",
+      "expected_profit": 103994.65,
+      "profit_per_customer": 17.32,
+      "expected_promotional_cost": 4998.55,
+      "dml_profit_gap_dollars": 1025.23,
+      "dml_profit_gap_pct": 0.986
+    }
+  },
+  "scalability_benchmark_15k": {
+    "customer_cohort_size": 15000,
+    "decision_variables": 45000,
+    "solver": "scipy.optimize.milp (HiGHS)",
+    "solver_status": "Optimization terminated successfully. (HiGHS Status 7: Optimal)",
+    "solver_status_code": 0,
+    "solve_time_seconds_run1": 0.5651,
+    "solve_time_seconds_run2": 0.7225,
+    "budget_cap": 5000.0,
+    "expected_promotional_cost": 4999.05,
+    "budget_utilization_pct": 99.98,
+    "expected_net_profit": 261421.05,
+    "tier_distribution": {
+      "0": { "count": 14087, "pct": 93.91 },
+      "10": { "count": 910, "pct": 6.07 },
+      "20": { "count": 3, "pct": 0.02 }
+    }
+  },
+  "test_execution_summary": {
+    "frontend_unit_tests": {
+      "framework": "Vitest v5.0.5 + JSDOM",
+      "test_files": 9,
+      "passed": 61,
+      "failed": 0,
+      "total": 61,
+      "duration_seconds": 12.35,
+      "execution_date": "2026-11-10T15:23:45+05:30"
+    },
+    "backend_unit_tests": {
+      "framework": "Pytest (Python 3.11)",
+      "test_files": 13,
+      "passed": 105,
+      "failed": 0,
+      "total": 105,
+      "duration_seconds": 28.67,
+      "execution_date": "2026-11-03T20:22:31+05:30 (Historical Baseline Record)"
+    },
+    "api_integration_stages": {
+      "script": "scripts/verify_system_integration.py",
+      "stages_passed": 8,
+      "stages_total": 8,
+      "activities_passed": 10,
+      "activities_total": 10,
+      "duration_seconds": 7.5,
+      "execution_date": "2026-11-03T20:23:14+05:30 (Historical Record)"
+    },
+    "github_actions_ci": {
+      "workflow_file": ".github/workflows/tests.yml",
+      "status": "UNVERIFIED / FAILING IN GITHUB ACTIONS CLOUD RUNNERS",
+      "runs_evaluated": 18,
+      "failed_runs_count": 18,
+      "latest_run_id": "42794629921",
+      "latest_run_conclusion": "failure"
+    }
+  }
+}
