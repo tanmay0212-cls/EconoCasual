@@ -43,14 +43,15 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from typing import Dict, Any, List, Optional, Tuple, Union
+from typing import Dict, Any, List, Optional, Tuple, Union, TYPE_CHECKING
 
 import numpy as np
 import pandas as pd
 import scipy.sparse as sp
 from scipy.optimize import milp, LinearConstraint, Bounds
 
-from src.causal.multi_tier_dml import MultiTierCausalDML
+if TYPE_CHECKING:
+    from src.causal.multi_tier_dml import MultiTierCausalDML
 
 DISCOUNT_TIERS: List[int] = [0, 10, 20]
 DEFAULT_BUDGET: float = 5000.0
