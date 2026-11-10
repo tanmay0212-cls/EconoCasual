@@ -28,6 +28,10 @@ class DriftCheckRequest(BaseModel):
         le=0.50,
         description="Population Stability Index (PSI) threshold for significant drift"
     )
+    run_type: Optional[str] = Field(
+        default="operational",
+        description="'test' | 'operational' to distinguish controlled test executions from genuine operational surveillance"
+    )
 
 
 class FeatureDriftDetail(BaseModel):
@@ -86,6 +90,11 @@ class DriftHistoryItem(BaseModel):
     drifted_features_count: int
     severe_drift_count: int
     total_features_evaluated: int
+    run_type: Optional[str] = Field("operational", description="'test' | 'operational'")
+    feature_summary: Optional[Dict[str, str]] = Field(
+        default_factory=dict,
+        description="Feature-level severity mapping for historical trend analysis"
+    )
 
 
 class DriftHistoryResponse(BaseModel):

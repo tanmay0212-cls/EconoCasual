@@ -9,13 +9,41 @@ import {
   Info,
   Layers,
   ArrowRight,
-  TrendingDown,
-  TrendingUp,
   Activity,
   FileCheck2,
   Sliders,
+  HelpCircle,
 } from 'lucide-react';
 import { fetchDriftReport, fetchDriftHistory } from '../services/driftService';
+
+// Safe numeric formatting helpers
+const formatNum = (val, decimals = 4, fallback = 'N/A') => {
+  if (typeof val === 'number' && !Number.isNaN(val)) {
+    return val.toFixed(decimals);
+  }
+  return fallback;
+};
+
+const formatInt = (val, fallback = '0') => {
+  if (typeof val === 'number' && !Number.isNaN(val)) {
+    return val.toLocaleString();
+  }
+  return fallback;
+};
+
+const formatPct = (num, den, fallback = '0%') => {
+  if (typeof num === 'number' && typeof den === 'number' && den > 0) {
+    return `${Math.round((num / den) * 100)}%`;
+  }
+  return fallback;
+};
+
+const formatUTC = (isoString) => {
+  if (!isoString) return 'N/A';
+  const d = new Date(isoString);
+  if (Number.isNaN(d.getTime())) return isoString;
+  return d.toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+};
 
 export default function DataDriftViewer() {
   const [batchType, setBatchType] = useState('shifted'); // 'shifted' | 'clean'
@@ -25,28 +53,38 @@ export default function DataDriftViewer() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load drift report data
+  // Load drift report data and history in genuine parallel execution
   const loadReport = async (type) => {
     setIsLoading(true);
     setError(null);
+    setDataPayload(null); // Prevent stale reports from being presented as current during refresh
+
     try {
-      const data = await fetchDriftReport(type);
-      setDataPayload(data);
-      if (data.report?.features?.length > 0) {
-        // Default to a drifted feature if available
-        const firstDrifted = data.report.features.find((f) => f.drift_detected);
-        if (firstDrifted) {
-          setSelectedFeature(firstDrifted.feature_name);
-        } else {
-          setSelectedFeature(data.report.features[0].feature_name);
+      const [reportResult, historyResult] = await Promise.allSettled([
+        fetchDriftReport(type),
+        fetchDriftHistory(),
+      ]);
+
+      if (reportResult.status === 'fulfilled') {
+        const data = reportResult.value;
+        setDataPayload(data);
+        if (data.report?.features?.length > 0) {
+          // Default to a drifted feature if available
+          const firstDrifted = data.report.features.find((f) => f.drift_detected);
+          if (firstDrifted) {
+            setSelectedFeature(firstDrifted.feature_name);
+          } else {
+            setSelectedFeature(data.report.features[0].feature_name);
+          }
         }
+      } else {
+        throw reportResult.reason || new Error('Failed to load drift report.');
       }
-      // Load historical runs in parallel
-      try {
-        const history = await fetchDriftHistory();
-        setDriftHistory(history);
-      } catch (hErr) {
-        console.warn('Could not load drift history:', hErr);
+
+      if (historyResult.status === 'fulfilled') {
+        setDriftHistory(historyResult.value || []);
+      } else {
+        console.warn('Could not load drift history:', historyResult.reason);
       }
     } catch (err) {
       setError(err.message || 'Failed to load drift report.');
@@ -65,7 +103,7 @@ export default function DataDriftViewer() {
 
   // Selected feature details
   const activeFeatureResult = useMemo(() => {
-    if (!report?.features) return null;
+    if (!report?.features || report.features.length === 0) return null;
     return report.features.find((f) => f.feature_name === selectedFeature) || report.features[0];
   }, [report, selectedFeature]);
 
@@ -75,7 +113,7 @@ export default function DataDriftViewer() {
     return distributions[selectedFeature] || null;
   }, [distributions, selectedFeature]);
 
-  // Overall status helper
+  // Overall status helper with separate unknown/error state
   const getStatusBadge = (status) => {
     if (status === 'Severe or widespread drift detected') {
       return {
@@ -93,11 +131,20 @@ export default function DataDriftViewer() {
         bannerClass: 'drift-banner-warning',
       };
     }
+    if (status === 'No significant drift detected' || status === 'stable') {
+      return {
+        label: 'No Significant Drift',
+        className: 'badge-success',
+        icon: <CheckCircle2 size={16} className="text-emerald" />,
+        bannerClass: 'drift-banner-success',
+      };
+    }
+    // Dedicated unknown / unrecognized state
     return {
-      label: 'No Significant Drift',
-      className: 'badge-success',
-      icon: <CheckCircle2 size={16} className="text-emerald" />,
-      bannerClass: 'drift-banner-success',
+      label: status ? `Unknown Status: ${status}` : 'Status Unknown',
+      className: 'badge-secondary',
+      icon: <HelpCircle size={16} className="text-muted" />,
+      bannerClass: 'drift-banner-neutral',
     };
   };
 
@@ -107,8 +154,12 @@ export default function DataDriftViewer() {
         return <span className="badge badge-danger">High Severity</span>;
       case 'moderate':
         return <span className="badge badge-warning">Moderate</span>;
-      default:
+      case 'none':
+      case 'stable':
+      case 'low':
         return <span className="badge badge-success">Stable</span>;
+      default:
+        return <span className="badge badge-secondary">{severity ? `Unknown (${severity})` : 'Unknown'}</span>;
     }
   };
 
@@ -213,7 +264,7 @@ export default function DataDriftViewer() {
                 <span className="metric-title">Features Evaluated</span>
                 <Layers size={18} className="metric-icon text-cyan" />
               </div>
-              <div className="metric-value">{report.total_features_evaluated}</div>
+              <div className="metric-value">{formatInt(report.total_features_evaluated)}</div>
               <div className="metric-footer">
                 <span className="metric-subtext">Covariates & business attributes</span>
               </div>
@@ -225,13 +276,13 @@ export default function DataDriftViewer() {
                 <AlertTriangle size={18} className="metric-icon text-amber" />
               </div>
               <div className="metric-value">
-                {report.drifted_features_count}
-                <span className="metric-denominator"> / {report.total_features_evaluated}</span>
+                {formatInt(report.drifted_features_count)}
+                <span className="metric-denominator"> / {formatInt(report.total_features_evaluated)}</span>
               </div>
               <div className="metric-footer">
                 <span className={`metric-change ${report.drifted_features_count > 0 ? 'text-amber' : 'text-emerald'}`}>
                   {report.drifted_features_count > 0
-                    ? `${Math.round((report.drifted_features_count / report.total_features_evaluated) * 100)}% divergent`
+                    ? `${formatPct(report.drifted_features_count, report.total_features_evaluated)} divergent`
                     : 'All features stable'}
                 </span>
               </div>
@@ -242,10 +293,10 @@ export default function DataDriftViewer() {
                 <span className="metric-title">High Severity Features</span>
                 <ShieldAlert size={18} className="metric-icon text-red" />
               </div>
-              <div className="metric-value">{report.high_severity_count}</div>
+              <div className="metric-value">{formatInt(report.high_severity_count ?? report.severe_drift_count)}</div>
               <div className="metric-footer">
-                <span className={`metric-subtext ${report.high_severity_count > 0 ? 'text-red font-bold' : ''}`}>
-                  {report.high_severity_count > 0 ? 'Requires acquisition review' : 'No critical divergence'}
+                <span className={`metric-subtext ${(report.high_severity_count ?? report.severe_drift_count) > 0 ? 'text-red font-bold' : ''}`}>
+                  {(report.high_severity_count ?? report.severe_drift_count) > 0 ? 'Requires acquisition review' : 'No critical divergence'}
                 </span>
               </div>
             </div>
@@ -255,7 +306,7 @@ export default function DataDriftViewer() {
                 <span className="metric-title">Baseline Cohort Size</span>
                 <FileCheck2 size={18} className="metric-icon text-emerald" />
               </div>
-              <div className="metric-value">{report.reference_sample_size.toLocaleString()}</div>
+              <div className="metric-value">{formatInt(report.reference_sample_size)}</div>
               <div className="metric-footer">
                 <span className="metric-subtext">Training reference customers</span>
               </div>
@@ -266,7 +317,7 @@ export default function DataDriftViewer() {
                 <span className="metric-title">Evaluation Batch Size</span>
                 <Activity size={18} className="metric-icon text-purple" />
               </div>
-              <div className="metric-value">{report.current_sample_size.toLocaleString()}</div>
+              <div className="metric-value">{formatInt(report.current_sample_size)}</div>
               <div className="metric-footer">
                 <span className="metric-subtext">Incoming customer observations</span>
               </div>
@@ -278,7 +329,7 @@ export default function DataDriftViewer() {
                 <CheckCircle2 size={18} className="metric-icon text-emerald" />
               </div>
               <div className="metric-value text-emerald">
-                {report.schema_validation?.is_valid ? '100% Valid' : 'Schema Error'}
+                {report.schema_validation?.is_valid !== false ? '100% Valid' : 'Schema Error'}
               </div>
               <div className="metric-footer">
                 <span className="metric-subtext">Zero model-input corruptions</span>
@@ -318,59 +369,71 @@ export default function DataDriftViewer() {
                   </tr>
                 </thead>
                 <tbody>
-                  {report.features.map((feat) => {
-                    const isSelected = feat.feature_name === selectedFeature;
-                    const metricVal = feat.psi != null ? `PSI: ${feat.psi.toFixed(3)}` : `TVD: ${feat.tvd?.toFixed(3)}`;
-                    return (
-                      <tr
-                        key={feat.feature_name}
-                        className={`drift-row ${isSelected ? 'drift-row-selected' : ''}`}
-                        onClick={() => setSelectedFeature(feat.feature_name)}
-                      >
-                        <td>
-                          <span className="font-bold feature-name-cell">{feat.feature_name}</span>
-                        </td>
-                        <td>
-                          <span className="feature-type-tag">{feat.feature_type}</span>
-                        </td>
-                        <td>
-                          <span className="test-name-tag">
-                            {feat.test_name === 'kolmogorov_smirnov' ? 'KS 2-Sample' : 'Chi-Square'}
-                          </span>
-                        </td>
-                        <td>
-                          <code>{feat.test_statistic.toFixed(4)}</code>
-                        </td>
-                        <td>
-                          <code className={feat.p_value < 0.05 ? 'text-red font-bold' : 'text-emerald'}>
-                            {feat.p_value < 0.0001 ? '< 0.0001' : feat.p_value.toFixed(4)}
-                          </code>
-                        </td>
-                        <td>
-                          <code className={feat.psi >= 0.25 || feat.tvd >= 0.25 ? 'text-red font-bold' : ''}>
-                            {metricVal}
-                          </code>
-                        </td>
-                        <td>{getSeverityBadge(feat.severity)}</td>
-                        <td className="action-cell">
-                          <span className="action-cell-text">{feat.recommended_action}</span>
-                        </td>
-                        <td>
-                          <button
-                            type="button"
-                            className={`btn btn-sm ${isSelected ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedFeature(feat.feature_name);
-                            }}
-                          >
-                            <span>Inspect</span>
-                            <ArrowRight size={13} />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {report.features && report.features.length > 0 ? (
+                    report.features.map((feat) => {
+                      const isSelected = feat.feature_name === selectedFeature;
+                      const metricVal = feat.psi != null
+                        ? `PSI: ${formatNum(feat.psi, 3)}`
+                        : feat.tvd != null
+                        ? `TVD: ${formatNum(feat.tvd, 3)}`
+                        : 'N/A';
+                      return (
+                        <tr
+                          key={feat.feature_name}
+                          className={`drift-row ${isSelected ? 'drift-row-selected' : ''}`}
+                          onClick={() => setSelectedFeature(feat.feature_name)}
+                        >
+                          <td>
+                            <span className="font-bold feature-name-cell">{feat.feature_name}</span>
+                          </td>
+                          <td>
+                            <span className="feature-type-tag">{feat.feature_type || 'numeric'}</span>
+                          </td>
+                          <td>
+                            <span className="test-name-tag">
+                              {feat.test_name === 'kolmogorov_smirnov' ? 'KS 2-Sample' : feat.test_name === 'chi_square' ? 'Chi-Square' : (feat.test_name || 'Statistical Test')}
+                            </span>
+                          </td>
+                          <td>
+                            <code>{formatNum(feat.test_statistic, 4)}</code>
+                          </td>
+                          <td>
+                            <code className={typeof feat.p_value === 'number' && feat.p_value < 0.05 ? 'text-red font-bold' : 'text-emerald'}>
+                              {typeof feat.p_value === 'number' ? (feat.p_value < 0.0001 ? '< 0.0001' : feat.p_value.toFixed(4)) : 'N/A'}
+                            </code>
+                          </td>
+                          <td>
+                            <code className={(feat.psi != null && feat.psi >= 0.25) || (feat.tvd != null && feat.tvd >= 0.25) ? 'text-red font-bold' : ''}>
+                              {metricVal}
+                            </code>
+                          </td>
+                          <td>{getSeverityBadge(feat.severity || feat.drift_severity)}</td>
+                          <td className="action-cell">
+                            <span className="action-cell-text">{feat.recommended_action || 'No action specified.'}</span>
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              className={`btn btn-sm ${isSelected ? 'btn-primary' : 'btn-secondary'}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedFeature(feat.feature_name);
+                              }}
+                            >
+                              <span>Inspect</span>
+                              <ArrowRight size={13} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }} className="text-muted">
+                        No individual feature drift results available in report.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -415,23 +478,23 @@ export default function DataDriftViewer() {
 
               <div className="distribution-body">
                 {/* Visual Comparative Bars */}
-                {activeDistData ? (
+                {activeDistData && activeDistData.labels && activeDistData.labels.length > 0 ? (
                   <div className="dist-chart-wrapper">
                     <div className="dist-chart-legend">
                       <div className="legend-item">
                         <span className="legend-swatch legend-ref" />
-                        <span>Reference Baseline ({metadata?.reference_size || report.reference_sample_size} rows)</span>
+                        <span>Reference Baseline ({formatInt(metadata?.reference_size || report.reference_sample_size)} rows)</span>
                       </div>
                       <div className="legend-item">
                         <span className="legend-swatch legend-curr" />
-                        <span>Current Batch ({report.current_sample_size} rows)</span>
+                        <span>Current Batch ({formatInt(report.current_sample_size)} rows)</span>
                       </div>
                     </div>
 
                     <div className="dist-bars-container">
                       {activeDistData.labels.map((label, idx) => {
-                        const refPct = activeDistData.ref_pct[idx] || 0;
-                        const currPct = activeDistData.curr_pct[idx] || 0;
+                        const refPct = typeof activeDistData.ref_pct?.[idx] === 'number' ? activeDistData.ref_pct[idx] : 0;
+                        const currPct = typeof activeDistData.curr_pct?.[idx] === 'number' ? activeDistData.curr_pct[idx] : 0;
                         const diff = (currPct - refPct).toFixed(1);
                         return (
                           <div key={label} className="dist-bar-row">
@@ -491,20 +554,20 @@ export default function DataDriftViewer() {
                         <>
                           <div className="stat-row">
                             <span>Mean:</span>
-                            <strong>{activeFeatureResult.reference_summary.mean?.toFixed(2)}</strong>
+                            <strong>{formatNum(activeFeatureResult.reference_summary.mean, 2)}</strong>
                           </div>
                           <div className="stat-row">
                             <span>Std Dev:</span>
-                            <strong>{activeFeatureResult.reference_summary.std?.toFixed(2)}</strong>
+                            <strong>{formatNum(activeFeatureResult.reference_summary.std, 2)}</strong>
                           </div>
                           <div className="stat-row">
                             <span>Median:</span>
-                            <strong>{activeFeatureResult.reference_summary.median?.toFixed(2)}</strong>
+                            <strong>{formatNum(activeFeatureResult.reference_summary.median, 2)}</strong>
                           </div>
                           <div className="stat-row">
                             <span>IQR (25% - 75%):</span>
                             <strong>
-                              {activeFeatureResult.reference_summary.q25?.toFixed(1)} - {activeFeatureResult.reference_summary.q75?.toFixed(1)}
+                              {formatNum(activeFeatureResult.reference_summary.q25, 1)} - {formatNum(activeFeatureResult.reference_summary.q75, 1)}
                             </strong>
                           </div>
                         </>
@@ -514,7 +577,7 @@ export default function DataDriftViewer() {
                             Object.entries(activeFeatureResult.reference_summary.proportions).map(([k, v]) => (
                               <div key={k} className="stat-row">
                                 <span>{k}:</span>
-                                <strong>{(v * 100).toFixed(1)}%</strong>
+                                <strong>{typeof v === 'number' ? `${(v * 100).toFixed(1)}%` : 'N/A'}</strong>
                               </div>
                             ))}
                         </div>
@@ -530,21 +593,21 @@ export default function DataDriftViewer() {
                           <div className="stat-row">
                             <span>Mean:</span>
                             <strong className={activeFeatureResult.drift_detected ? 'text-amber' : ''}>
-                              {activeFeatureResult.current_summary.mean?.toFixed(2)}
+                              {formatNum(activeFeatureResult.current_summary.mean, 2)}
                             </strong>
                           </div>
                           <div className="stat-row">
                             <span>Std Dev:</span>
-                            <strong>{activeFeatureResult.current_summary.std?.toFixed(2)}</strong>
+                            <strong>{formatNum(activeFeatureResult.current_summary.std, 2)}</strong>
                           </div>
                           <div className="stat-row">
                             <span>Median:</span>
-                            <strong>{activeFeatureResult.current_summary.median?.toFixed(2)}</strong>
+                            <strong>{formatNum(activeFeatureResult.current_summary.median, 2)}</strong>
                           </div>
                           <div className="stat-row">
                             <span>IQR (25% - 75%):</span>
                             <strong>
-                              {activeFeatureResult.current_summary.q25?.toFixed(1)} - {activeFeatureResult.current_summary.q75?.toFixed(1)}
+                              {formatNum(activeFeatureResult.current_summary.q25, 1)} - {formatNum(activeFeatureResult.current_summary.q75, 1)}
                             </strong>
                           </div>
                         </>
@@ -554,7 +617,7 @@ export default function DataDriftViewer() {
                             Object.entries(activeFeatureResult.current_summary.proportions).map(([k, v]) => (
                               <div key={k} className="stat-row">
                                 <span>{k}:</span>
-                                <strong>{(v * 100).toFixed(1)}%</strong>
+                                <strong>{typeof v === 'number' ? `${(v * 100).toFixed(1)}%` : 'N/A'}</strong>
                               </div>
                             ))}
                         </div>
@@ -602,13 +665,17 @@ export default function DataDriftViewer() {
                         <td>
                           <strong>{pDrift.feature_name.replace('predicted_purchase_probability_', 'Tier $')}</strong>
                         </td>
-                        <td>{pDrift.test_name}</td>
-                        <td>{pDrift.test_statistic}</td>
-                        <td>{pDrift.p_value}</td>
-                        <td><code>{pDrift.psi?.toFixed(4) || 'N/A'}</code></td>
+                        <td>{pDrift.test_name || 'Kolmogorov-Smirnov'}</td>
+                        <td>{formatNum(pDrift.test_statistic, 4)}</td>
+                        <td>
+                          <span className={typeof pDrift.p_value === 'number' && pDrift.p_value < 0.05 ? 'text-red font-bold' : ''}>
+                            {formatNum(pDrift.p_value, 4)}
+                          </span>
+                        </td>
+                        <td><code>{pDrift.psi != null ? formatNum(pDrift.psi, 4) : 'N/A'}</code></td>
                         <td>{getSeverityBadge(pDrift.drift_severity || pDrift.severity)}</td>
                         <td className="action-cell">
-                          <span className="action-cell-text">{pDrift.recommended_action}</span>
+                          <span className="action-cell-text">{pDrift.recommended_action || 'No action specified.'}</span>
                         </td>
                       </tr>
                     ))}
@@ -650,7 +717,7 @@ export default function DataDriftViewer() {
                   <tbody>
                     {driftHistory.slice(-5).reverse().map((h) => (
                       <tr key={h.run_id || h.timestamp}>
-                        <td>{new Date(h.timestamp).toLocaleString()}</td>
+                        <td>{formatUTC(h.timestamp)}</td>
                         <td><code>{h.dataset_name}</code></td>
                         <td>{getStatusBadge(h.overall_status).label}</td>
                         <td>{h.total_features_evaluated} evaluated</td>

@@ -131,6 +131,7 @@ const MOCK_CLEAN_PAYLOAD = {
 describe('DataDriftViewer Component', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    vi.spyOn(driftService, 'fetchDriftHistory').mockResolvedValue([]);
   });
 
   it('renders title, week badge, and overall drift status banner', async () => {

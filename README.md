@@ -526,13 +526,13 @@ All metrics were evaluated on the **500 held-out evaluation customers** (20% tes
 
 Evaluated on the held-out test partition ($N = 6,005$ customers) under a **$5,000.00 marketing budget cap** with the `LinearDRLearner` counterfactual predictions and SciPy HiGHS MILP knapsack optimizer. All canonical figures are strictly preserved and audited:
 
-| Policy / Strategy | Model-Expected Profit (Ex-Ante) | Ground-Truth Expected Profit (Synthetic DGP) | Promotional Cost | Incremental Profit vs Control | ROMS / Efficiency |
+| Policy / Strategy | Model-Expected Profit (Ex-Ante) | Ground-Truth Expected Profit (Synthetic DGP) | Promotional Cost | Incremental Profit vs Control | Incremental Efficiency Ratio |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Blanket $0 Allocation (Control)** | **$90,586.38** | $90,586.38 | $0.00 | $0.00 (Baseline) | — |
 | **Blanket $10 Allocation** | $84,105.12 | $85,210.40 | $22,450.00 | -$6,481.26 (Erosion) | Budget Exceeded (449%) |
 | **Blanket $20 Allocation** | $62,840.90 | $64,120.15 | $51,200.00 | -$27,745.48 (Severe Loss) | Budget Exceeded (1,024%) |
-| **Prescriptive SciPy MILP Policy** | **$100,786.25** | **$102,969.42** | **$4,998.74** | **+$10,199.87** | **204.05% ROMS** ($2.04 net / $ spent) |
-| **Theoretical Oracle Policy** | — | **$103,995.46** | $4,999.12 | +$13,409.08 | **Oracle Gap: 0.986%** ($1,026.04) |
+| **Prescriptive SciPy MILP Policy** | **$100,786.25** | **$102,969.42** | **$4,998.74** | **+$10,199.87** | **204.05%** ($2.04 net / $ spent) |
+| **Theoretical Oracle Policy** | — | **$103,994.65** | $4,998.55 | +$13,408.27 | **Oracle Gap: 0.986%** ($1,025.23) |
 
 * **Budget Utilization:** 99.97% ($4,998.74 / $5,000.00 cap, exactly $1.26 unallocated headroom).
 * **Policy Distribution:** 4,218 customers assigned $0 (70.2%), 1,787 customers assigned $10 (29.8%), 0 customers assigned $20.

@@ -154,6 +154,8 @@ class DriftService:
 
         dataset_label = request.dataset_reference or "uploaded_batch"
         overall_status_val = report.overall_status.value if isinstance(report.overall_status, OverallDriftStatus) else str(report.overall_status)
+        feature_summary_map = {feat.feature_name: feat.drift_severity for feat in feature_details}
+        run_type_val = getattr(request, "run_type", None) or "operational"
 
         # 6. Append to historical drift log
         cls._append_drift_history(
@@ -163,6 +165,8 @@ class DriftService:
             drifted_count=report.drifted_features_count,
             severe_count=report.severe_drift_count,
             total_features=report.total_features_evaluated,
+            run_type=run_type_val,
+            feature_summary=feature_summary_map,
         )
 
         return DriftCheckResponse(
@@ -195,8 +199,10 @@ class DriftService:
         drifted_count: int,
         severe_count: int,
         total_features: int,
+        run_type: str = "operational",
+        feature_summary: Optional[Dict[str, str]] = None,
     ) -> None:
-        """Persist a drift evaluation record into the historical log."""
+        """Persist a drift evaluation record into the historical log with retry deduplication."""
         history_file = cls._get_history_file_path()
         history_data: List[Dict[str, Any]] = []
 
@@ -207,8 +213,27 @@ class DriftService:
             except Exception:
                 history_data = []
 
+        now_utc = datetime.now(timezone.utc)
+
+        # Retry Deduplication: Skip recording if identical run was appended within the last 5 seconds
+        if history_data:
+            last_entry = history_data[-1]
+            try:
+                last_ts = datetime.fromisoformat(last_entry.get("timestamp", ""))
+                diff_sec = abs((now_utc - last_ts).total_seconds())
+                if (
+                    diff_sec < 5.0
+                    and last_entry.get("dataset_name") == dataset_name
+                    and last_entry.get("overall_status") == overall_status
+                    and last_entry.get("drifted_features_count") == drifted_count
+                ):
+                    logger.info("Skipping duplicate drift history log within 5s window (deduplication applied).")
+                    return
+            except Exception:
+                pass
+
         new_entry = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": now_utc.isoformat(),
             "run_id": str(uuid.uuid4()),
             "dataset_name": dataset_name,
             "overall_status": overall_status,
@@ -216,6 +241,8 @@ class DriftService:
             "drifted_features_count": drifted_count,
             "severe_drift_count": severe_count,
             "total_features_evaluated": total_features,
+            "run_type": run_type,
+            "feature_summary": feature_summary or {},
         }
         history_data.append(new_entry)
 

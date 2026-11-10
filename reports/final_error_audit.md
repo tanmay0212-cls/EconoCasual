@@ -24,12 +24,12 @@ This report delivers a rigorous, evidence-based verification of the **EconoCasua
 | Total Automated Unit Tests   | 152 / 152 Passed (100%)   | Zero failures, zero flaky tests              |
 | Production Build (Vite)      | Success (2.90s)           | Gzip optimized, code-split into chunks       |
 | Frontend Initial Bundle Size | 386.67 kB (Initial Load)  | Plotly deferred (4.70 MB split to lazy chunk)|
-| Full 15,000-Customer MILP    | 0.7225s (HiGHS Optimal)   | $4,999.05 cost <= $5,000 cap; zero overlaps  |
+| Full 15,000-Customer MILP    | 0.5651s - 0.7225s (Optimal)| 2 recorded runs; $4,999.05 cost <= $5,000 cap; zero overlaps |
 | End-to-End Integration Suites| 8 / 8 Stages Passed (100%)| Validated via verify_system_integration.py   |
 | API Health & Pre-warmed CATE | 200 OK (300.07 ms)        | Multi-treatment DML model loaded & verified  |
 | Codebase Security Audit      | 0 Leaked Secrets / Keys   | 119 production/config files scanned cleanly  |
 | Milestone 3 Baseline Profit  | $90,586.38 (Canonical)   | Reconciled $85.19 formula difference         |
-| Milestone 3 Optimized Profit | $100,786.25 (Canonical)   | Incremental profit: $10,199.87 (204.05% ROMS)|
+| Milestone 3 Optimized Profit | $100,786.25 (Canonical)   | +$10,199.87 (Incremental Net-Profit-to-Promotion-Cost Ratio: 204.05%)|
 +------------------------------+---------------------------+----------------------------------------------+
 ```
 
@@ -78,7 +78,7 @@ The prescriptive optimization engine was evaluated on the complete 15,000-custom
 | Solver Engine                             | SciPy scipy.optimize.milp (HiGHS MIP Solver)                |
 | Solver Exit Status                        | Optimization terminated successfully. (HiGHS Status 7: Opt) |
 | Solver Status Code                        | 0 (Optimal)                                                 |
-| Solver Runtime                            | 0.5651 seconds (565 ms)                                     |
+| Solver Runtime                            | 0.5651s (Run 1: 19:22 IST) / 0.7225s (Run 2: 20:23 IST)     |
 | Configured Campaign Budget Cap            | $5,000.00                                                   |
 | Total Allocated Promotional Cost          | $4,999.05                                                   |
 | Budget Utilization Rate                   | 99.98%                                                      |
@@ -91,6 +91,12 @@ The prescriptive optimization engine was evaluated on the complete 15,000-custom
 | Assigned $20 Discount (Tier 2)            | 3 customers (0.02%)                                         |
 +-------------------------------------------+-------------------------------------------------------------+
 ```
+
+**Reconciliation of Measured Solve Times:**
+Two distinct independent executions of the 15,000-customer MILP knapsack problem were recorded during system verification:
+- **Run 1 (recorded at 19:22:34 IST):** 0.5651 seconds (565 ms)
+- **Run 2 (recorded at 20:23:14 IST):** 0.7225 seconds (722 ms)
+Both runs solved the identical 45,000 binary decision variable problem via HiGHS (`scipy.optimize.milp`), achieving identical solver status (`HiGHS Status 7: Optimal`), identical objective value ($261,421.05 net profit), and identical promotional expenditure ($4,999.05 $\le$ $5,000.00). The 157 ms delta reflects normal operating system thread scheduling and background task load across benchmark executions.
 
 ### 2.3 Security Credential Scan Verification
 - **Gitleaks Tool Check:** Evaluated via `shutil.which("gitleaks")`. Gitleaks CLI is **NOT** installed on the local system PATH.
@@ -105,7 +111,10 @@ The prescriptive optimization engine was evaluated on the complete 15,000-custom
 - **Explicit Directory Exclusions:** `.venv/`, `node_modules/`, `frontend/node_modules/`, `.git/`, `frontend/dist/`, `reports/`, `models/runs/`, `EconoCasual/`.
 - **Known Scanner Limitations:** The regex fallback scanner does not compute Shannon entropy on unanchored strings and cannot detect base64-encoded encrypted blobs without key headers.
 - **Redaction Protocol:** All matching secret values are masked (`***REDACTED***`); actual secrets are never printed in logs or reports.
-- **Result:** **117 files scanned cleanly. 0 sensitive credential leaks detected.**
+- **File Count Reconciliation & Result:**
+  - **117 files:** Scanned during the pre-v1 integration baseline run prior to creating `src/api/routes/api_v1.py` and `tests/test_api_v1.py`.
+  - **119 files:** Scanned after creating `src/api/routes/api_v1.py` and `tests/test_api_v1.py` (+2 files).
+  - **Result:** **119 files scanned cleanly. 0 sensitive credential leaks detected.** Gitleaks CLI was unavailable; the regex fallback was fully disclosed and verified.
 
 ### 2.4 CSV Export Architecture Verification
 Inspection of the backend and frontend code confirms the architecture of CSV export:
@@ -197,9 +206,14 @@ All Milestone 3 canonical metrics remain strictly intact and unchanged:
 | Incremental Net-Profit-to-Promotion-Cost Ratio            | 204.05% ($2.04 incremental profit / $ cost) |
 | Ground-Truth Expected Profit (Synthetic DGP)              | $102,969.42                                 |
 | Ground-Truth Expected Promotional Cost (Synthetic DGP)    | $4,976.96                                   |
-| Ground-Truth Expected Profit Gap Against Oracle Policy    | 0.986% ($1,026.04 gap against $103,995.46)  |
+| Ground-Truth Expected Profit Gap Against Oracle Policy    | 0.986% ($1,025.23 gap against $103,994.65)  |
 +-----------------------------------------------------------+---------------------------------------------+
 ```
+
+**Reconciliation of Oracle Benchmark ($103,994.65 vs $103,995.46):**
+Milestone 3 canonical reports (`milestone_3_final_reconciliation.md`, `milestone_3_independent_review.md`, and `milestone_3_issue_log.md`) rigorously proved the budget-constrained Oracle ground-truth expected profit to be strictly **$103,994.65** ($17.32/customer) with **$4,998.55** promotional cost. The profit gap against DML ($102,969.42) is:
+$$\text{Gap} = \frac{\$103,994.65 - \$102,969.42}{\$103,994.65} = \frac{\$1,025.23}{\$103,994.65} = \mathbf{0.986\%}$$
+The figure $103,995.46 (and $1,026.04 gap) in an earlier draft was an unverified transcription. The canonical Milestone 3 value of **$103,994.65** is now consistently used across all reports and documentation.
 
 ---
 
