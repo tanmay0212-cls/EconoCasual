@@ -19,9 +19,9 @@ This report delivers a rigorous, evidence-based reconciliation and verification 
 +------------------------------+---------------------------+-----------------------------------------------------------+
 | Dimension                    | Result                    | Status / Taxonomy & Notes                                 |
 +------------------------------+---------------------------+-----------------------------------------------------------+
-| Backend Unit Tests           | 105 / 105 Passed (100%)   | Nov 3 CI baseline run; 28.67s (13 test modules)           |
-| Frontend Unit/Component Tests| 61 / 61 Passed (100%)     | Nov 10 local run; 4.15s (9 test suites via Vitest/JSDOM)  |
-| Total Automated Unit Tests   | 166 / 166 Passed (100%)   | Zero failures in the recorded executions                  |
+| Backend Unit Tests           | 105 / 105 Passed (100%)   | Recorded Nov 3 baseline run (28.67s); CI unverified on GA |
+| Frontend Unit/Component Tests| 61 / 61 Passed (100%)     | Nov 10 local run; 12.35s (9 test suites via Vitest/JSDOM) |
+| Total Automated Unit Tests   | 166 / 166 Passed (100%)   | Zero failures across recorded executions                  |
 | Frontend Production Build    | Success (2.85s)           | Vite v8.3.4 gzip optimized, code-split into chunks        |
 | Frontend Initial Bundle Size | 357.46 kB (Initial Load)  | Plotly deferred (4.70 MB split to lazy chunk)             |
 | MILP Scalability Benchmark   | 0.5651s - 0.7225s (Optimal)| 15,000 customers; $4,999.05 exp cost <= $5k; zero overlap |
@@ -42,11 +42,11 @@ This report delivers a rigorous, evidence-based reconciliation and verification 
 ### 2.1 Git Repository State & Commit Verification
 - **Repository:** `https://github.com/tanmay0212-cls/EconoCasual`
 - **Branch:** `main`
-- **Audit Base Commit SHA:** `046dd2e27b1a503852be7884b87a3c5b7f072a44`
+- **Audited Commit SHA:** `ebdb2fd411012dde7e4c066d1928e267318ee247`
 - **Remote Tracking:** Fully pushed and synchronized with `origin/main` (`https://github.com/tanmay0212-cls/EconoCasual.git`)
 - **Working Tree:** Clean (`nothing to commit, working tree clean`)
 - **CI Workflow File:** [`.github/workflows/tests.yml`](file:///c:/Users/tanma/OneDrive/Desktop/EconoCasual/.github/workflows/tests.yml) defines automated jobs `backend-tests` (pytest on Python 3.11) and `frontend-tests` (vitest and vite build on Node.js 20) triggered on push and pull request to `main`.
-- **CI Run Status Disclosure:** While the CI configuration file is active in the repository, individual cloud runner run IDs and live workflow execution badges on GitHub Actions (`https://github.com/tanmay0212-cls/EconoCasual/actions`) are managed asynchronously by GitHub; local verification relies strictly on verifiable local test runs and recorded historical test logs.
+- **CI Execution Query & Non-Verification Disclosure:** An automated query of the public GitHub Actions API (`https://api.github.com/repos/tanmay0212-cls/EconoCasual/actions/runs`) reveals 18 total workflow runs recorded in repository history. All 18 runs concluded with `conclusion: failure` (including the latest run for commit `ebdb2fd`: Run ID `42794629921`, triggered at `2026-11-10T09:54:34Z`). Consequently, **cloud CI execution is explicitly unverified / failing on GitHub Actions runners**. Success is not inferred from the workflow configuration file, and no automated cloud CI pass is claimed.
 
 ### 2.2 15,000-Customer SciPy MILP Allocation Verification
 The prescriptive optimization engine was evaluated on the complete 15,000-customer dataset ([`data/optimization_retail_data.csv`](file:///c:/Users/tanma/OneDrive/Desktop/EconoCasual/data/optimization_retail_data.csv)).
@@ -448,36 +448,52 @@ During the final audit review, the data drift surveillance engine was systematic
 
 ---
 
-## 8. Final Audit Verification Classification: Verified vs. Historical vs. Identified Limitations
+## 8. Final Audit Verification Classification: 5-Category Evidence Matrix
 
-To ensure full transparency as an academic and engineering student project, the verification status of all system components is explicitly categorized below:
+To ensure full transparency as an academic and engineering student project, the verification status of all system components is explicitly categorized across the five canonical audit domains below:
 
 ```
 +----------------------------------------------------------------------------------------------------------------------+
-|                                   FINAL VERIFICATION CLASSIFICATION & EVIDENCE AUDIT                                 |
+|                                   FINAL 5-CATEGORY AUDIT VERIFICATION & EVIDENCE MATRIX                              |
 +------------------------------+---------------------------+-----------------------------------------------------------+
-| Classification Category      | Component / Metric        | Evidence & Operational Status                             |
+| Classification Category      | Component / Metric        | Evidence & Operational Status (Commit: ebdb2fd)           |
 +------------------------------+---------------------------+-----------------------------------------------------------+
-| 1. Verified Implementation   | Frontend Unit Tests (61)  | Directly executed on Nov 10 via Vitest/JSDOM (100% pass)  |
-|    (Locally Executed)        | Frontend Production Build | Vite v8.3.4 build verified (2.85s, 357.46 kB initial load)|
-|                              | Multi-Tenant Detector     | Thread-safe parameter isolation verified via unit tests   |
-|                              | Schema vs Drift Decoupling| SCHEMA_ERROR & INSUFFICIENT_DATA verified in API & UI     |
-|                              | Single-Process Lock       | Threading lock on drift history persistence verified      |
+| 1. Locally Verified          | Frontend Unit Tests (61)  | Vitest v5.0.5 + JSDOM on Node 20: 61/61 passed (12.35s)   |
+|                              | Frontend Production Build | Vite v8.3.4: 1,940 modules built (2.85s, 357.46 kB bundle)|
+|                              | Multi-Tenant Isolation    | Unit test verified: request overrides do not mutate state |
+|                              | Schema vs Drift Decoupling| SCHEMA_ERROR (drift=False) & INSUFFICIENT_DATA verified   |
+|                              | Single-Process Lock       | threading.Lock protects concurrent worker threads in-proc |
 |                              | API Route Schema & Models | 20 FastAPI routes & schemas verified in codebase          |
 +------------------------------+---------------------------+-----------------------------------------------------------+
-| 2. Recorded Historical Tests | Backend Pytest Suite (105)| Executed on Nov 3 CI baseline (105 passed in 28.67s)      |
-|    (CI Baseline Records)     | Integration Verification  | 8 stages / 10 activities verified in Nov 3 run (7.5s)     |
-|                              | 15,000-Customer MILP Solve| 0.5651s - 0.7225s recorded runtime (HiGHS Status 7: Opt)   |
-|                              | Milestone 3 Metrics       | $90,586.38 baseline, $100,786.25 opt, 204.05% ratio,      |
-|                              |                           | $103,994.65 Oracle benchmark reconciled from M3 logs      |
+| 2. Historically Verified     | Backend Unit Tests (105)  | Pytest 3.11 baseline run: 105 passed in 28.67s (Nov 3)    |
+|                              | API Integration Script    | 8 stages / 10 activities verified in 7.5s (Nov 3 record)  |
+|                              | 15,000-Customer MILP Solve| 0.5651s - 0.7225s runtime; HiGHS Status 7: Optimal        |
+|                              | Canonical Baseline Profit | $90,586.38 (reconciled in Milestone 3 final report)       |
+|                              | Canonical Optimized Profit| $100,786.25 (+$10,199.87 lift; 204.05% ratio; $4,998.74)  |
+|                              | Oracle Ground-Truth Profit| $103,994.65 ($102,969.42 DML ground-truth; 0.986% gap)   |
 +------------------------------+---------------------------+-----------------------------------------------------------+
-| 3. Identified Limitations &  | Realized Spend Guarantee  | MILP bounds ex-ante expectation only (E[Cost] <= $5k).    |
-|    Unverified Claims         |                           | Realized spend is stochastic and can exceed budget cap.   |
-|    (Student Prototype Scope) | Cross-Process Concurrency | threading.Lock is single-process only; not distributed.   |
-|                              | Browser E2E Automation    | Vitest/JSDOM only; no Playwright/Selenium executed.       |
-|                              | Codebase Secret Scanning  | Fallback regex scanner (119 files); Gitleaks unavailable. |
-|                              | Causal Concept Drift      | Evaluates P(X) covariate shift; P(Y|X,T) requires A/B.   |
-|                              | Host Windows Testing      | Backend tests blocked locally by Windows 11 UMCI kernel.  |
+| 3. CI Verified               | GitHub Actions Pipelines  | UNVERIFIED / FAILING IN GITHUB ACTIONS                    |
+|                              |                           | Query of GitHub API (tanmay0212-cls/EconoCasual/actions): |
+|                              |                           | 18 total runs recorded; 18 concluded with 'failure'.      |
+|                              |                           | Latest run (Run ID: 42794629921 for ebdb2fd) failed.     |
+|                              |                           | Success is NOT inferred from the workflow YAML file.      |
++------------------------------+---------------------------+-----------------------------------------------------------+
+| 4. Not Independently         | Browser E2E Automation    | Vitest/JSDOM component tests only; no Playwright/Selenium |
+|    Verified                  | Global Secret Eradication | Regex scan across 119 files only; Gitleaks unavailable;   |
+|                              |                           | Git history blobs and excluded directories uninspected.   |
+|                              | Realized Spend Hard Cap   | MILP constrains ex-ante expectation; realized spend       |
+|                              |                           | variance unverified against empirical marketing cash caps |
+|                              | Distributed Persistence   | Single-process lock unverified under multi-worker Uvicorn |
++------------------------------+---------------------------+-----------------------------------------------------------+
+| 5. Known Limitations         | Stochastic Realized Spend | E[Cost] <= $5k; realized spend depends on Bernoulli draws |
+|                              |                           | and can exceed budget cap without operational circuit cut |
+|                              | Observational Covariate   | Covariate drift P(X) does NOT establish concept drift     |
+|                              | Shift vs Concept Drift    | P(Y | X, T); requires live randomized holdout A/B testing |
+|                              | Host OS Kernel Policy     | Windows 11 UMCI (Smart App Control) blocks native C .pyd  |
+|                              |                           | extension loading in non-system directories on host       |
+|                              | File-Based Persistence    | reports/drift_monitoring_history.json is not atomic       |
+|                              |                           | across multiple OS processes; database required for prod  |
+|                              | Educational Prototype     | System is a student proof-of-concept; not 100% prod ready |
 +------------------------------+---------------------------+-----------------------------------------------------------+
 ```
 
