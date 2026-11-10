@@ -13,11 +13,14 @@ Provides the unified, production REST API endpoints for EconoCausal:
 
 import os
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, Any
 from fastapi import APIRouter, Depends, Query, UploadFile, File, Response, HTTPException, status
 
 from src.api.config import settings
-from src.causal.multi_tier_dml import MultiTierCausalDML
+try:
+    from src.causal.multi_tier_dml import MultiTierCausalDML
+except Exception:
+    MultiTierCausalDML = Any  # type: ignore
 from src.api.services.model_loader import model_registry, get_model
 from src.api.services.data_service import DataService
 from src.api.services.predict_service import PredictService

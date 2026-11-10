@@ -4,7 +4,10 @@ import os
 import json
 import logging
 from typing import Optional, Dict, Any
-from src.causal.multi_tier_dml import MultiTierCausalDML
+try:
+    from src.causal.multi_tier_dml import MultiTierCausalDML
+except Exception:
+    MultiTierCausalDML = Any  # type: ignore
 from src.api.config import settings
 from src.api.schemas.health import ModelStatus
 

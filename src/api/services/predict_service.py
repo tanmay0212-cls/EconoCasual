@@ -1,13 +1,16 @@
 """Service for customer-level CATE estimation and counterfactual purchase probability prediction."""
 
 import logging
-from typing import List
+from typing import List, Any
 import pandas as pd
 import numpy as np
 from fastapi import HTTPException, status
 
 from src.api.config import settings
-from src.causal.multi_tier_dml import MultiTierCausalDML
+try:
+    from src.causal.multi_tier_dml import MultiTierCausalDML
+except Exception:
+    MultiTierCausalDML = Any  # type: ignore
 from src.api.schemas.predict import (
     CustomerFeatureRecord,
     PredictEffectsResponse,

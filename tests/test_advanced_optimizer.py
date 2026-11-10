@@ -280,3 +280,4 @@ def test_to_dict_serialization(optimization_test_cohort):
     assert "uncertainty_kpis" in res_dict
     assert "fairness_metrics" in res_dict
     assert "cash_budget_disclaimer" in res_dict
+

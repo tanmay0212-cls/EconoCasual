@@ -11,7 +11,10 @@ import numpy as np
 from fastapi import HTTPException, status
 
 from src.api.config import settings
-from src.causal.multi_tier_dml import MultiTierCausalDML
+try:
+    from src.causal.multi_tier_dml import MultiTierCausalDML
+except Exception:
+    MultiTierCausalDML = Any  # type: ignore
 from src.optimization.budget_optimizer import SciPyBudgetOptimizer
 from src.api.schemas.optimize import (
     OptimizationRequest,

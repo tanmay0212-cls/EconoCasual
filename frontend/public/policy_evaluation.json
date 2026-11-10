@@ -1,0 +1,247 @@
+{
+  "metadata": {
+    "evaluation_timestamp": "2026-11-10T16:08:52.164412",
+    "evaluation_sample_size": 6005,
+    "treatment_classes": [
+      0,
+      10,
+      20
+    ],
+    "n_bootstraps": 500,
+    "min_propensity_clip": 0.01,
+    "random_seed": 42,
+    "canonical_milestone3_benchmarks": {
+      "organic_no_discount_profit": 90586.38,
+      "dml_milp_expected_profit": 100786.25,
+      "dml_milp_incremental_profit": 10199.87,
+      "dml_milp_expected_cost": 4998.74,
+      "dml_milp_incremental_profit_to_cost_pct": 204.05,
+      "oracle_upper_bound_profit": 103994.65,
+      "optimality_gap_pct": 0.986
+    }
+  },
+  "policies": {
+    "no_discount": {
+      "policy_name": "No-Discount Policy",
+      "status": "evaluated",
+      "is_available": true,
+      "description": "Blanket $0 promotion to all customers (organic baseline).",
+      "conversion_metrics": {
+        "dr_conversion_rate": 0.29159445275980594,
+        "dr_conversion_ci_95": [
+          0.2709669222491212,
+          0.31231513015911
+        ],
+        "ipw_conversion_rate": 0.28483417214109347,
+        "dm_conversion_rate": 0.2870922564529559,
+        "incremental_conversion_vs_no_discount": 0.0,
+        "incremental_conversion_ci_95": [
+          0.0,
+          0.0
+        ]
+      },
+      "economic_metrics": {
+        "dr_expected_profit": 92631.48835280578,
+        "dr_profit_ci_95": [
+          85209.54825144475,
+          99935.39541377372
+        ],
+        "model_expected_profit": 90501.19074515,
+        "ground_truth_expected_profit": 94169.35,
+        "realized_observed_profit": 24633.3241,
+        "expected_promotional_cost": 0.0,
+        "incremental_profit_vs_no_discount": 0.0,
+        "incremental_profit_ci_95": [
+          0.0,
+          0.0
+        ],
+        "incremental_profit_to_cost_ratio": null
+      },
+      "diagnostics": {
+        "effective_sample_size": 1825.5523809195026,
+        "propensity_clipped_pct": 0.0,
+        "tier_distribution": {
+          "0": 6005
+        }
+      }
+    },
+    "flat_10": {
+      "policy_name": "Flat $10 Discount Policy",
+      "status": "evaluated",
+      "is_available": true,
+      "description": "Blanket $10 promotion to all customers regardless of individual elasticity.",
+      "conversion_metrics": {
+        "dr_conversion_rate": 0.4790011498476837,
+        "dr_conversion_ci_95": [
+          0.4581009366964716,
+          0.4998962006021861
+        ],
+        "ipw_conversion_rate": 0.48715279000024264,
+        "dm_conversion_rate": 0.4854271440466278,
+        "incremental_conversion_vs_no_discount": 0.18740669708787772,
+        "incremental_conversion_ci_95": [
+          0.15796582016810004,
+          0.21745951426230084
+        ]
+      },
+      "economic_metrics": {
+        "dr_expected_profit": 113754.01520255991,
+        "dr_profit_ci_95": [
+          107507.62617067242,
+          119579.30026876635
+        ],
+        "model_expected_profit": 115163.88181804531,
+        "ground_truth_expected_profit": 116399.73999999999,
+        "realized_observed_profit": 44233.51615200001,
+        "expected_promotional_cost": 29149.9,
+        "incremental_profit_vs_no_discount": 21122.526849754126,
+        "incremental_profit_ci_95": [
+          12223.067672408422,
+          29419.16354861934
+        ],
+        "incremental_profit_to_cost_ratio": 72.46174720926702
+      },
+      "diagnostics": {
+        "effective_sample_size": 2303.564576434686,
+        "propensity_clipped_pct": 0.0,
+        "tier_distribution": {
+          "10": 6005
+        }
+      }
+    },
+    "random_discount": {
+      "policy_name": "Random Discount Policy",
+      "status": "evaluated",
+      "is_available": true,
+      "description": "Stochastic exploration assigning equal probability (1/3) across $0, $10, $20.",
+      "conversion_metrics": {
+        "dr_conversion_rate": 0.4371131459943667,
+        "dr_conversion_ci_95": [
+          0.4142029476715984,
+          0.4592134164400694
+        ],
+        "ipw_conversion_rate": 0.4383195503554672,
+        "dm_conversion_rate": 0.43691738551207326,
+        "incremental_conversion_vs_no_discount": 0.14551869323456076,
+        "incremental_conversion_ci_95": [
+          0.1184735364406663,
+          0.16963010358302458
+        ]
+      },
+      "economic_metrics": {
+        "dr_expected_profit": 102836.48699936419,
+        "dr_profit_ci_95": [
+          96549.31963001506,
+          108693.87490437002
+        ],
+        "model_expected_profit": 102518.2383077596,
+        "ground_truth_expected_profit": 104888.36,
+        "realized_observed_profit": 35122.14707400001,
+        "expected_promotional_cost": 30988.72,
+        "incremental_profit_vs_no_discount": 10204.998646558415,
+        "incremental_profit_ci_95": [
+          3322.7184423441417,
+          17074.959673495287
+        ],
+        "incremental_profit_to_cost_ratio": 32.9313332288601
+      },
+      "diagnostics": {
+        "effective_sample_size": 1793.514207771597,
+        "propensity_clipped_pct": 0.0,
+        "tier_distribution": {
+          "0": 2080,
+          "10": 1978,
+          "20": 1947
+        }
+      }
+    },
+    "dml_milp": {
+      "policy_name": "DML + MILP Prescriptive Policy",
+      "status": "evaluated",
+      "is_available": true,
+      "description": "Optimal budget-constrained allocation ($5,000 budget cap) via HiGHS MILP.",
+      "conversion_metrics": {
+        "dr_conversion_rate": 0.3225680208588019,
+        "dr_conversion_ci_95": [
+          0.30142644453015194,
+          0.34468553037913763
+        ],
+        "ipw_conversion_rate": 0.31802584849477933,
+        "dm_conversion_rate": 0.3256146378018318,
+        "incremental_conversion_vs_no_discount": 0.03097356809899592,
+        "incremental_conversion_ci_95": [
+          0.016698454106722164,
+          0.0444028117832157
+        ]
+      },
+      "economic_metrics": {
+        "dr_expected_profit": 99797.04960426186,
+        "dr_profit_ci_95": [
+          92361.50825582845,
+          107548.89534523508
+        ],
+        "model_expected_profit": 100607.76160529722,
+        "ground_truth_expected_profit": 102969.42000000001,
+        "realized_observed_profit": 28181.758305000003,
+        "expected_promotional_cost": 4998.742,
+        "incremental_profit_vs_no_discount": 7165.561251456094,
+        "incremental_profit_ci_95": [
+          1373.2404700106033,
+          12681.197434175987
+        ],
+        "incremental_profit_to_cost_ratio": 143.3472912075897
+      },
+      "diagnostics": {
+        "effective_sample_size": 1796.361631985212,
+        "propensity_clipped_pct": 0.0,
+        "tier_distribution": {
+          "0": 4816,
+          "10": 1168,
+          "20": 21
+        }
+      }
+    },
+    "uncertainty_aware_placeholder": {
+      "policy_name": "Uncertainty-Aware Causal Policy (Future Phase)",
+      "status": "unavailable",
+      "is_available": false,
+      "description": "Thompson sampling / robust Bayesian posterior policy exploring high-uncertainty elasticity strata. Marked unavailable until Phase 3/4 implementation.",
+      "conversion_metrics": {
+        "dr_conversion_rate": 0.0,
+        "dr_conversion_ci_95": [
+          0.0,
+          0.0
+        ],
+        "ipw_conversion_rate": 0.0,
+        "dm_conversion_rate": 0.0,
+        "incremental_conversion_vs_no_discount": 0.0,
+        "incremental_conversion_ci_95": [
+          0.0,
+          0.0
+        ]
+      },
+      "economic_metrics": {
+        "dr_expected_profit": 0.0,
+        "dr_profit_ci_95": [
+          0.0,
+          0.0
+        ],
+        "model_expected_profit": 0.0,
+        "ground_truth_expected_profit": null,
+        "realized_observed_profit": null,
+        "expected_promotional_cost": 0.0,
+        "incremental_profit_vs_no_discount": 0.0,
+        "incremental_profit_ci_95": [
+          0.0,
+          0.0
+        ],
+        "incremental_profit_to_cost_ratio": null
+      },
+      "diagnostics": {
+        "effective_sample_size": 0.0,
+        "propensity_clipped_pct": 0.0,
+        "tier_distribution": {}
+      }
+    }
+  }
+}

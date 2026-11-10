@@ -1,7 +1,11 @@
 """Budget-constrained discount optimization and allocation retrieval routes."""
 
+from typing import Any
 from fastapi import APIRouter, Depends, Path
-from src.causal.multi_tier_dml import MultiTierCausalDML
+try:
+    from src.causal.multi_tier_dml import MultiTierCausalDML
+except Exception:
+    MultiTierCausalDML = Any  # type: ignore
 from src.api.services.model_loader import get_model
 from src.api.services.data_service import DataService
 from src.api.services.optimize_service import OptimizeService

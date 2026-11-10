@@ -28,6 +28,17 @@ from src.api.schemas.drift import (
     DriftHistoryItem,
     DriftHistoryResponse,
 )
+from src.api.schemas.v2 import (
+    PolicyEvaluationSummaryResponse,
+    PolicyEvaluateRequest,
+    UncertaintySummaryResponse,
+    AdvancedOptimizationRequest,
+    AdvancedOptimizationResponse,
+    AdvancedBenchmarksResponse,
+    FairnessDiagnosticsResponse,
+    ExperimentHistoryResponse,
+    ExperimentDetailResponse,
+)
 
 __all__ = [
     "APIResponse",

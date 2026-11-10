@@ -6,6 +6,7 @@ from src.api.routes.predict import router as predict_router
 from src.api.routes.optimize import router as optimize_router
 from src.api.routes.drift import router as drift_router
 from src.api.routes.api_v1 import router as api_v1_router
+from src.api.routes.api_v2 import router as api_v2_router
 
 __all__ = [
     "health_router",
@@ -14,5 +15,6 @@ __all__ = [
     "optimize_router",
     "drift_router",
     "api_v1_router",
+    "api_v2_router",
 ]
 

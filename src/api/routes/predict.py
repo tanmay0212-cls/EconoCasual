@@ -1,7 +1,11 @@
 """Treatment-effect and counterfactual probability prediction routes."""
 
+from typing import Any
 from fastapi import APIRouter, Depends
-from src.causal.multi_tier_dml import MultiTierCausalDML
+try:
+    from src.causal.multi_tier_dml import MultiTierCausalDML
+except Exception:
+    MultiTierCausalDML = Any  # type: ignore
 from src.api.services.model_loader import get_model
 from src.api.services.predict_service import PredictService
 from src.api.schemas.predict import PredictEffectsRequest, PredictEffectsResponse

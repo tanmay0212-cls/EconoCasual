@@ -21,6 +21,7 @@ from src.api.routes import (
     optimize_router,
     drift_router,
     api_v1_router,
+    api_v2_router,
 )
 
 # Configure structured logging
@@ -155,6 +156,7 @@ def create_app() -> FastAPI:
         )
 
     # 4. Register API Routers
+    app.include_router(api_v2_router)
     app.include_router(api_v1_router)
     app.include_router(health_router)
     app.include_router(data_router)

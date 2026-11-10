@@ -648,3 +648,4 @@ class AdvancedMILPOptimizer:
             allocation_df=df_alloc,
             runtime_seconds=runtime,
         )
+

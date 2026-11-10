@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Papa from 'papaparse';
-import { SlidersHorizontal, BarChart3, Database, Activity, FileText } from 'lucide-react';
+import { SlidersHorizontal, BarChart3, Database, Activity, FileText, ShieldCheck, Scale, Sliders, Layers } from 'lucide-react';
 import Header from './components/Header';
 import MetricsCards from './components/MetricsCards';
 import DatasetUploader from './components/DatasetUploader';
@@ -10,6 +10,10 @@ import FutureDeliverables from './components/FutureDeliverables';
 import AllocationMatrix from './components/AllocationMatrix';
 import DataDriftViewer from './components/DataDriftViewer';
 import BusinessSummaryPanel from './components/BusinessSummaryPanel';
+import PolicyEvaluationTab from './components/PolicyEvaluationTab';
+import UncertaintyAnalysisTab from './components/UncertaintyAnalysisTab';
+import FairnessAnalysisTab from './components/FairnessAnalysisTab';
+import AdvancedOptimizationTab from './components/AdvancedOptimizationTab';
 import { validateDatasetRows } from './utils/csvValidator';
 
 // Lazy-load Plotly-heavy MarketingTelemetry to prevent eager loading on initial page render
@@ -229,6 +233,46 @@ export default function App() {
             <span>Causal DAG & Telemetry</span>
             <span className="tab-badge">Week 1 & 2</span>
           </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === 'policy_eval' ? 'active' : ''}`}
+            onClick={() => setActiveTab('policy_eval')}
+          >
+            <ShieldCheck size={17} />
+            <span>Policy Evaluation</span>
+            <span className="tab-badge tab-badge-highlight">Phase 1</span>
+          </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === 'uncertainty' ? 'active' : ''}`}
+            onClick={() => setActiveTab('uncertainty')}
+          >
+            <Layers size={17} />
+            <span>Uncertainty Analysis</span>
+            <span className="tab-badge tab-badge-highlight">Phase 2</span>
+          </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === 'fairness' ? 'active' : ''}`}
+            onClick={() => setActiveTab('fairness')}
+          >
+            <Scale size={17} />
+            <span>Fairness Diagnostics</span>
+            <span className="tab-badge tab-badge-highlight">Phase 3</span>
+          </button>
+
+          <button
+            type="button"
+            className={`nav-tab-btn ${activeTab === 'advanced_opt' ? 'active' : ''}`}
+            onClick={() => setActiveTab('advanced_opt')}
+          >
+            <Sliders size={17} />
+            <span>Advanced MILP Optimizer</span>
+            <span className="tab-badge tab-badge-highlight">Phase 3/4</span>
+          </button>
         </nav>
       </div>
 
@@ -249,6 +293,26 @@ export default function App() {
         {/* TAB 3: WEEK 4 AUTOMATED DATA DRIFT & COVARIATE SHIFT MONITORING */}
         {activeTab === 'drift' && (
           <DataDriftViewer />
+        )}
+
+        {/* TAB 4: PHASE 1 DOUBLY ROBUST POLICY EVALUATION */}
+        {activeTab === 'policy_eval' && (
+          <PolicyEvaluationTab />
+        )}
+
+        {/* TAB 5: PHASE 2 UNCERTAINTY QUANTIFICATION & CI COVERAGE */}
+        {activeTab === 'uncertainty' && (
+          <UncertaintyAnalysisTab />
+        )}
+
+        {/* TAB 6: PHASE 3 CUSTOMER SEGMENT FAIRNESS & DEMOGRAPHIC PARITY */}
+        {activeTab === 'fairness' && (
+          <FairnessAnalysisTab />
+        )}
+
+        {/* TAB 7: PHASE 3 & 4 UNCERTAINTY-AWARE & FAIRNESS-CONSTRAINED MILP */}
+        {activeTab === 'advanced_opt' && (
+          <AdvancedOptimizationTab />
         )}
 
         {/* TAB 2: WEEK 1 & 2 EXPLORATORY TELEMETRY & CAUSAL DAG */}
