@@ -146,3 +146,4 @@ The evaluation pipeline strictly enforces all causal auditing principles:
 2. **Positivity:** $0 < P(T = d \mid X) < 1$ for all $d \in \{0, 10, 20\}$ and all $X \in \mathcal{X}$. Verified empirically ($e_d(X) \ge 0.1161$).
 3. **SUTVA:** No interference between customers and identical treatment versions.
 4. **Ex-Ante vs Ex-Post Budget:** The MILP optimizer constrains *ex-ante expected* promotional expenditure ($\sum d \cdot \hat{P}_d \cdot z_{i, d} \le B$). Realized redemption expenditure may exhibit finite-sample variance around this expectation.
+

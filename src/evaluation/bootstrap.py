@@ -126,3 +126,4 @@ class PolicyEvaluatorBootstrap:
 
         diff_scores = sp - sb
         return self.bootstrap_influence_scores(diff_scores)
+
