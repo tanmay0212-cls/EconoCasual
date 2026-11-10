@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sliders, Play, CheckCircle2, AlertTriangle, Download, RefreshCw, Info, DollarSign } from 'lucide-react';
+import { Sliders, Play, CheckCircle2, Download, RefreshCw, Info, DollarSign } from 'lucide-react';
 import { runAdvancedOptimization, fetchOptimizationBenchmarks, API_BASE_URL } from '../services/v2Service';
 
 export default function AdvancedOptimizationTab() {
@@ -13,7 +13,6 @@ export default function AdvancedOptimizationTab() {
   const [maxCustomers, setMaxCustomers] = useState(300);
 
   const [result, setResult] = useState(null);
-  const [benchmarks, setBenchmarks] = useState(null);
   const [isSolving, setIsSolving] = useState(false);
   const [error, setError] = useState(null);
   const [isLiveApi, setIsLiveApi] = useState(false);
@@ -23,7 +22,6 @@ export default function AdvancedOptimizationTab() {
     async function init() {
       try {
         const bRes = await fetchOptimizationBenchmarks();
-        setBenchmarks(bRes);
         const r2 = bRes.core_regimes?.regime2_uncertainty_aware_milp;
         if (r2) {
           setResult({ ...r2, isLiveApi: false });
@@ -420,6 +418,52 @@ export default function AdvancedOptimizationTab() {
                         <td style={{ padding: '0.5rem', color: '#f87171' }}>${row.expected_cost?.toFixed(2)}</td>
                         <td style={{ padding: '0.5rem', color: '#38bdf8' }}>${row.nominal_profit?.toFixed(2)}</td>
                         <td style={{ padding: '0.5rem', color: '#4ade80' }}>${row.conservative_lcb_profit?.toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* Segment Fairness Diagnostics Table */}
+          {Object.keys(fairness).length > 0 && (
+            <div className="card" style={{ padding: '1.5rem', background: '#1e293b', border: '1px solid #334155' }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 600, margin: '0 0 1rem', color: '#f8fafc' }}>
+                Post-Optimization Segment Fairness & Parity Metrics
+              </h3>
+
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #334155', color: '#94a3b8' }}>
+                      <th style={{ padding: '0.5rem' }}>Segment</th>
+                      <th style={{ padding: '0.5rem' }}>Sample Size</th>
+                      <th style={{ padding: '0.5rem' }}>Allocated ($10/$20)</th>
+                      <th style={{ padding: '0.5rem' }}>Allocation Rate (%)</th>
+                      <th style={{ padding: '0.5rem' }}>Avg Discount ($)</th>
+                      <th style={{ padding: '0.5rem' }}>Parity Ratio</th>
+                      <th style={{ padding: '0.5rem' }}>Compliance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(fairness).map(([segName, m]) => (
+                      <tr key={segName} style={{ borderBottom: '1px solid #334155' }}>
+                        <td style={{ padding: '0.5rem', fontWeight: 600, textTransform: 'capitalize', color: '#f1f5f9' }}>{segName}</td>
+                        <td style={{ padding: '0.5rem', color: '#94a3b8' }}>{m.sample_size}</td>
+                        <td style={{ padding: '0.5rem', color: '#e2e8f0' }}>{m.allocation_count}</td>
+                        <td style={{ padding: '0.5rem', fontWeight: 600, color: '#38bdf8' }}>{m.allocation_rate_pct?.toFixed(2)}%</td>
+                        <td style={{ padding: '0.5rem', color: '#cbd5e1' }}>${m.average_discount_amount?.toFixed(2)}</td>
+                        <td style={{ padding: '0.5rem', color: m.parity_ratio_vs_overall < 0.8 ? '#f87171' : '#4ade80' }}>
+                          {m.parity_ratio_vs_overall?.toFixed(3)}
+                        </td>
+                        <td style={{ padding: '0.5rem' }}>
+                          {m.is_floor_satisfied === false || m.is_parity_satisfied === false ? (
+                            <span className="tab-badge" style={{ background: 'rgba(239, 68, 68, 0.2)', color: '#f87171' }}>Violated</span>
+                          ) : (
+                            <span className="tab-badge tab-badge-highlight">Satisfied</span>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
