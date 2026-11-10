@@ -28,6 +28,50 @@ def test_api_health_endpoint(client: TestClient):
     assert data["reference_data_available"] is True
 
 
+def test_api_health_empty_registry(client: TestClient, monkeypatch):
+    """GET /api/health with empty registry must NEVER return healthy or all_loaded=True."""
+    from src.api.services.model_loader import model_registry
+    monkeypatch.setattr(model_registry, "get_status", lambda: {})
+
+    res = client.get("/api/health")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["models"] == {}
+    assert data["status"] in {"degraded", "unhealthy"}
+    assert data["status"] != "healthy"
+
+
+def test_api_health_partially_loaded_registry(client: TestClient, monkeypatch):
+    """GET /api/health with partially loaded registry returns degraded, not healthy."""
+    from src.api.services.model_loader import model_registry
+    from src.api.schemas.health import ModelStatus
+    mock_status = {
+        "model_a": ModelStatus(model_name="model_a", estimator_class="ClassA", is_loaded=True),
+        "model_b": ModelStatus(model_name="model_b", estimator_class="ClassB", is_loaded=False),
+    }
+    monkeypatch.setattr(model_registry, "get_status", lambda: mock_status)
+
+    res = client.get("/api/health")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "degraded"
+
+
+def test_api_health_fully_loaded_registry(client: TestClient, monkeypatch):
+    """GET /api/health with all models loaded and reference data available returns healthy."""
+    from src.api.services.model_loader import model_registry
+    from src.api.schemas.health import ModelStatus
+    mock_status = {
+        "multi_tier_dml": ModelStatus(model_name="multi_tier_dml", estimator_class="LinearDRLearner", is_loaded=True),
+    }
+    monkeypatch.setattr(model_registry, "get_status", lambda: mock_status)
+
+    res = client.get("/api/health")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "healthy"
+
+
 # ── 2. POST /api/upload ────────────────────────────────────────────────────────
 
 def test_api_upload_valid_csv(client: TestClient):
@@ -84,6 +128,21 @@ def test_api_upload_detects_duplicate_customer_ids(client: TestClient):
     assert res.status_code == 200
     data = res.json()
     assert data["duplicate_customer_ids"] == 1
+
+
+def test_api_upload_empty_csv(client: TestClient):
+    """POST /api/upload rejects empty CSV files."""
+    files = {"file": ("empty.csv", io.BytesIO(b""), "text/csv")}
+    res = client.post("/api/upload", files=files)
+    assert res.status_code == 400
+
+
+def test_api_upload_malformed_csv(client: TestClient):
+    """POST /api/upload handles malformed CSV data safely."""
+    malformed = b"customer_id,age\nCUST1,25\nCUST2,30,extra_unbalanced_token\n"
+    files = {"file": ("malformed.csv", io.BytesIO(malformed), "text/csv")}
+    res = client.post("/api/upload", files=files)
+    assert res.status_code == 400
 
 
 # ── 3. POST /api/predict ───────────────────────────────────────────────────────
@@ -206,6 +265,14 @@ def test_api_drift_check_and_history(client: TestClient):
     clean_data = res_clean.json()
     assert "features" in clean_data
     assert "overall_status" in clean_data
+    assert "distributions" in clean_data
+    assert isinstance(clean_data["distributions"], dict)
+    if len(clean_data["distributions"]) > 0:
+        first_key = list(clean_data["distributions"].keys())[0]
+        dist_entry = clean_data["distributions"][first_key]
+        assert "labels" in dist_entry
+        assert "ref_pct" in dist_entry
+        assert "curr_pct" in dist_entry
 
     # Check shifted cohort
     res_shifted = client.post("/api/drift/check", json={"dataset_reference": "drift_current"})

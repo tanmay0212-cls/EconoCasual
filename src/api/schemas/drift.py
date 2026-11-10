@@ -71,6 +71,10 @@ class DriftCheckResponse(BaseModel):
         default_factory=list,
         description="Drift assessment for model predictions (P0, P10, P20) under counterfactual treatments."
     )
+    distributions: Optional[Dict[str, Dict[str, Any]]] = Field(
+        default_factory=dict,
+        description="Empirical distribution comparison histograms for features (labels, ref_pct, curr_pct)"
+    )
     summary_message: str
     recommended_next_action: str = ""
     methodological_notice: str = (

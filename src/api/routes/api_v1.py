@@ -52,10 +52,17 @@ router = APIRouter(prefix="/api", tags=["EconoCausal Production API"])
 async def api_health() -> HealthResponse:
     """Check API status and model availability."""
     models_status = model_registry.get_status()
-    all_loaded = all(m.is_loaded for m in models_status.values())
+    has_models = len(models_status) > 0
+    all_loaded = has_models and all(m.is_loaded for m in models_status.values())
+    any_loaded = any(m.is_loaded for m in models_status.values())
     ref_exists = os.path.exists(settings.reference_data_path)
 
-    status_str = "healthy" if (all_loaded and ref_exists) else "degraded" if all_loaded else "unhealthy"
+    if all_loaded and ref_exists:
+        status_str = "healthy"
+    elif any_loaded or ref_exists:
+        status_str = "degraded"
+    else:
+        status_str = "unhealthy"
 
     return HealthResponse(
         status=status_str,

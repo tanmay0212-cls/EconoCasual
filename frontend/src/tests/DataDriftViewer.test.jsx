@@ -255,4 +255,53 @@ describe('DataDriftViewer Component', () => {
     expect(screen.getByText(/Concept Drift \(P\(Y \| X, T\) Shift\):/i)).toBeDefined();
     expect(screen.getByText(/Do not automatically trigger unmonitored model retraining/i)).toBeDefined();
   });
+
+  it('renders explicit unavailable notice when distributions are missing without fabricating charts', async () => {
+    const payloadNoDist = {
+      ...MOCK_SHIFTED_PAYLOAD,
+      distributions: {},
+    };
+    vi.spyOn(driftService, 'fetchDriftReport').mockResolvedValue(payloadNoDist);
+
+    render(<DataDriftViewer />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Distribution comparison histogram for/i)).toBeDefined();
+      expect(screen.getByText(/is currently unavailable/i)).toBeDefined();
+    });
+  });
+
+  it('renders explicit error banner when drift report API call fails', async () => {
+    vi.spyOn(driftService, 'fetchDriftReport').mockRejectedValue(new Error('Network error: server unreachable'));
+
+    render(<DataDriftViewer />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Error loading drift report:/i)).toBeDefined();
+      expect(screen.getByText(/Network error: server unreachable/i)).toBeDefined();
+    });
+  });
+
+  it('renders empty surveillance history notice when history is empty', async () => {
+    vi.spyOn(driftService, 'fetchDriftReport').mockResolvedValue(MOCK_SHIFTED_PAYLOAD);
+    vi.spyOn(driftService, 'fetchDriftHistory').mockResolvedValue([]);
+
+    render(<DataDriftViewer />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/No historical surveillance runs recorded yet/i)).toBeDefined();
+    });
+  });
+
+  it('renders warning banner when surveillance history API request fails', async () => {
+    vi.spyOn(driftService, 'fetchDriftReport').mockResolvedValue(MOCK_SHIFTED_PAYLOAD);
+    vi.spyOn(driftService, 'fetchDriftHistory').mockRejectedValue(new Error('HTTP 500: Database unavailable'));
+
+    render(<DataDriftViewer />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Surveillance History Unavailable:/i)).toBeDefined();
+      expect(screen.getByText(/HTTP 500: Database unavailable/i)).toBeDefined();
+    });
+  });
 });

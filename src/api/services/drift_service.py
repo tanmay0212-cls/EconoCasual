@@ -6,6 +6,7 @@ import uuid
 import logging
 from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
+import numpy as np
 import pandas as pd
 from fastapi import HTTPException, status
 
@@ -157,7 +158,47 @@ class DriftService:
         feature_summary_map = {feat.feature_name: feat.drift_severity for feat in feature_details}
         run_type_val = getattr(request, "run_type", None) or "operational"
 
-        # 6. Append to historical drift log
+        # 6. Compute empirical distribution comparisons for features
+        distributions_map: Dict[str, Dict[str, Any]] = {}
+        try:
+            ref_df = detector.reference_data
+            for feat in report.features:
+                fname = feat.feature_name
+                if fname in ref_df.columns and fname in current_df.columns:
+                    ref_series = ref_df[fname].dropna()
+                    curr_series = current_df[fname].dropna()
+                    if len(ref_series) > 0 and len(curr_series) > 0:
+                        if feat.feature_type == "numeric":
+                            combined = pd.concat([ref_series, curr_series])
+                            min_val, max_val = float(combined.min()), float(combined.max())
+                            if min_val == max_val:
+                                min_val -= 0.5
+                                max_val += 0.5
+                            bins = np.linspace(min_val, max_val, 9)
+                            ref_counts, _ = np.histogram(ref_series, bins=bins)
+                            curr_counts, _ = np.histogram(curr_series, bins=bins)
+                            ref_pct = (ref_counts / len(ref_series) * 100).round(2).tolist()
+                            curr_pct = (curr_counts / len(curr_series) * 100).round(2).tolist()
+                            labels = [f"{bins[i]:.1f}-{bins[i+1]:.1f}" for i in range(len(bins) - 1)]
+                            distributions_map[fname] = {
+                                "labels": labels,
+                                "ref_pct": ref_pct,
+                                "curr_pct": curr_pct,
+                            }
+                        elif feat.feature_type == "categorical":
+                            categories = sorted(list(set(ref_series.unique()) | set(curr_series.unique())))
+                            ref_counts = ref_series.value_counts(normalize=True) * 100
+                            curr_counts = curr_series.value_counts(normalize=True) * 100
+                            distributions_map[fname] = {
+                                "labels": [str(c) for c in categories],
+                                "ref_pct": [round(float(ref_counts.get(cat, 0.0)), 2) for cat in categories],
+                                "curr_pct": [round(float(curr_counts.get(cat, 0.0)), 2) for cat in categories],
+                            }
+        except Exception as exc:
+            logger.warning("Could not compute distribution histograms: %s", exc)
+            distributions_map = {}
+
+        # 7. Append to historical drift log
         cls._append_drift_history(
             dataset_name=dataset_label,
             overall_status=overall_status_val,
@@ -179,6 +220,7 @@ class DriftService:
             current_sample_size=report.current_sample_size,
             features=feature_details,
             prediction_drift=prediction_details,
+            distributions=distributions_map,
             summary_message=report.summary_message,
             recommended_next_action=report.recommended_next_action,
             methodological_notice=report.methodological_notice,

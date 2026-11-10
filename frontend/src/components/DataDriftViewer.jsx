@@ -49,6 +49,7 @@ export default function DataDriftViewer() {
   const [batchType, setBatchType] = useState('shifted'); // 'shifted' | 'clean'
   const [dataPayload, setDataPayload] = useState(null);
   const [driftHistory, setDriftHistory] = useState([]);
+  const [historyError, setHistoryError] = useState(null);
   const [selectedFeature, setSelectedFeature] = useState('age');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -83,8 +84,10 @@ export default function DataDriftViewer() {
 
       if (historyResult.status === 'fulfilled') {
         setDriftHistory(historyResult.value || []);
+        setHistoryError(null);
       } else {
-        console.warn('Could not load drift history:', historyResult.reason);
+        setDriftHistory([]);
+        setHistoryError(historyResult.reason?.message || 'Failed to retrieve drift surveillance history from server.');
       }
     } catch (err) {
       setError(err.message || 'Failed to load drift report.');
@@ -540,8 +543,11 @@ export default function DataDriftViewer() {
                     </div>
                   </div>
                 ) : (
-                  <div className="alert alert-neutral">
-                    Distribution histogram data for <code>{selectedFeature}</code> is not available in precomputed payload.
+                  <div className="alert alert-neutral" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1rem 0' }}>
+                    <Info size={18} className="text-muted" />
+                    <div>
+                      Distribution comparison histogram for <code>{selectedFeature}</code> is currently unavailable. No empirical bin distributions were returned for this feature; refer to the summary statistics below.
+                    </div>
                   </div>
                 )}
 
@@ -686,22 +692,29 @@ export default function DataDriftViewer() {
           )}
 
           {/* 5c. Historical Surveillance Logs */}
-          {driftHistory && driftHistory.length > 0 && (
-            <div className="card drift-table-card" style={{ marginTop: '1.5rem' }}>
-              <div className="card-header">
-                <div className="title-with-icon">
-                  <div className="icon-badge icon-cyan">
-                    <FileCheck2 size={18} />
-                  </div>
-                  <div>
-                    <h3 className="card-title">Historical Drift Surveillance Logs</h3>
-                    <p className="card-subtitle">
-                      Audit log of recent statistical drift evaluations and population surveillance runs.
-                    </p>
-                  </div>
+          <div className="card drift-table-card" style={{ marginTop: '1.5rem' }}>
+            <div className="card-header">
+              <div className="title-with-icon">
+                <div className="icon-badge icon-cyan">
+                  <FileCheck2 size={18} />
+                </div>
+                <div>
+                  <h3 className="card-title">Historical Drift Surveillance Logs</h3>
+                  <p className="card-subtitle">
+                    Audit log of recent statistical drift evaluations and population surveillance runs.
+                  </p>
                 </div>
               </div>
+            </div>
 
+            {historyError ? (
+              <div className="alert alert-warning" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1rem' }}>
+                <AlertTriangle size={18} className="text-amber" />
+                <div>
+                  <strong>Surveillance History Unavailable:</strong> {historyError}
+                </div>
+              </div>
+            ) : driftHistory && driftHistory.length > 0 ? (
               <div className="table-responsive">
                 <table className="custom-table drift-table">
                   <thead>
@@ -728,8 +741,13 @@ export default function DataDriftViewer() {
                   </tbody>
                 </table>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="alert alert-neutral" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1rem' }}>
+                <Info size={18} className="text-muted" />
+                <div>No historical surveillance runs recorded yet. Historical audits will appear here after automated drift checks are conducted.</div>
+              </div>
+            )}
+          </div>
 
           {/* 6. Methodological Notice Callout */}
           <div className="card methodological-callout-card">
